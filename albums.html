@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>אלבומים | האלבום המשפחתי</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        (function() {
+            const s = getSession();
+            if (!s || !s.user || !s.token) {
+                const ret = location.pathname.split('/').pop() + location.search;
+                location.replace("index.html?autoLogin=1&return=" + encodeURIComponent(ret));
+            }
+        })();
+    </script>
+    <style>
+        .albums-page {
+            max-width: 1200px;
+            margin: auto;
+            padding: 34px 20px 70px
+        }
+
+        .albums-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px
+        }
+
+        .albums-head h1 {
+            margin: 0
+        }
+
+        .albums-head p {
+            margin: 6px 0 0;
+            opacity: .72
+        }
+
+        .album-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px
+        }
+
+        .album-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(127, 127, 127, .18);
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--card, #fff);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .08);
+            transition: transform .2s, box-shadow .2s
+        }
+
+        .album-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .13)
+        }
+
+        .album-cover {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #ddd, #aaa)
+        }
+
+        .album-cover.empty {
+            display: grid;
+            place-items: center;
+            font-size: 42px;
+            color: #777
+        }
+
+        .album-card-body {
+            padding: 15px
+        }
+
+        .album-card-body h2 {
+            font-size: 1.05rem;
+            margin: 0 0 5px
+        }
+
+        .album-card-body p {
+            margin: 0;
+            opacity: .7;
+            font-size: .9rem;
+            min-height: 1.4em
+        }
+
+        .dark .album-card {
+            background: #24211f;
+            color: #f3eee9;
+            border-color: #ffffff1a
+        }
+
+        .dark .album-card-body h2 {
+            color: #f3eee9
+        }
+
+        .dark .album-card-body p {
+            color: #c9c1bb;
+            opacity: 1
+        }
+
+        .dark .album-cover.empty {
+            color: #bdb4ac;
+            background: linear-gradient(135deg, #302c29, #1f1c1a)
+        }
+
+        .loading,
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            opacity: .72
+        }
+
+        .error {
+            padding: 20px;
+            text-align: center;
+            color: #b3261e
+        }
+
+        @media(max-width:600px) {
+            .albums-page {
+                padding: 22px 14px 50px
+            }
+
+            .album-list-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px
+            }
+
+            .album-card-body {
+                padding: 11px
+            }
+
+            .album-card-body h2 {
+                font-size: .95rem
+            }
+
+            .album-card-body p {
+                font-size: .82rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top">
+        <a class="brand" href="index.html"><img src="images/logo_50.png" alt="Family Album"></a>
+        <nav id="nav"></nav>
+        <div class="actions">
+            <button onclick="toggleTheme()" aria-label="החלפת מצב תצוגה">◐</button>
+            <button class="pill" onclick="logout()">יציאה</button>
+        </div>
+    </header>
+    <main class="albums-page">
+        <div class="albums-head">
+            <div><span class="eyebrow">FAMILY ALBUM</span>
+                <h1>האלבומים</h1>
+                <p>בחר אלבום כדי לצפות בתמונות שלו.</p>
+            </div>
+        </div>
+        <div id="albums" class="album-list-grid">
+            <div class="loading">טוען אלבומים...</div>
+        </div>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        mountLayout("albums");
+        const session = getSession();
+        const root = document.getElementById("albums");
+
+        function safeUrl(v) {
+            return typeof v === "string" ? v : ""
+        }
+
+        function renderAlbums(items) {
+            const list = (Array.isArray(items) ? items : []).filter(a => a && !a.isVirtual && a.id !== "__ALL__");
+            if (!list.length) {
+                root.innerHTML = '<div class="empty-state">אין אלבומים להצגה.</div>';
+                return;
+            }
+            root.innerHTML = list.map(a => {
+                const title = esc(a.title || "אלבום");
+                const desc = esc(a.description || "");
+                const href = "album.html?id=" + encodeURIComponent(a.id);
+                const cover = safeUrl(a.coverUrl);
+                return `<a class="album-card" href="${href}">
+      ${cover?`<img class="album-cover" src="${esc(cover)}" alt="${title}" loading="lazy">`:`<div class="album-cover empty" aria-label="${title}">📷</div>`}
+      <div class="album-card-body"><h2>${title}</h2><p>${desc}</p></div>
+    </a>`;
+            }).join("");
+        }
+        (async () => {
+            try {
+                // Use the same GET endpoint used successfully by the dashboard.
+                // This prevents the albums page from depending on a different POST implementation.
+                const r = await API.call("albums", {
+                    token: session.token
+                }, "GET");
+                if (!r || r.ok !== true) throw new Error(r?.message || "שגיאה בטעינת האלבומים");
+                const items = Array.isArray(r.data) ? r.data : [];
+                renderAlbums(items);
+            } catch (e) {
+                console.error("albums:", e);
+                root.innerHTML = '<div class="error">לא ניתן לטעון את רשימת האלבומים.</div>';
+            }
+        })();
+    </script>
+</body>
+
+</html>

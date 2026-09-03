@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>סל מחזור</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        (function() {
+            const s = getSession();
+            if (!s || !s.user || !s.token) {
+                const ret = location.pathname.split('/').pop() + location.search;
+                location.replace("index.html?autoLogin=1&return=" + encodeURIComponent(ret));
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/session-manager.css">
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a>
+        <nav id="nav"></nav>
+        <div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div>
+    </header>
+    <main class="section">
+        <div class="heading">
+            <div><span class="eyebrow">ADMIN</span>
+                <h1>🗑️ סל מחזור</h1>
+                <p>תמונות שנמחקו נשמרות כאן עד לשחזור או למחיקה לצמיתות.</p>
+            </div>
+        </div>
+        <div id="grid" class="gallery"></div>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        const s = requireLogin('ADMIN');
+        if (s) {
+            mountLayout('trash');
+            loadTrash()
+        }
+        async function loadTrash() {
+            const r = await API.call('trash', {
+                token: s.token
+            }, 'GET');
+            if (!r.ok) {
+                grid.innerHTML = '<p>' + esc(r.message) + '</p>';
+                return
+            }
+            const items = r.data || [];
+            grid.innerHTML = items.map(p => `<figure class="photo-card"><div class="photo-wrap"><img src="${esc(p.imageUrl||'')}" loading="lazy" referrerpolicy="no-referrer" alt="${esc(p.photoTitle||p.fileName||'תמונה')}"></div><figcaption><strong>${esc(p.photoTitle||'ללא כותרת')}</strong>${p.photoDate?`<small>📅 ${esc(String(p.photoDate).match(/(?:19|20|21)\d{2}/)?.[0]||p.photoDate)}</small>`:''}<small>🗑️ נמחקה: ${esc(formatDate(p.deletedAt))}</small><div class="trash-actions"><button class="btn" onclick="restore('${esc(p.id)}')">↩ שחזור</button><button class="danger-btn" onclick="permanentDelete('${esc(p.id)}')">🗑️ מחיקה לצמיתות</button></div></figcaption></figure>`).join('') || '<p>סל המחזור ריק.</p>'
+        }
+
+        function formatDate(v) {
+            if (!v) return '';
+            const d = new Date(v);
+            return isNaN(d) ? String(v) : d.toLocaleDateString('he-IL')
+        }
+        async function restore(id) {
+            if (!confirm('לשחזר את התמונה לאלבום?')) return;
+            const r = await API.call('restorePhoto', {
+                token: s.token,
+                id
+            });
+            toast(r.ok ? 'התמונה שוחזרה' : 'שגיאה: ' + r.message, 'info');
+            if (r.ok) loadTrash()
+        }
+        async function permanentDelete(id) {
+            if (!confirm('מחיקה לצמיתות לא ניתנת לביטול. להמשיך?')) return;
+            const r = await API.call('permanentlyDeletePhoto', {
+                token: s.token,
+                id
+            });
+            toast(r.ok ? 'התמונה נמחקה לצמיתות' : 'שגיאה: ' + r.message, 'info');
+            if (r.ok) loadTrash()
+        }
+    </script>
+</body>
+
+</html>

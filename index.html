@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>אלבום משפחתי</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/theme.js"></script>
+    <style id="password-toggle-eye-style">
+        .password-field-wrap {
+            position: relative;
+            display: flex;
+            align-items: center
+        }
+
+        .password-field-wrap input {
+            width: 100%;
+            padding-right: 48px !important
+        }
+
+        .password-toggle-eye {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: currentColor;
+            opacity: .75;
+            padding: 0;
+            border-radius: 8px;
+        }
+
+        .password-toggle-eye:hover {
+            opacity: 1;
+            background: rgba(128, 128, 128, .12)
+        }
+
+        .password-toggle-eye svg {
+            width: 21px;
+            height: 21px;
+            pointer-events: none
+        }
+    </style>
+
+    <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
+    <style id="login-field-icons">
+        .login-input-wrap {
+            position: relative;
+            width: 100%;
+            display: block
+        }
+
+        .login-input-wrap .login-input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            opacity: .72;
+            pointer-events: none;
+            z-index: 3
+        }
+
+        .login-input-wrap input {
+            padding-left: 48px !important
+        }
+
+        .login-input-wrap .password-field-wrap {
+            width: 100%
+        }
+
+        .login-input-wrap .password-field-wrap .field-icon {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html"><img src="images/logo_50.png" alt="Family Album"></a>
+        <nav id="nav"></nav>
+        <div class="actions"><button onclick="toggleTheme()">◐</button><a id="adminLink" class="pill" style="display:none" href="admin.html">ניהול</a><button class="pill login-open" type="button" onclick="openLoginModal()">כניסה</button></div>
+    </header>
+    <main>
+        <section class="hero">
+            <div><span class="eyebrow">משפחה שלנו · הסיפור שלנו</span>
+                <h1>החיים שלנו<br><em>בתמונות</em></h1>
+                <p>אלבום משפחתי דיגיטלי לשמירת טיולים, חגים, אירועים והרגעים הקטנים.</p><a class="btn" href="albums.html">גלה את האלבומים</a>
+            </div>
+            <div class="hero-image"></div>
+        </section>
+        <section class="stats">
+            <div><strong>∞</strong><small>זיכרונות</small></div>
+            <div><strong>24/7</strong><small>גישה</small></div>
+            <div><strong>100%</strong><small>משפחתי</small></div>
+            <div><strong>☁</strong><small>Google Drive</small></div>
+        </section>
+        <section class="section">
+            <div class="heading">
+                <h2>אלבומים אחרונים</h2><a href="albums.html">לכל האלבומים ←</a>
+            </div>
+            <div id="recentAlbums" class="cards"></div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+        <div class="login-backdrop" aria-hidden="true"></div>
+        <div class="login-modal-card">
+            <button class="login-close" id="loginModalClose" type="button" aria-label="סגירת חלון" title="סגירה זמינה רק לאחר התחברות" onclick="closeLoginModal()">×</button>
+            <button class="login-theme-toggle" id="loginModalTheme" type="button" onclick="toggleLoginModalTheme()" aria-label="החלפת מצב תצוגה" title="החלף בין מצב בהיר לכהה">☾</button>
+            <div class="login-modal-brand">Family <b>Album</b> ♥</div>
+            <h2 id="loginModalTitle">ברוכים הבאים</h2>
+            <p>התחבר לאלבום המשפחתי</p>
+            <form id="modalLoginForm">
+                <label for="modalEmail">אימייל</label>
+                <div class="login-input-wrap"><svg class="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <path d="m3 7 9 6 9-6" />
+                    </svg><input id="modalEmail" type="email" autocomplete="username" placeholder="name@example.com" required></div>
+                <label for="modalPassword">סיסמה</label>
+                <div class="password-field">
+                    <div class="password-field-wrap">
+                        <div class="login-input-wrap"><svg class="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="10" rx="2" />
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                            </svg><input id="modalPassword" type="password" autocomplete="current-password" placeholder="הזן סיסמה" required></div>
+                        <button type="button" class="password-toggle-eye" aria-label="הצג סיסמה" title="הצג סיסמה" data-password-toggle="modalPassword">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                                <circle cx="12" cy="12" r="2.8" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button id="modalLoginButton" class="btn login-submit" type="submit">כניסה</button>
+            </form>
+            <div id="modalLoginMsg" class="login-message" role="alert"></div>
+            <!-- <a class="modal-full-login" href="login.html">פתיחת עמוד הכניסה המלא</a> -->
+        </div>
+    </div>
+    <footer>© 2026 אלבום משפחתי</footer>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        mountLayout("home");
+        const recentAlbumsEl = document.getElementById("recentAlbums");
+        (async function loadRecentAlbums() {
+            if (!recentAlbumsEl) return;
+            try {
+                const r = await API.call("albums", {}, "GET");
+                if (!r || r.ok === false) throw new Error((r && r.message) || "שגיאה בטעינת האלבומים");
+                const albums = Array.isArray(r.data) ? r.data : [];
+                recentAlbumsEl.innerHTML = albums.slice(0, 3).map(renderAlbumCard).join("") || "<p>אין אלבומים עדיין.</p>";
+            } catch (e) {
+                console.error("loadRecentAlbums:", e);
+                recentAlbumsEl.innerHTML = "<p>חבר את Google Apps Script כדי לטעון נתונים.</p>";
+            }
+        })();
+
+        function renderAlbumCard(a, i) {
+            const id = encodeURIComponent((a && a.id) || "");
+            const title = esc((a && a.title) || "אלבום ללא כותרת");
+            const description = esc((a && a.description) || "אלבום משפחתי");
+            const cover = a && a.coverUrl ? ` style="background-image:url('${esc(a.coverUrl)}')"` : "";
+            return `<a class="card" href="album.html?id=${id}"><div class="cover c${i % 4}"${cover}></div><div class="card-body"><h3>${title}</h3><p>${description}</p></div></a>`;
+        }
+    </script>
+
+    <script>
+        function shouldAutoOpenLogin() {
+            const p = new URLSearchParams(location.search);
+            return p.get("autoLogin") === "1" || !getSession()?.user || !getSession()?.token;
+        }
+
+        function hasActiveSession() {
+            try {
+                const sm = window.SessionManager?.getSession?.();
+                if (sm && sm.user && sm.token) return true;
+            } catch (e) {}
+            return false;
+        }
+
+        function openLoginModal() {
+            const modal = document.getElementById("loginModal");
+            if (!modal) return;
+            const locked = !hasActiveSession();
+            modal.classList.add("open");
+            modal.setAttribute("aria-hidden", "false");
+            modal.dataset.locked = locked ? "true" : "false";
+            document.body.classList.add("modal-open");
+            const close = document.getElementById("loginModalClose");
+            if (close) {
+                close.style.display = locked ? "none" : "flex";
+                close.disabled = locked;
+                close.setAttribute("aria-hidden", locked ? "true" : "false");
+            }
+            setTimeout(() => document.getElementById("modalEmail")?.focus(), 80);
+        }
+
+        function updateLoginModalThemeButton() {
+            const btn = document.getElementById("loginModalTheme");
+            if (!btn) return;
+            const dark = document.documentElement.classList.contains("dark");
+            btn.textContent = dark ? "☀" : "☾";
+            btn.setAttribute("aria-label", dark ? "מעבר למצב בהיר" : "מעבר למצב כהה");
+            btn.title = dark ? "עבור למצב בהיר" : "עבור למצב כהה";
+        }
+
+        function toggleLoginModalTheme() {
+            toggleTheme();
+            updateLoginModalThemeButton();
+        }
+        updateLoginModalThemeButton();
+
+        function closeLoginModal() {
+            const modal = document.getElementById("loginModal");
+            if (!modal) return;
+            // When there is no active Session, the login screen is mandatory.
+            if (!hasActiveSession()) {
+                openLoginModal();
+                return;
+            }
+            modal.classList.remove("open");
+            modal.setAttribute("aria-hidden", "true");
+            modal.removeAttribute("data-locked");
+            document.body.classList.remove("modal-open");
+        }
+
+        document.getElementById("modalLoginForm")?.addEventListener("submit", async e => {
+            e.preventDefault();
+            const email = document.getElementById("modalEmail").value.trim();
+            const password = document.getElementById("modalPassword").value;
+            const msg = document.getElementById("modalLoginMsg");
+            const btn = document.getElementById("modalLoginButton");
+            msg.textContent = "מתחבר...";
+            msg.className = "login-message";
+            btn.disabled = true;
+            try {
+                const r = await API.call("login", {
+                    email,
+                    password
+                });
+                if (!r?.ok) throw new Error(r?.message || "פרטי הכניסה אינם תקינים");
+                /* SessionManager is the single source of truth. */
+                try {
+                    if (window.SessionManager?.start) SessionManager.start(r.data.user, r.data.token, false);
+                } catch (e) {
+                    console.warn("Session manager:", e);
+                }
+                msg.textContent = "הכניסה הצליחה";
+                msg.classList.add("success");
+                setTimeout(() => {
+                    const ret = new URLSearchParams(location.search).get("return");
+                    location.href = (ret && /^[a-zA-Z0-9_\-]+\.html(?:\?.*)?$/.test(ret)) ? ret : "dashboard.html";
+                }, 250);
+            } catch (err) {
+                msg.textContent = err?.message || "אירעה שגיאה בעת ההתחברות";
+                msg.classList.add("error");
+            } finally {
+                btn.disabled = false;
+            }
+        });
+        if (shouldAutoOpenLogin()) setTimeout(openLoginModal, 120);
+
+        document.addEventListener("keydown", e => {
+            const modal = document.getElementById("loginModal");
+            if (e.key === "Escape" && modal?.classList.contains("open")) {
+                if (!hasActiveSession()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                closeLoginModal();
+            }
+        });
+    </script>
+    <script id="password-toggle-eye-script">
+        (function() {
+            function eyeOpen() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>';
+            }
+
+            function eyeClosed() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.4 17.4 0 0 1-3.1 3.8"/><path d="M6.2 6.8C3.6 8.6 2 12 2 12s3.5 6 10 6c1.4 0 2.7-.3 3.9-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+            }
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('[data-password-toggle]');
+                if (!btn) return;
+                const id = btn.getAttribute('data-password-toggle');
+                const input = document.getElementById(id);
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.innerHTML = show ? eyeClosed() : eyeOpen();
+                btn.setAttribute('aria-label', show ? 'הסתר סיסמה' : 'הצג סיסמה');
+                btn.setAttribute('title', show ? 'הסתר סיסמה' : 'הצג סיסמה');
+            });
+        })();
+    </script>
+
+    <script src="js/session-manager.js"></script>
+</body>
+
+</html>

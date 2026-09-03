@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>אלבום</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        (function() {
+            const s = getSession();
+            if (!s || !s.user || !s.token) {
+                const ret = (location.pathname.split('/').pop() || 'album.html') + location.search;
+                location.replace('index.html?autoLogin=1&loginRequired=1&return=' + encodeURIComponent(ret));
+            }
+        })();
+    </script>
+    <style>
+        .mobile-search-toggle {
+            display: none;
+            border: 1px solid var(--line, #ddd);
+            background: var(--card, #fff);
+            color: inherit;
+            border-radius: 12px;
+            padding: 10px 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 0 0 12px
+        }
+
+        @media(max-width:600px) {
+            .mobile-search-toggle {
+                display: block;
+                width: 100%
+            }
+
+            .photo-tools.mobile-search-hidden {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html"><img src="images/logo_50.png" alt="Family Album"></a>
+        <nav id="nav"></nav>
+        <div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div>
+    </header>
+    <main class="section">
+        <div class="heading">
+            <div><span class="eyebrow">ALBUM</span>
+                <h1 id="title">טוען...</h1>
+                <p id="description"></p>
+            </div><button id="start" class="btn" type="button">◀ מצגת</button>
+        </div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools">🔎 הצג חיפוש</button>
+        <div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="שנה" aria-label="חיפוש לפי שנה"><select id="sortYear" aria-label="מיון לפי שנה">
+                <option value="newest">חדשים → ישנים</option>
+                <option value="oldest">ישנים → חדשים</option>
+            </select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div>
+        <div id="gallery" class="gallery"></div>
+    </main>
+    <div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור">×</button><button id="r" type="button" aria-label="הבא"><</button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם">></button>
+        <div id="caption"></div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        'use strict';
+        mountLayout('albums');
+        const params = new URLSearchParams(location.search);
+        const id = String(params.get('id') || '').trim();
+        let session = getSession();
+        let photos = [],
+            filteredPhotos = [],
+            i = 0,
+            slideTimer = null;
+        const titleEl = document.getElementById('title'),
+            descriptionEl = document.getElementById('description'),
+            gallery = document.getElementById('gallery'),
+            viewer = document.getElementById('viewer'),
+            big = document.getElementById('big'),
+            caption = document.getElementById('caption'),
+            searchTitle = document.getElementById('searchTitle'),
+            searchAlbum = document.getElementById('searchAlbum'),
+            searchYear = document.getElementById('searchYear'),
+            sortYear = document.getElementById('sortYear'),
+            photoCount = document.getElementById('photoCount');
+
+        function photoYear(v) {
+            const m = String(v || '').match(/(?:^|[^0-9])((?:19|20|21)[0-9]{2})(?:[^0-9]|$)/);
+            return m ? m[1] : '';
+        }
+
+        function photoTitle(p) {
+            return String(p?.photoTitle || p?.caption || p?.fileName || 'ללא כותרת').trim();
+        }
+
+        function albumTitle(p) {
+            return String(p?.albumTitle || '').trim();
+        }
+
+        function photoCaption(p) {
+            const a = albumTitle(p),
+                y = photoYear(p?.photoDate);
+            return `${a||'ללא אלבום'}${y?' • '+y:''}`;
+        }
+        async function init() {
+            session = getSession();
+            if (!session) {
+                return;
+            }
+            if (!id) {
+                titleEl.textContent = 'אלבום לא נמצא';
+                descriptionEl.textContent = 'קישור האלבום אינו תקין.';
+                gallery.innerHTML = '<p>לא נבחר אלבום. חזור לרשימת האלבומים ונסה שוב.</p>';
+                return;
+            }
+            gallery.innerHTML = '<p>טוען תמונות...</p>';
+            try {
+                const token = session.token;
+                const ar = await API.call('album', {
+                    id,
+                    token
+                }, 'POST');
+                if (!ar.ok) throw new Error(ar.message || 'לא ניתן לטעון את האלבום');
+                const album = ar.data || {};
+                titleEl.textContent = album.title || 'אלבום';
+                descriptionEl.textContent = album.description || '';
+                const r = await API.call('photos', {
+                    albumId: id,
+                    token
+                }, 'POST');
+                if (!r.ok) throw new Error(r.message || 'לא ניתן לטעון את התמונות');
+                photos = Array.isArray(r.data) ? r.data : [];
+                applyFilters();
+            } catch (e) {
+                console.error(e);
+                gallery.innerHTML = `<div class="load-error"><strong>לא ניתן לטעון את התמונות</strong><p>${esc(e?.message||'שגיאה לא ידועה')}</p><button class="pill" type="button" onclick="init()">↻ נסה שוב</button></div>`;
+                photoCount.textContent = '';
+            }
+        }
+
+        function applyFilters() {
+            const q = searchTitle.value.trim().toLowerCase(),
+                a = searchAlbum.value.trim().toLowerCase(),
+                y = searchYear.value.trim();
+            filteredPhotos = photos.filter(p => (!q || photoTitle(p).toLowerCase().includes(q)) && (!a || albumTitle(p).toLowerCase().includes(a)) && (!y || photoYear(p.photoDate) === y));
+            filteredPhotos.sort((a, b) => {
+                const ya = Number(photoYear(a.photoDate)) || 0,
+                    yb = Number(photoYear(b.photoDate)) || 0;
+                return sortYear.value === 'oldest' ? ya - yb : yb - ya;
+            });
+            renderGallery();
+        }
+
+        function renderGallery() {
+            photoCount.textContent = `${filteredPhotos.length} מתוך ${photos.length} תמונות`;
+            gallery.innerHTML = filteredPhotos.map((p, n) => {
+                const title = esc(photoTitle(p)),
+                    cap = photoCaption(p),
+                    url = esc(p.imageUrl || '');
+                return `<figure class="photo-card"><div class="photo-wrap"><img src="${url}" loading="lazy" referrerpolicy="no-referrer" alt="${title}" onerror="this.closest('figure').classList.add('img-error');this.alt='לא ניתן להציג את התמונה';" onclick="openPhoto(${n})"><button class="favorite-btn ${p.isFavorite?'active':''}" type="button" aria-label="${p.isFavorite?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${n})">${p.isFavorite?'♥':'♡'}</button>${p.canDelete?`<button class="delete-photo-btn" type="button" aria-label="מחיקת תמונה" onclick="event.preventDefault();event.stopPropagation();deletePhoto(${n})">🗑️</button>`:''}</div><figcaption><strong>${title}</strong>${cap?`<small>📁 ${esc(cap)}</small>`:''}</figcaption></figure>`;
+            }).join('') || '<p>לא נמצאו תמונות התואמות לחיפוש.</p>';
+        }
+
+        function openPhoto(n) {
+            if (!filteredPhotos.length) return;
+            i = n;
+            const p = filteredPhotos[i];
+            big.src = p.imageUrl || '';
+            big.alt = photoTitle(p);
+            caption.innerHTML = `<strong>${esc(photoTitle(p))}</strong><small>📁 ${esc(photoCaption(p))}</small>`;
+            viewer.classList.add('open');
+            viewer.setAttribute('aria-hidden', 'false');
+        }
+        async function toggleFav(n) {
+            const p = filteredPhotos[n],
+                s = getSession();
+            if (!s) {
+                location.replace('index.html?autoLogin=1&loginRequired=1');
+                return;
+            }
+            try {
+                const r = await API.call('toggleFavorite', {
+                    token: s.token,
+                    photoId: p.id
+                });
+                if (!r.ok) throw new Error(r.message || 'שגיאה');
+                p.isFavorite = !!r.data?.favorite;
+                const original = photos.find(x => String(x.id) === String(p.id));
+                if (original) original.isFavorite = p.isFavorite;
+                renderGallery();
+            } catch (e) {
+                toast(e.message || 'לא ניתן לעדכן מועדפים', 'error');
+            }
+        }
+        async function deletePhoto(n) {
+            const p = filteredPhotos[n];
+            if (!p?.canDelete) return;
+            if (!confirm('למחוק את התמונה? התמונה תוסר מהאלבום וגם מהמועדפים.')) return;
+            const s = getSession();
+            if (!s) return;
+            try {
+                const r = await API.call('deletePhoto', {
+                    token: s.token,
+                    id: p.id
+                });
+                if (!r.ok) throw new Error(r.message || 'שגיאה');
+                photos = photos.filter(x => String(x.id) !== String(p.id));
+                filteredPhotos = filteredPhotos.filter(x => String(x.id) !== String(p.id));
+                renderGallery();
+                toast('התמונה נמחקה', 'info');
+            } catch (e) {
+                toast(e.message || 'לא ניתן למחוק את התמונה', 'error');
+            }
+        }
+
+        function move(n) {
+            if (!filteredPhotos.length) return;
+            i = (i + n + filteredPhotos.length) % filteredPhotos.length;
+            openPhoto(i);
+        }
+
+        function closeViewer() {
+            viewer.classList.remove('open');
+            viewer.setAttribute('aria-hidden', 'true');
+            if (slideTimer) {
+                clearInterval(slideTimer);
+                slideTimer = null;
+            }
+        }
+        const toggleSearch = document.getElementById('toggleSearch'),
+            photoTools = document.getElementById('photoTools');
+
+        function setSearchVisible(visible) {
+            photoTools.classList.toggle('mobile-search-hidden', !visible);
+            toggleSearch.setAttribute('aria-expanded', String(visible));
+            toggleSearch.textContent = visible ? '🔎 הסתר חיפוש' : '🔎 הצג חיפוש';
+        }
+        toggleSearch.onclick = () => setSearchVisible(photoTools.classList.contains('mobile-search-hidden'));
+        document.getElementById('x').onclick = closeViewer;
+        document.getElementById('r').onclick = () => move(1);
+        document.getElementById('l').onclick = () => move(-1);
+        document.addEventListener('keydown', e => {
+            if (!viewer.classList.contains('open')) return;
+            if (e.key === 'Escape') closeViewer();
+            else if (e.key === 'ArrowRight') move(1);
+            else if (e.key === 'ArrowLeft') move(-1);
+        });
+        document.getElementById('start').onclick = () => {
+            if (!filteredPhotos.length) return;
+            openPhoto(0);
+            if (slideTimer) clearInterval(slideTimer);
+            slideTimer = setInterval(() => {
+                if (!viewer.classList.contains('open')) {
+                    clearInterval(slideTimer);
+                    slideTimer = null;
+                } else move(1);
+            }, 2800);
+        };
+        [searchTitle, searchAlbum, searchYear].forEach(el => el.addEventListener('input', applyFilters));
+        sortYear.addEventListener('change', applyFilters);
+        document.getElementById('clearFilters').onclick = () => {
+            searchTitle.value = '';
+            searchAlbum.value = '';
+            searchYear.value = '';
+            sortYear.value = 'newest';
+            applyFilters();
+        };
+        init();
+    </script>
+</body>
+
+</html>

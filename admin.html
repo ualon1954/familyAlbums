@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ניהול</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        (function() {
+            const s = getSession();
+            if (!s || !s.user || !s.token) {
+                const ret = location.pathname.split('/').pop() + location.search;
+                location.replace("index.html?autoLogin=1&return=" + encodeURIComponent(ret));
+            }
+        })();
+    </script>
+
+    <style id="password-toggle-eye-style">
+        .password-field-wrap {
+            position: relative;
+            display: flex;
+            align-items: center
+        }
+
+        .password-field-wrap input {
+            width: 100%;
+            padding-right: 48px !important
+        }
+
+        .password-toggle-eye {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: currentColor;
+            opacity: .75;
+            padding: 0;
+            border-radius: 8px;
+        }
+
+        .password-toggle-eye:hover {
+            opacity: 1;
+            background: rgba(128, 128, 128, .12)
+        }
+
+        .password-toggle-eye svg {
+            width: 21px;
+            height: 21px;
+            pointer-events: none
+        }
+    </style>
+
+    <style id="album-cover-manager-style">
+        .cover-manager {
+            margin-top: 10px
+        }
+
+        .cover-current {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border: 1px solid #0001;
+            border-radius: 14px;
+            background: #00000004
+        }
+
+        .dark .cover-current {
+            border-color: #fff1;
+            background: #fff1
+        }
+
+        .cover-current img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #ddd;
+            display: block
+        }
+
+        .cover-current .empty {
+            width: 72px;
+            height: 72px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #0001;
+            color: #777;
+            font-size: 12px;
+            text-align: center
+        }
+
+        .cover-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px
+        }
+
+        .cover-btn {
+            border: 1px solid #0002;
+            background: #fff;
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer
+        }
+
+        .cover-btn.primary {
+            font-weight: 800;
+            border-color: #a16e48
+        }
+
+        .cover-upload-status {
+            margin-top: 10px;
+            font-size: 13px
+        }
+
+        .cover-file-input {
+            display: none
+        }
+
+        .dark .cover-btn {
+            background: #24211f;
+            color: #fff;
+            border-color: #fff2
+        }
+
+        .cover-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0009;
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 18px
+        }
+
+        .cover-modal.open {
+            display: flex
+        }
+
+        .cover-dialog {
+            width: min(900px, 96vw);
+            max-height: 90vh;
+            overflow: auto;
+            background: #fff;
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 30px 100px #0007
+        }
+
+        .dark .cover-dialog {
+            background: #24211f;
+            color: #fff
+        }
+
+        .cover-dialog-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px
+        }
+
+        .cover-dialog-head h2 {
+            margin: 0
+        }
+
+        .cover-dialog-head button {
+            margin-right: auto;
+            border: 0;
+            background: #0001;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 22px
+        }
+
+        .cover-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px
+        }
+
+        .cover-photo {
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 0;
+            background: transparent;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: right
+        }
+
+        .cover-photo:hover,
+        .cover-photo.selected {
+            border-color: #a16e48
+        }
+
+        .cover-photo img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover
+        }
+
+        .cover-photo span {
+            display: block;
+            padding: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .cover-empty {
+            padding: 25px;
+            text-align: center;
+            color: #777
+        }
+
+        .cover-section-title {
+            margin: 18px 0 6px
+        }
+
+        .cover-section-note {
+            font-size: 12px;
+            opacity: .7;
+            margin-bottom: 10px
+        }
+
+        @media(max-width:700px) {
+            .cover-photo-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        @media(max-width:430px) {
+            .cover-photo-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .album-manage-row {
+            display: block !important
+        }
+
+        .album-manage-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 8px
+        }
+
+        .cover-status {
+            font-size: 12px;
+            opacity: .7
+        }
+
+        .api-status-panel {
+            grid-column: 1/-1
+        }
+
+        .api-status-panel #apiStatus {
+            margin: 8px 0 12px;
+            line-height: 1.7
+        }
+
+        .album-manage-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .album-manage-actions button {
+            cursor: pointer
+        }
+
+        .cover-primary-btn {
+            font-weight: 800;
+            border-color: #a16e48 !important
+        }
+
+        .cover-photo:disabled {
+            opacity: .55;
+            cursor: wait
+        }
+
+        .cover-photo-no-image {
+            aspect-ratio: 1/1;
+            display: grid;
+            place-items: center;
+            background: #eee;
+            color: #777
+        }
+
+        .dark .cover-photo-no-image {
+            background: #333;
+            color: #bbb
+        }
+    </style>
+    <link rel="stylesheet" href="css/session-manager.css">
+    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html"><img src="images/logo_50.png" alt="Family Album"></a>
+        <nav id="nav"></nav>
+        <div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div>
+    </header>
+    <main class="section">
+        <div class="heading">
+            <div><span class="eyebrow">ADMIN</span>
+                <h1>מרכז ניהול</h1>
+                <p id="who"></p>
+            </div>
+        </div>
+        <section class="panel api-status-panel" id="apiStatusPanel">
+            <h2>🔌 מצב חיבור API</h2>
+            <p class="hint">בדיקה זו מאפשרת לוודא שהדפדפן מחובר לגרסת Google Apps Script שתומכת בתמונות מעטפת.</p>
+            <div id="apiStatus" class="cover-status">טרם בוצעה בדיקה.</div>
+            <button type="button" class="btn" onclick="checkApiStatus()">בדוק חיבור וגרסה</button>
+        </section>
+        <div class="admin-grid">
+            <section class="panel">
+                <h2>➕ אלבום</h2><input id="at" placeholder="שם אלבום"><textarea id="ad" placeholder="תיאור"></textarea><button class="btn" onclick="newAlbum()">צור</button>
+                <p id="am"></p>
+            </section>
+            <section class="panel">
+                <h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple>
+                <p class="hint">בחר תמונות — ניתן להגדיר כותרת ותאריך בנפרד לכל תמונה:</p>
+                <div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button>
+                <p id="um"></p>
+            </section>
+            <section class="panel">
+                <h2>👤 משתמש</h2><input id="un" placeholder="שם"><input id="ue" type="email" placeholder="אימייל">
+                <div class="password-field-wrap"><input id="up" type="password" placeholder="סיסמה">
+                    <button type="button" class="password-toggle-eye" aria-label="הצג סיסמה" title="הצג סיסמה" data-password-toggle="up">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                            <circle cx="12" cy="12" r="2.8" />
+                        </svg>
+                    </button>
+                </div><select id="ur">
+                    <option>FAMILY</option>
+                    <option>GUEST</option>
+                    <option>ADMIN</option>
+                </select><button class="btn" onclick="newUser()">צור משתמש</button>
+                <p id="msg"></p>
+            </section>
+            <section class="panel">
+                <h2>📋 אלבומים</h2>
+                <p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p>
+                <div id="manage"></div>
+            </section>
+            <section class="panel permissions-panel">
+                <h2>🔐 ניהול הרשאות</h2>
+                <p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button>
+                <p id="permMsg"></p>
+            </section>
+        </div>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        const S = requireLogin("ADMIN");
+        let adminAlbums = [];
+        if (S) {
+            mountLayout("");
+            who.textContent = "מחובר: " + S.user.name;
+            loadAdmin();
+            loadPermissions();
+            checkApiStatus()
+        }
+        async function checkApiStatus() {
+            const el = document.getElementById("apiStatus");
+            if (!el) return;
+            el.textContent = "בודק...";
+            try {
+                const r = await API.health();
+                if (r.ok) {
+                    const v = r.data?.version || "לא ידועה";
+                    const actions = (r.data?.coverActions || []).join(", ");
+                    el.innerHTML = `<b>✓ API מחובר</b><br>גרסה: <b>${esc(v)}</b><br>פעולות מעטפת: ${esc(actions||"לא התקבלו")}`;
+                    if (v !== "3.5.10-ALBUM-LIST-FINAL-FIX") el.innerHTML += `<br><span style="color:#b00020;font-weight:700">⚠️ גרסת השרת אינה הגרסה הנדרשת. יש לפרסם גרסה חדשה של Apps Script.</span>`;
+                } else el.textContent = "✕ " + (r.message || "שגיאה בחיבור");
+            } catch (e) {
+                el.textContent = "✕ " + (e.message || String(e));
+            }
+        }
+        async function loadAdmin() {
+            let r = await API.call("albums", {
+                token: S.token
+            }, "GET");
+            if (!r.ok) {
+                manage.innerHTML = "<p>" + esc(r.message) + "</p>";
+                return
+            }
+            adminAlbums = (Array.isArray(r.data) ? r.data : []).filter(a => a && !a.isVirtual && String(a.id) !== "__ALL__");
+            as.innerHTML = adminAlbums.map(a => `<option value="${esc(a.id)}">${esc(a.title)}</option>`).join("");
+            manage.innerHTML = adminAlbums.map(a => albumManageHtml(a)).join("") || "<p>אין אלבומים.</p>";
+        }
+
+        function albumManageHtml(a) {
+            const cover = a.coverUrl ?
+                `<img src="${esc(a.coverUrl)}" alt="${esc(a.title)}" loading="lazy">` :
+                `<div class="empty">אין<br>מעטפת</div>`;
+            return `<div class="manage-row album-manage-row">
+    <div class="album-manage-title"><b>${esc(a.title)}</b><span class="cover-status">${a.coverUrl?'✓ מעטפת מוגדרת':'לא הוגדרה מעטפת'}</span></div>
+    <div class="album-manage-actions">
+      <button type="button" onclick="editAlbum('${esc(a.id)}','${esc(a.title).replace(/'/g,"&#39;")}')">עריכה</button>
+      <button type="button" class="cover-primary-btn" onclick="openCoverManager('${esc(a.id)}')">🖼️ ${a.coverUrl?'שנה תמונת מעטפת':'בחר תמונת מעטפת'}</button>
+      <button type="button" onclick="delAlbum('${esc(a.id)}')">מחיקה</button>
+    </div>
+    <div class="cover-manager"><div class="cover-current">${cover}<span>${a.coverUrl?'תמונת המעטפת הנוכחית':'בחר תמונה מתוך האלבום'}</span></div></div>
+  </div>`;
+        }
+        async function newAlbum() {
+            let r = await API.call("createAlbum", {
+                token: S.token,
+                title: at.value,
+                description: ad.value
+            });
+            am.textContent = r.ok ? "✓ נוצר" : "✕ " + r.message;
+            if (r.ok) {
+                at.value = "";
+                ad.value = "";
+                loadAdmin()
+            }
+        }
+        async function newUser() {
+            let r = await API.call("createUser", {
+                token: S.token,
+                name: un.value,
+                email: ue.value,
+                password: up.value,
+                role: ur.value
+            });
+            msg.textContent = r.ok ? "✓ נוצר" : "✕ " + r.message
+        }
+        async function editAlbum(id, title) {
+            let n = prompt("שם חדש", title);
+            if (!n) return;
+            let r = await API.call("updateAlbum", {
+                token: S.token,
+                id,
+                title: n
+            });
+            toast(r.ok ? "עודכן" : "שגיאה", "info");
+            loadAdmin()
+        }
+        async function delAlbum(id) {
+            if (!confirm("למחוק את האלבום?")) return;
+            let r = await API.call("deleteAlbum", {
+                token: S.token,
+                id
+            });
+            toast(r.ok ? "נמחק" : "שגיאה", "info");
+            loadAdmin()
+        }
+        files.onchange = () => {
+            photoMeta.innerHTML = "";
+            [...files.files].forEach((f, idx) => {
+                const row = document.createElement("div");
+                row.className = "photo-meta-row";
+                row.innerHTML = `<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" placeholder="כותרת לתמונה"><input class="meta-date" data-i="${idx}" type="number" min="1800" max="2200" step="1" placeholder="שנה (למשל 1985)" title="שנת התמונה בלבד"><input class="meta-caption" data-i="${idx}" placeholder="תיאור / כיתוב (אופציונלי)">`;
+                photoMeta.appendChild(row)
+            })
+        };
+        async function upload() {
+            if (!as.value || !files.files.length) {
+                um.textContent = "בחר אלבום ותמונות";
+                return
+            }
+            um.textContent = "מעלה...";
+            const selected = [...files.files];
+            for (let idx = 0; idx < selected.length; idx++) {
+                const f = selected[idx];
+                const b = await new Promise((ok, no) => {
+                    let fr = new FileReader();
+                    fr.onload = () => ok(fr.result.split(",")[1]);
+                    fr.onerror = no;
+                    fr.readAsDataURL(f)
+                });
+                const titleInput = document.querySelector(`.meta-title[data-i="${idx}"]`),
+                    dateInput = document.querySelector(`.meta-date[data-i="${idx}"]`),
+                    captionInput = document.querySelector(`.meta-caption[data-i="${idx}"]`);
+                let r = await API.call("uploadPhoto", {
+                    token: S.token,
+                    albumId: as.value,
+                    fileName: f.name,
+                    mimeType: f.type,
+                    base64: b,
+                    photoTitle: titleInput?.value.trim() || "",
+                    photoDate: dateInput?.value || "",
+                    caption: captionInput?.value.trim() || ""
+                });
+                if (!r.ok) {
+                    um.textContent = r.message;
+                    return
+                }
+            }
+            um.textContent = "✓ כל התמונות הועלו בהצלחה";
+            files.value = "";
+            photoMeta.innerHTML = "";
+            loadAdmin()
+        }
+        async function openCoverManager(albumId) {
+            const album = adminAlbums.find(a => String(a.id) === String(albumId));
+            if (!album) {
+                toast("האלבום לא נמצא");
+                return;
+            }
+            const modal = document.getElementById("coverModal");
+            document.getElementById("coverAlbumId").value = String(albumId);
+            document.getElementById("coverAlbumTitle").textContent = "בחירת תמונת מעטפת — " + album.title;
+            document.getElementById("coverUploadStatus").textContent = "";
+            modal.classList.add("open");
+            await refreshCoverGrid(albumId);
+        }
+        async function refreshCoverGrid(albumId) {
+            const grid = document.getElementById("coverGrid"),
+                extGrid = document.getElementById("externalCoverGrid");
+            grid.innerHTML = "<div class='cover-empty'>טוען תמונות האלבום...</div>";
+            if (extGrid) extGrid.innerHTML = "<div class='cover-empty'>טוען מעטפות חיצוניות...</div>";
+            const album = adminAlbums.find(a => String(a.id) === String(albumId));
+
+            // Load the two sources independently. A missing/new backend action must not
+            // hide the normal album photos or make the whole cover dialog fail.
+            try {
+                const pr = await API.call("photos", {
+                    token: S.token,
+                    albumId: String(albumId)
+                }, "POST");
+                if (!pr.ok) throw Error(pr.message || "לא ניתן לטעון תמונות");
+                const photos = (pr.data || []).filter(p => String(p.albumId) === String(albumId));
+                grid.innerHTML = photos.length ? photos.map(p => {
+                    const src = p.imageUrl || (p.driveFileId ? "https://drive.google.com/thumbnail?id=" + encodeURIComponent(p.driveFileId) + "&sz=w1000" : "");
+                    const selected = String(album?.coverPhotoId || "") === String(p.id) && album?.coverSource !== "external";
+                    return `<button type="button" class="cover-photo ${selected?'selected':''}" data-photo-id="${esc(p.id)}" onclick="chooseAlbumPhotoCover(this.dataset.photoId)">${src?`<img src="${esc(src)}" alt="${esc(p.photoTitle||p.fileName||'תמונה')}" loading="lazy">`:`<div class="cover-photo-no-image">אין תצוגה</div>`}<span>${esc(p.photoTitle||p.fileName||'תמונה')}${selected?' ✓':''}</span></button>`;
+                }).join("") : "<div class='cover-empty'>אין תמונות באלבום.</div>";
+            } catch (e) {
+                grid.innerHTML = `<div class='cover-empty'>לא ניתן לטעון את תמונות האלבום: ${esc(e.message||e)}</div>`;
+            }
+
+            if (!extGrid) return;
+            try {
+                const cr = await API.call("coverPhotos", {
+                    token: S.token,
+                    albumId: String(albumId)
+                }, "POST");
+                if (!cr.ok) throw Error(cr.message || "לא ניתן לטעון מעטפות חיצוניות");
+                const covers = cr.data || [];
+                extGrid.innerHTML = covers.length ? covers.map(p => {
+                    const src = p.imageUrl || (p.driveFileId ? "https://drive.google.com/thumbnail?id=" + encodeURIComponent(p.driveFileId) + "&sz=w1000" : "");
+                    const selected = String(album?.coverExternalId || "") === String(p.id) && album?.coverSource === 'external';
+                    return `<button type="button" class="cover-photo ${selected?'selected':''}" data-cover-id="${esc(p.id)}" onclick="chooseExternalCover(this.dataset.coverId)">${src?`<img src="${esc(src)}" alt="${esc(p.fileName||'מעטפת')}" loading="lazy">`:`<div class="cover-photo-no-image">אין תצוגה</div>`}<span>${esc(p.fileName||'מעטפת')}${selected?' ✓':''}</span></button>`;
+                }).join("") : "<div class='cover-empty'>אין מעטפות חיצוניות. הוסף קבצים מהמחשב.</div>";
+            } catch (e) {
+                extGrid.innerHTML = `<div class='cover-empty'>לא ניתן לטעון מעטפות חיצוניות: ${esc(e.message||e)}<br><small>יש לפרסם גרסה חדשה של Google Apps Script הכוללת את פעולות המעטפת.</small></div>`;
+            }
+        }
+        async function uploadExternalCoverPhotos() {
+            const input = document.getElementById("externalCoverFiles"),
+                status = document.getElementById("coverUploadStatus"),
+                albumId = document.getElementById("coverAlbumId")?.value,
+                selected = [...(input?.files || [])];
+            if (!albumId || !selected.length) return;
+            status.textContent = `מעלה ${selected.length} מעטפות...`;
+            try {
+                for (const f of selected) {
+                    if (!f.type.startsWith("image/")) throw Error(`הקובץ ${f.name} אינו תמונה`);
+                    const base64 = await new Promise((resolve, reject) => {
+                        const fr = new FileReader();
+                        fr.onload = () => resolve(String(fr.result).split(",")[1]);
+                        fr.onerror = reject;
+                        fr.readAsDataURL(f)
+                    });
+                    const r = await API.call("uploadCoverPhoto", {
+                        token: S.token,
+                        albumId,
+                        fileName: f.name,
+                        mimeType: f.type,
+                        base64
+                    });
+                    if (!r.ok) throw Error(r.message || `העלאת ${f.name} נכשלה`);
+                }
+                input.value = "";
+                status.textContent = "✓ המעטפות נשמרו בנפרד מתמונות האלבום";
+                await loadAdmin();
+                await refreshCoverGrid(albumId);
+            } catch (e) {
+                status.textContent = "✕ " + (e.message || String(e));
+            }
+        }
+        async function chooseAlbumPhotoCover(photoId) {
+            const albumId = document.getElementById("coverAlbumId")?.value;
+            if (!albumId || !photoId) return;
+            setCoverBusy(true);
+            try {
+                const r = await API.call("setAlbumCover", {
+                    token: S.token,
+                    albumId,
+                    photoId
+                });
+                if (!r.ok) throw Error(r.message || "שמירת תמונת המעטפת נכשלה");
+                toast("✓ תמונת האלבום נבחרה כמעטפת");
+                await loadAdmin();
+                await refreshCoverGrid(albumId);
+            } catch (e) {
+                toast(e.message || String(e));
+            } finally {
+                setCoverBusy(false)
+            }
+        }
+        async function chooseExternalCover(coverId) {
+            const albumId = document.getElementById("coverAlbumId")?.value;
+            if (!albumId || !coverId) return;
+            setCoverBusy(true);
+            try {
+                const r = await API.call("setAlbumExternalCover", {
+                    token: S.token,
+                    albumId,
+                    coverId
+                });
+                if (!r.ok) throw Error(r.message || "שמירת המעטפת החיצונית נכשלה");
+                const album = adminAlbums.find(a => String(a.id) === String(albumId));
+                if (album) {
+                    album.coverPhotoId = "";
+                    album.coverSource = "external";
+                    album.coverExternalId = String(coverId);
+                    album.coverUrl = r.data?.coverUrl || album.coverUrl;
+                }
+                toast("✓ המעטפת החיצונית נבחרה");
+                await loadAdmin();
+                await refreshCoverGrid(albumId);
+            } catch (e) {
+                toast(e.message || String(e));
+            } finally {
+                setCoverBusy(false)
+            }
+        }
+
+        function setCoverBusy(v) {
+            document.querySelectorAll('#coverGrid .cover-photo,#externalCoverGrid .cover-photo').forEach(b => b.disabled = !!v)
+        }
+
+        function closeCoverManager() {
+            document.getElementById("coverModal")?.classList.remove("open")
+        }
+        async function chooseCover(photoId) {
+            const albumId = document.getElementById("coverAlbumId")?.value;
+            if (!albumId || !photoId) return;
+            const grid = document.getElementById("coverGrid");
+            grid.querySelectorAll(".cover-photo").forEach(b => b.disabled = true);
+            try {
+                const r = await API.call("setAlbumCover", {
+                    token: S.token,
+                    albumId,
+                    photoId
+                });
+                if (!r.ok) throw Error(r.message || "שמירת תמונת המעטפת נכשלה");
+                const album = adminAlbums.find(a => String(a.id) === String(albumId));
+                if (album) {
+                    album.coverPhotoId = String(photoId);
+                    album.coverSource = "album";
+                    album.coverExternalId = "";
+                    album.coverUrl = r.data?.coverUrl || album.coverUrl;
+                }
+                toast("✓ תמונת המעטפת עודכנה");
+                closeCoverManager();
+                await loadAdmin();
+            } catch (e) {
+                grid.querySelectorAll(".cover-photo").forEach(b => b.disabled = false);
+                toast(e.message || String(e));
+            }
+        }
+        async function clearCover() {
+            const albumId = document.getElementById("coverAlbumId")?.value;
+            if (!albumId) return;
+            if (!confirm("להסיר את תמונת המעטפת?")) return;
+            const r = await API.call("clearAlbumCover", {
+                token: S.token,
+                albumId
+            });
+            if (!r.ok) {
+                toast(r.message || "שגיאה");
+                return;
+            }
+            const album = adminAlbums.find(a => String(a.id) === String(albumId));
+            if (album) {
+                album.coverPhotoId = "";
+                album.coverSource = "";
+                album.coverExternalId = "";
+                album.coverUrl = "";
+            }
+            toast("✓ תמונת המעטפת הוסרה");
+            closeCoverManager();
+            await loadAdmin();
+        }
+        let permUsers = [],
+            permAlbums = [];
+        async function loadPermissions() {
+            const [u, a] = await Promise.all([API.call("listUsers", {
+                token: S.token
+            }), API.call("albums", {
+                token: S.token
+            })]);
+            if (u.ok) {
+                permUsers = u.data || [];
+                permUser.innerHTML = permUsers.map(x => `<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.email)} (${esc(x.role)})</option>`).join("")
+            }
+            if (a.ok) {
+                permAlbums = a.data || [];
+                permAlbum.innerHTML = permAlbums.map(x => `<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("")
+            }
+            await loadPermValues()
+        }
+        async function loadPermValues() {
+            if (!permUser.value || !permAlbum.value) return;
+            const r = await API.call("getPermissions", {
+                token: S.token,
+                userId: permUser.value,
+                albumId: permAlbum.value
+            });
+            if (!r.ok) {
+                permMsg.textContent = "✕ " + r.message;
+                return
+            }
+            permView.checked = !!r.data.canView;
+            permUpload.checked = !!r.data.canUpload;
+            permDelete.checked = !!r.data.canDelete;
+            permMsg.textContent = ""
+        }
+        async function savePerms() {
+            const r = await API.call("savePermissions", {
+                token: S.token,
+                userId: permUser.value,
+                albumId: permAlbum.value,
+                canView: permView.checked,
+                canUpload: permUpload.checked,
+                canDelete: permDelete.checked
+            });
+            permMsg.textContent = r.ok ? "✓ ההרשאות נשמרו" : "✕ " + r.message;
+            if (r.ok) toast("ההרשאות עודכנו", "info")
+        }
+        permUser?.addEventListener("change", loadPermValues);
+        permAlbum?.addEventListener("change", loadPermValues);
+    </script>
+    <div id="coverModal" class="cover-modal" role="dialog" aria-modal="true" aria-labelledby="coverAlbumTitle">
+        <div class="cover-dialog">
+            <div class="cover-dialog-head">
+                <h2 id="coverAlbumTitle">בחירת תמונת מעטפת</h2><button type="button" onclick="closeCoverManager()" aria-label="סגור">×</button>
+            </div>
+            <h3 class="cover-section-title">📷 תמונות מתוך האלבום</h3>
+            <div class="cover-section-note">בחירה כאן משתמשת בתמונה שכבר קיימת באלבום ואינה יוצרת עותק.</div>
+            <div id="coverGrid" class="cover-photo-grid"></div>
+            <h3 class="cover-section-title">🖼️ תמונות מעטפת מספרייה חיצונית</h3>
+            <div class="cover-section-note">תמונות אלו נשמרות בנפרד ואינן מתווספות לתמונות האלבום.</div>
+            <div id="externalCoverGrid" class="cover-photo-grid"></div>
+            <input type="hidden" id="coverAlbumId">
+            <div class="cover-actions"><button type="button" class="cover-btn primary" onclick="document.getElementById('externalCoverFiles').click()">📁 הוסף מעטפות מספרייה חיצונית</button><button type="button" class="cover-btn" onclick="clearCover()">הסר תמונת מעטפת</button><button type="button" class="cover-btn" onclick="closeCoverManager()">סגור</button></div><input id="externalCoverFiles" class="cover-file-input" type="file" accept="image/*" multiple>
+            <div id="coverUploadStatus" class="cover-upload-status"></div>
+        </div>
+    </div>
+    <script>
+        coverModal?.addEventListener("click", e => {
+            if (e.target === coverModal) closeCoverManager()
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape" && coverModal?.classList.contains("open")) closeCoverManager()
+        });
+        document.getElementById("externalCoverFiles")?.addEventListener("change", uploadExternalCoverPhotos);
+    </script>
+    <script id="password-toggle-eye-script">
+        (function() {
+            function eyeOpen() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>';
+            }
+
+            function eyeClosed() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.4 17.4 0 0 1-3.1 3.8"/><path d="M6.2 6.8C3.6 8.6 2 12 2 12s3.5 6 10 6c1.4 0 2.7-.3 3.9-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+            }
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('[data-password-toggle]');
+                if (!btn) return;
+                const id = btn.getAttribute('data-password-toggle');
+                const input = document.getElementById(id);
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.innerHTML = show ? eyeClosed() : eyeOpen();
+                btn.setAttribute('aria-label', show ? 'הסתר סיסמה' : 'הצג סיסמה');
+                btn.setAttribute('title', show ? 'הסתר סיסמה' : 'הצג סיסמה');
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
