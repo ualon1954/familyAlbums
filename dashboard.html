@@ -103,7 +103,7 @@
                         token: s.token
                     });
                     if (r && r.ok) {
-                        document.getElementById("albumCount").textContent = r.data.albums - 1 ?? 0;
+                        document.getElementById("albumCount").textContent = r.data.albums ?? 0;
                         document.getElementById("photoCount").textContent = r.data.photos ?? 0;
                         document.getElementById("favCount").textContent = r.data.favorites ?? 0;
                     }
