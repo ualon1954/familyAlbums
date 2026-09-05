@@ -1,3 +1,11 @@
+function ensureFavicon(){
+  if(document.querySelector('link[rel~="icon"]'))return;
+  const icon=document.createElement("link");
+  icon.rel="icon"; icon.type="image/x-icon"; icon.href="favicon.ico";
+  document.head.appendChild(icon);
+}
+ensureFavicon();
+
 function mountLayout(active=""){
   const top=document.querySelector(".top");
   const nav=document.querySelector("#nav");
@@ -5,8 +13,8 @@ function mountLayout(active=""){
 
   const brand=top.querySelector(".brand");
   if(brand){
-    brand.innerHTML='<span class="brand-mark" aria-hidden="true"><span class="brand-heart">♥</span></span><span class="brand-name">אלבום</span>';
-    brand.setAttribute("aria-label","אלבום משפחתי – דף הבית");
+    brand.innerHTML='<span class="brand-mark" aria-hidden="true"><span class="brand-heart">♥</span></span><span class="brand-name">אלבומים</span>';
+    brand.setAttribute("aria-label","אלבומים משפחתיים – דף הבית");
   }
 
   const navItems=[
