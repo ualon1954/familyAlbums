@@ -74,13 +74,48 @@ async function checkApiStatus(){
   el.textContent="בודק...";
   try{
     const r=await API.health();
-    if(r.ok){
-      const v=r.data?.version||"לא ידועה";
-      const actions=(r.data?.coverActions||[]).join(", ");
-      el.innerHTML=`<b>✓ API מחובר</b><br>גרסה: <b>${esc(v)}</b><br>פעולות מעטפת: ${esc(actions||"לא התקבלו")}`;
-      if(v!=="3.5.10-ALBUM-LIST-FINAL-FIX") el.innerHTML+=`<br><span style="color:#b00020;font-weight:700">⚠️ גרסת השרת אינה הגרסה הנדרשת. יש לפרסם גרסה חדשה של Apps Script.</span>`;
-    }else el.textContent="✕ "+(r.message||"שגיאה בחיבור");
-  }catch(e){el.textContent="✕ "+(e.message||String(e));}
+    if(!r || !r.ok){
+      el.innerHTML=`<span style="color:#b00020;font-weight:700">✕ ${(r&&r.message)?esc(r.message):"שגיאה בחיבור ל-API"}</span>`;
+      return;
+    }
+
+    const info=r.data||{};
+    const version=String(info.apiVersion||info.version||"").trim();
+    const build=String(info.build||"").trim();
+    const buildDate=String(info.buildDate||"").trim();
+    const serverTime=String(info.serverTime||info.time||"").trim();
+    const actions=Array.isArray(info.coverActions)?info.coverActions:[];
+
+    // Compatibility is checked by API family + capabilities, NOT by an exact build string.
+    // A new Apps Script deployment may legitimately have a different build ID.
+    const REQUIRED_API_PREFIX="3.5.10";
+    const REQUIRED_ACTIONS=["setAlbumCover","coverPhotos","uploadCoverPhoto","setAlbumExternalCover","clearAlbumCover"];
+    const compatibleVersion=version.startsWith(REQUIRED_API_PREFIX);
+    const missingActions=REQUIRED_ACTIONS.filter(a=>!actions.includes(a));
+    const compatible=compatibleVersion && missingActions.length===0;
+
+    let html=`<b>✓ API מחובר</b>`;
+    html+=`<br>גרסת API: <b>${esc(version||"לא ידועה")}</b>`;
+    html+=`<br>Server Build: <b>${esc(build||"שרת ישן ללא Build ID")}</b>`;
+    if(buildDate) html+=`<br>תאריך Build: ${esc(buildDate)}`;
+    if(serverTime) html+=`<br>זמן שרת: ${esc(serverTime)}`;
+    html+=`<br>פעולות מעטפת: ${esc(actions.join(", ")||"לא התקבלו")}`;
+
+    if(compatible){
+      html+=`<br><span style="color:#188038;font-weight:800">✓ השרת תואם למערכת ופעולות ה-API הנדרשות זמינות.</span>`;
+      if(!build){
+        html+=`<br><span style="color:#b26a00;font-weight:700">ℹ️ השרת פעיל ותואם, אך אינו מחזיר Build ID. מומלץ לפרסם את Api.gs החדש כדי לזהות כל פרסום באופן חד-משמעי.</span>`;
+      }
+    }else{
+      const reasons=[];
+      if(!compatibleVersion) reasons.push(`גרסת API לא תואמת (נדרש ${REQUIRED_API_PREFIX}.x)`);
+      if(missingActions.length) reasons.push(`חסרות פעולות: ${missingActions.join(", ")}`);
+      html+=`<br><span style="color:#b00020;font-weight:700">⚠️ ה-API אינו תואם: ${esc(reasons.join("; "))}</span>`;
+    }
+    el.innerHTML=html;
+  }catch(e){
+    el.innerHTML=`<span style="color:#b00020;font-weight:700">✕ ${esc(e.message||String(e))}</span>`;
+  }
 }
 async function loadAdmin(){
   let r=await API.call("albums",{token:S.token},"GET");
@@ -197,8 +232,62 @@ async function clearCover(){
   await loadAdmin();
 }
 let permUsers=[],permAlbums=[];
-async function loadPermissions(){const [u,a]=await Promise.all([API.call("listUsers",{token:S.token}),API.call("albums",{token:S.token})]);if(u.ok){permUsers=u.data||[];permUser.innerHTML=permUsers.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.email)} (${esc(x.role)})</option>`).join("")}if(a.ok){permAlbums=a.data||[];permAlbum.innerHTML=permAlbums.map(x=>`<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("")}await loadPermValues()}async function loadPermValues(){if(!permUser.value||!permAlbum.value)return;const r=await API.call("getPermissions",{token:S.token,userId:permUser.value,albumId:permAlbum.value});if(!r.ok){permMsg.textContent="✕ "+r.message;return}permView.checked=!!r.data.canView;permUpload.checked=!!r.data.canUpload;permDelete.checked=!!r.data.canDelete;permMsg.textContent=""}async function savePerms(){const r=await API.call("savePermissions",{token:S.token,userId:permUser.value,albumId:permAlbum.value,canView:permView.checked,canUpload:permUpload.checked,canDelete:permDelete.checked});permMsg.textContent=r.ok?"✓ ההרשאות נשמרו":"✕ "+r.message;if(r.ok)toast("ההרשאות עודכנו","info")}
-permUser?.addEventListener("change",loadPermValues);permAlbum?.addEventListener("change",loadPermValues);
+async function loadPermissions(){const [u,a]=await Promise.all([API.call("listUsers",{token:S.token}),API.call("albums",{token:S.token})]);if(u.ok){permUsers=u.data||[];permUser.innerHTML=permUsers.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.email)} (${esc(x.role)})</option>`).join("")}if(a.ok){permAlbums=(Array.isArray(a.data)?a.data:[]).filter(x=>x && !x.isVirtual && String(x.id)!=="__ALL__");permAlbum.innerHTML=permAlbums.map(x=>`<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("")}await loadPermValues()}const permDrafts=new Map();let permLoadSeq=0;
+function permKey(){return `${String(permUser?.value||"")}::${String(permAlbum?.value||"")}`}
+function rememberPermDraft(){
+  const k=permKey();if(!k||k==="::")return;
+  permDrafts.set(k,{canView:!!permView.checked,canUpload:!!permUpload.checked,canDelete:!!permDelete.checked});
+}
+function applyPermValues(v){
+  permView.checked=!!v?.canView;
+  permUpload.checked=!!v?.canUpload;
+  permDelete.checked=!!v?.canDelete;
+}
+async function loadPermValues(){
+  if(!permUser.value||!permAlbum.value)return;
+  const key=permKey(),seq=++permLoadSeq;
+  if(permDrafts.has(key)){applyPermValues(permDrafts.get(key));permMsg.textContent="";return}
+  const userId=permUser.value,albumId=permAlbum.value;
+  const r=await API.call("getPermissions",{token:S.token,userId,albumId});
+  if(seq!==permLoadSeq||userId!==permUser.value||albumId!==permAlbum.value)return;
+  if(!r.ok){permMsg.textContent="✕ "+r.message;return}
+  const values={canView:!!r.data.canView,canUpload:!!r.data.canUpload,canDelete:!!r.data.canDelete};
+  permDrafts.set(key,values);applyPermValues(values);permMsg.textContent="";
+}
+async function savePerms(){
+  rememberPermDraft();
+  const currentUser=String(permUser.value||"");
+  if(!currentUser){permMsg.textContent="✕ בחר משתמש";return}
+  const entries=[...permDrafts.entries()]
+    .filter(([key])=>key.startsWith(currentUser+"::"))
+    .map(([key,values])=>({albumId:key.split("::").slice(1).join("::"),values}))
+    .filter(x=>x.albumId&&x.albumId!=="__ALL__");
+
+  if(!entries.length){permMsg.textContent="אין שינויים לשמירה";return}
+
+  permMsg.textContent=`שומר ${entries.length} הרשאות...`;
+  let saved=0;
+  for(const item of entries){
+    const r=await API.call("savePermissions",{
+      token:S.token,
+      userId:currentUser,
+      albumId:item.albumId,
+      canView:!!item.values.canView,
+      canUpload:!!item.values.canUpload,
+      canDelete:!!item.values.canDelete
+    });
+    if(!r.ok){
+      permMsg.textContent=`✕ השמירה נעצרה באלבום ${item.albumId}: ${r.message||"שגיאה"}`;
+      return;
+    }
+    saved++;
+  }
+  permMsg.textContent=`✓ נשמרו הרשאות עבור ${saved} אלבומים`;
+  toast("ההרשאות לכל האלבומים שנבחרו נשמרו","info");
+}
+[permView,permUpload,permDelete].forEach(el=>el?.addEventListener("change",rememberPermDraft));
+permUser?.addEventListener("change",loadPermValues);
+permAlbum?.addEventListener("change",loadPermValues);
 </script>
 <div id="coverModal" class="cover-modal" role="dialog" aria-modal="true" aria-labelledby="coverAlbumTitle">
   <div class="cover-dialog">
