@@ -17,6 +17,12 @@
 .dark .photo-tools input,.dark .photo-tools select{background:#171514;color:#f3eee9;border-color:rgba(255,255,255,.14)}
 .dark .photo-tools input::placeholder{color:#aaa}
 .dark .photo-tools .pill{background:#302b28;color:#f3eee9;border-color:rgba(255,255,255,.14)}
+
+/* Slideshow button theme compatibility. */
+#start{background:#fff;color:#2a2724;border:1px solid rgba(42,39,36,.18);box-shadow:0 5px 16px rgba(42,39,36,.08)}
+#start:hover{background:#f0ebe6;border-color:rgba(161,110,72,.35)}
+.dark #start{background:#2a2724;color:#fff;border-color:rgba(255,255,255,.16);box-shadow:0 5px 18px rgba(0,0,0,.22)}
+.dark #start:hover{background:#37322f}
 /* Viewer follows the active light/dark theme. */
 .viewer{background:rgba(246,243,239,.96);backdrop-filter:blur(14px)}
 .viewer img{box-shadow:0 18px 55px rgba(42,39,36,.22);background:#fff}
@@ -49,7 +55,7 @@
 
 /* Phone viewer: preserve maximum image area and keep controls reachable. */
 @media(max-width:700px){
-  .viewer{padding:62px 8px 92px}
+  .viewer{padding:62px 8px 92px;overflow:visible!important;z-index:2147483000!important}
   .viewer img{max-width:96vw;max-height:calc(100dvh - 170px);border-radius:10px;object-fit:contain}
   .viewer #x{top:10px;right:10px}
   .viewer #r{right:8px}
@@ -72,14 +78,13 @@
 .viewer-arrow-icon{width:27px;height:27px;display:block;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transform:none!important}
 .viewer #x{z-index:1002;display:grid!important;place-items:center;visibility:visible!important;opacity:1!important;line-height:1;font-family:Arial,sans-serif;font-weight:400;background:rgba(255,255,255,.94)!important;color:#2a2724!important;border:1px solid rgba(42,39,36,.18)!important;box-shadow:0 5px 18px rgba(0,0,0,.22)!important}
 .dark .viewer #x{background:rgba(25,23,22,.94)!important;color:#fff!important;border-color:rgba(255,255,255,.22)!important}
-.viewer-close-icon{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.viewer-close-text{display:block;font:400 38px/1 Arial,sans-serif;color:currentColor;transform:translateY(-1px)}
 @media(max-width:700px){
-  .viewer #x{position:absolute!important;top:calc(14px + env(safe-area-inset-top,0px))!important;right:calc(14px + env(safe-area-inset-right,0px))!important;left:auto!important;bottom:auto!important;width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;border-radius:50%!important;z-index:2147483647!important;display:grid!important;place-items:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;overflow:visible!important}
-  .viewer #x .viewer-close-icon{display:none!important}
-  .viewer #x::before{content:"×";display:block;font:400 40px/1 Arial,sans-serif;color:currentColor;transform:translateY(-1px)}
+  .viewer #x{position:fixed!important;top:calc(14px + env(safe-area-inset-top,0px))!important;right:calc(14px + env(safe-area-inset-right,0px))!important;left:auto!important;bottom:auto!important;width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;border-radius:50%!important;z-index:2147483647!important;display:grid!important;place-items:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;overflow:visible!important}
+  .viewer #x .viewer-close-text{display:block!important;font-size:40px!important;line-height:1!important}
   .viewer-arrow-icon{width:24px;height:24px}
 }
-</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Albums</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ALBUM</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="שנה" aria-label="חיפוש לפי שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור" title="סגור"><svg class="viewer-close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button id="r" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
+</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Albums</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ALBUM</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="שנה" aria-label="חיפוש לפי שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור" title="סגור"><span class="viewer-close-text" aria-hidden="true">×</span></button><button id="r" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 'use strict';
 mountLayout('albums');
 const params=new URLSearchParams(location.search);

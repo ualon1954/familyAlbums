@@ -36,7 +36,7 @@ function mountLayout(active=""){
     menuBtn.setAttribute("aria-label","פתיחת תפריט");
     menuBtn.setAttribute("aria-expanded","false");
     const menuClosedIcon='☰';
-    const menuOpenIcon='<svg class="menu-close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    const menuOpenIcon='<span class="menu-close-text" aria-hidden="true">×</span>';
     menuBtn.innerHTML=menuClosedIcon;
     top.insertBefore(menuBtn,nav);
     menuBtn.addEventListener("click",()=>{

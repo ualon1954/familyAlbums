@@ -9,7 +9,7 @@
 .menu-toggle{display:none;border:1px solid #0002;background:#fff9;border-radius:12px;width:44px;height:42px;font-size:24px;line-height:1;align-items:center;justify-content:center;flex:0 0 auto}
 .menu-toggle.open{font-size:30px;position:relative;z-index:650;background:#fff!important;color:#2a2724!important;border-color:#0003!important}
 .dark .menu-toggle.open{background:#24211f!important;color:#fff!important;border-color:#fff3!important}
-.menu-close-icon{width:25px;height:25px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.menu-close-text{display:block;font:400 34px/1 Arial,sans-serif;color:currentColor;transform:translateY(-1px)}
 @media(max-width:850px){
   .top{position:sticky;top:0;z-index:500;min-height:66px;height:auto;gap:12px;padding:10px 18px;flex-wrap:nowrap}
   .menu-toggle{display:inline-flex;order:0}
