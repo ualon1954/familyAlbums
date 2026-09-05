@@ -3,6 +3,12 @@ function mountLayout(active=""){
   const nav=document.querySelector("#nav");
   if(!top||!nav)return;
 
+  const brand=top.querySelector(".brand");
+  if(brand){
+    brand.innerHTML='<span class="brand-mark" aria-hidden="true"><span class="brand-heart">♥</span></span><span class="brand-name">אלבום</span>';
+    brand.setAttribute("aria-label","אלבום משפחתי – דף הבית");
+  }
+
   const navItems=[
     ["index.html","ראשי","home"],
     ["dashboard.html","לוח בקרה","dashboard"],

@@ -1,131 +1,85 @@
-<!doctype html>
-<html lang="he" dir="rtl">
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>לוח בקרה</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
+(function(){
+  const s=getSession();
+  if(!s || !s.user || !s.token){
+    const ret=location.pathname.split('/').pop()+location.search;
+    location.replace("index.html?autoLogin=1&return="+encodeURIComponent(ret));
+  }
+})();
+</script>
+<link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><span id="userName"></span><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">DASHBOARD</span><h1>שלום, <span id="hello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div><div class="dashboard-grid">
+<a class="metric metric-link" href="albums.html" aria-label="פתיחת אלבומים">
+  <span>📚</span><strong id="albumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים →</b>
+</a>
+<a class="metric metric-link" href="album.html?id=__ALL__" data-direct="photos" aria-label="פתיחת כל התמונות">
+  <span>🖼️</span><strong id="photoCount">—</strong><small>תמונות</small><b class="metric-action">פתח תמונות →</b>
+</a>
+<a class="metric metric-link" href="favorites.html" aria-label="פתיחת מועדפים">
+  <span>♥</span><strong id="favCount">—</strong><small>מועדפים</small><b class="metric-action">פתח מועדפים →</b>
+</a>
+<a class="metric metric-link" href="trash.html" id="trashCard" aria-label="פתיחת סל המחזור" style="display:none">
+  <span>🗑️</span><strong>♻</strong><small>סל מחזור</small><b class="metric-action">פתח סל מחזור →</b>
+</a>
+<a class="metric metric-link" href="admin.html" id="adminCard" aria-label="פתיחת מרכז הניהול" style="display:none">
+  <span>⚙️</span><strong>ADMIN</strong><small>ניהול</small><b class="metric-action">פתח ניהול →</b>
+</a>
+</div>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>לוח בקרה</title>
-    <link rel="stylesheet" href="css/main.css">
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/session-manager.js"></script>
-    <script src="js/theme.js"></script>
-    <script>
-        (function() {
-            const s = getSession();
-            if (!s || !s.user || !s.token) {
-                const ret = location.pathname.split('/').pop() + location.search;
-                location.replace("index.html?autoLogin=1&return=" + encodeURIComponent(ret));
-            }
-        })();
-    </script>
-    <link rel="stylesheet" href="css/session-manager.css">
-    <link rel="icon" type="image/x-icon" href="images/falicon1.png">
-</head>
+<div class="panel"><div class="panel-heading-row"><div><h2>האלבומים שלך</h2><p class="hint">לחץ על אלבום כדי לפתוח אותו ישירות.</p></div><a class="pill" href="albums.html">כל האלבומים →</a></div><div id="albums" class="cards dashboard-albums"></div></div></main><script src="js/api.js"></script><script src="js/layout.js"></script>
+<script>
+(function(){
+  const s = getSession();
 
-<body>
-    <header class="top"><a class="brand" href="index.html"><img src="images/logo_50.png" alt="Family Album"></a>
-        <nav id="nav"></nav>
-        <div class="actions"><span id="userName"></span><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div>
-    </header>
-    <main class="section">
-        <div class="heading">
-            <div><span class="eyebrow">DASHBOARD</span>
-                <h1>שלום, <span id="hello"></span> 👋</h1>
-                <p>כאן מתחילים את המסע בזיכרונות שלכם.</p>
-            </div>
-        </div>
-        <div class="dashboard-grid">
-            <a class="metric metric-link" href="albums.html" aria-label="פתיחת אלבומים">
-                <span>📚</span><strong id="albumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים ←</b>
-            </a>
-            <a class="metric metric-link" href="album.html?id=__ALL__" data-direct="photos" aria-label="פתיחת כל התמונות">
-                <span>🖼️</span><strong id="photoCount">—</strong><small>תמונות מכל האלבומים</small><b class="metric-action">פתח תמונות ←</b>
-            </a>
-            <a class="metric metric-link" href="favorites.html" aria-label="פתיחת מועדפים">
-                <span>♥</span><strong id="favCount">—</strong><small>מועדפים</small><b class="metric-action">פתח מועדפים ←</b>
-            </a>
-            <a class="metric metric-link" href="trash.html" id="trashCard" aria-label="פתיחת סל המחזור" style="display:none">
-                <span>🗑️</span><strong>♻</strong><small>סל מחזור</small><b class="metric-action">פתח סל מחזור ←</b>
-            </a>
-            <a class="metric metric-link" href="admin.html" id="adminCard" aria-label="פתיחת מרכז הניהול" style="display:none">
-                <span>⚙️</span><strong>ADMIN</strong><small>ניהול</small><b class="metric-action">פתח ניהול ←</b>
-            </a>
-        </div>
+  // If there is no logged-in user, show the login screen automatically.
+  if (!s || !s.user || !s.token) {
+    location.replace("login.html?auto=1&return=dashboard.html");
+    return;
+  }
 
-        <div class="panel">
-            <div class="panel-heading-row">
-                <div>
-                    <h2>האלבומים שלך</h2>
-                    <p class="hint">לחץ על אלבום כדי לפתוח אותו ישירות.</p>
-                </div><a class="pill" href="albums.html">כל האלבומים ←</a>
-            </div>
-            <div id="albums" class="cards dashboard-albums"></div>
-        </div>
-    </main>
-    <script src="js/api.js"></script>
-    <script src="js/layout.js"></script>
-    <script>
-        (function() {
-            const s = getSession();
+  mountLayout("dashboard");
+  // Direct dashboard navigation: albums, all photos, and favorites.
+  document.querySelectorAll("[data-direct]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const target=el.getAttribute("href");
+      if(target) window.location.assign(target);
+    });
+  });
+  const name = s.user.name || s.user.email || "משתמש";
+  document.getElementById("hello").textContent = name;
+  document.getElementById("userName").textContent = name;
 
-            // If there is no logged-in user, show the login screen automatically.
-            if (!s || !s.user || !s.token) {
-                location.replace("login.html?auto=1&return=dashboard.html");
-                return;
-            }
+  // Admin-only dashboard shortcuts. Trash and Administration are intentionally
+  // shown only to ADMIN users, matching the permissions used by layout.js.
+  const isAdmin = String(s.user.role || "").toUpperCase() === "ADMIN";
+  if (isAdmin) {
+    ["trashCard", "adminCard", "trashAction", "adminAction"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "flex";
+    });
+  }
 
-            mountLayout("dashboard");
-            // Direct dashboard navigation: albums, all photos, and favorites.
-            document.querySelectorAll("[data-direct]").forEach(el => {
-                el.addEventListener("click", () => {
-                    const target = el.getAttribute("href");
-                    if (target) window.location.assign(target);
-                });
-            });
-            const name = s.user.name || s.user.email || "משתמש";
-            document.getElementById("hello").textContent = name;
-            document.getElementById("userName").textContent = name;
+  (async function(){
+    try {
+      const r = await API.call("dashboard",{token:s.token});
+      if(r && r.ok){
+        document.getElementById("albumCount").textContent = r.data.albums ?? 0;
+        document.getElementById("photoCount").textContent = r.data.photos ?? 0;
+        document.getElementById("favCount").textContent = r.data.favorites ?? 0;
+      }
 
-            // Admin-only dashboard shortcuts. Trash and Administration are intentionally
-            // shown only to ADMIN users, matching the permissions used by layout.js.
-            const isAdmin = String(s.user.role || "").toUpperCase() === "ADMIN";
-            if (isAdmin) {
-                ["trashCard", "adminCard", "trashAction", "adminAction"].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.style.display = "flex";
-                });
-            }
-
-            (async function() {
-                try {
-                    const r = await API.call("dashboard", {
-                        token: s.token
-                    });
-                    if (r && r.ok) {
-                        document.getElementById("albumCount").textContent = r.data.albums ?? 0;
-                        document.getElementById("photoCount").textContent = r.data.photos ?? 0;
-                        document.getElementById("favCount").textContent = r.data.favorites ?? 0;
-                    }
-
-                    // Load a clickable album preview directly into the dashboard.
-                    const ar = await API.call("albums", {
-                        token: s.token
-                    }, "GET");
-                    if (ar && ar.ok) {
-                        const list = (Array.isArray(ar.data) ? ar.data : []).filter(a => a && !a.isVirtual && a.id !== "__ALL__");
-                        document.getElementById("albums").innerHTML = list.slice(0, 6).map((a, i) => `
+      // Load a clickable album preview directly into the dashboard.
+      const ar = await API.call("albums",{token:s.token}, "GET");
+      if(ar && ar.ok){
+        const list = (Array.isArray(ar.data) ? ar.data : []).filter(a => a && !a.isVirtual && a.id !== "__ALL__");
+        document.getElementById("albums").innerHTML = list.slice(0,6).map((a,i)=>`
           <a class="card dashboard-album-card" href="album.html?id=${encodeURIComponent(a.id)}">
-            <div class="cover c${i%4}" style="${a.coverUrl ? `background-image:url('${esc(a.coverUrl)}')` : ""}" role="img" aria-label="${esc(a.title||"אלבום")}"></div>
+            <div class="cover c${i%4}" style="${a.coverUrl ? `background-image:url('${esc(a.coverUrl)}')` : ""}" role="img" aria-label="${esc(a.title||"אלבום")}"><span class="album-count-badge" aria-label="${Number(a.photoCount)||0} תמונות">📷 ${Number(a.photoCount)||0}</span></div>
             <div class="card-body"><h3>${esc(a.title||"אלבום")}</h3><p>${esc(a.description||"פתיחת האלבום")}</p></div>
           </a>`).join("") || "<p>לא נמצאו אלבומים.</p>";
-                    }
-                } catch (e) {
-                    console.error("dashboard:", e);
-                }
-            })();
-        })();
-    </script>
-</body>
-
-</html>
+      }
+    } catch(e) {
+      console.error("dashboard:", e);
+    }
+  })();
+})();
+</script></body></html>
