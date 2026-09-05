@@ -224,3 +224,34 @@ body.modal-open{overflow:hidden}
   .hero{grid-template-columns:1fr 1fr;padding-top:24px}
   .hero-image{min-height:220px}
 }
+
+/* Home album photo-count badge: always visible */
+.card .cover{position:relative;overflow:hidden}
+.card .cover .album-count-badge{
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+  pointer-events:none;
+  z-index:3;
+}
+.card:hover .cover .album-count-badge,
+.card:focus-within .cover .album-count-badge{
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+}
+.dark .card .cover .album-count-badge{
+  background:rgba(0,0,0,.72);
+  color:#fff;
+  border-color:rgba(255,255,255,.2);
+}
+
+
+/* About page — complete Dark Mode coverage */
+.dark .about-hero{color:#f3eee9}
+.dark .about-hero p{color:#c8c0b9}
+.dark .story h2{color:#f3eee9}
+.dark .story p{color:#c8c0b9}
+.dark .story blockquote{background:#24211f;color:#f3eee9;border-right-color:#d29a6d;box-shadow:0 10px 30px rgba(0,0,0,.16)}
+.dark .about-image{box-shadow:0 30px 80px rgba(0,0,0,.38)}
+.dark footer{color:#aaa;border-top-color:rgba(255,255,255,.08)}

@@ -11,23 +11,23 @@
 </script>
 <link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><span id="userName"></span><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">DASHBOARD</span><h1>שלום, <span id="hello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div><div class="dashboard-grid">
 <a class="metric metric-link" href="albums.html" aria-label="פתיחת אלבומים">
-  <span>📚</span><strong id="albumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים →</b>
+  <span>📚</span><strong id="albumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים ←</b>
 </a>
 <a class="metric metric-link" href="album.html?id=__ALL__" data-direct="photos" aria-label="פתיחת כל התמונות">
-  <span>🖼️</span><strong id="photoCount">—</strong><small>תמונות</small><b class="metric-action">פתח תמונות →</b>
+  <span>🖼️</span><strong id="photoCount">—</strong><small>תמונות</small><b class="metric-action">פתח תמונות ←</b>
 </a>
 <a class="metric metric-link" href="favorites.html" aria-label="פתיחת מועדפים">
-  <span>♥</span><strong id="favCount">—</strong><small>מועדפים</small><b class="metric-action">פתח מועדפים →</b>
+  <span>♥</span><strong id="favCount">—</strong><small>מועדפים</small><b class="metric-action">פתח מועדפים ←</b>
 </a>
 <a class="metric metric-link" href="trash.html" id="trashCard" aria-label="פתיחת סל המחזור" style="display:none">
-  <span>🗑️</span><strong>♻</strong><small>סל מחזור</small><b class="metric-action">פתח סל מחזור →</b>
+  <span>🗑️</span><strong>♻</strong><small>סל מחזור</small><b class="metric-action">פתח סל מחזור ←</b>
 </a>
 <a class="metric metric-link" href="admin.html" id="adminCard" aria-label="פתיחת מרכז הניהול" style="display:none">
-  <span>⚙️</span><strong>ADMIN</strong><small>ניהול</small><b class="metric-action">פתח ניהול →</b>
+  <span>⚙️</span><strong>ADMIN</strong><small>ניהול</small><b class="metric-action">פתח ניהול ←</b>
 </a>
 </div>
 
-<div class="panel"><div class="panel-heading-row"><div><h2>האלבומים שלך</h2><p class="hint">לחץ על אלבום כדי לפתוח אותו ישירות.</p></div><a class="pill" href="albums.html">כל האלבומים →</a></div><div id="albums" class="cards dashboard-albums"></div></div></main><script src="js/api.js"></script><script src="js/layout.js"></script>
+<div class="panel"><div class="panel-heading-row"><div><h2>האלבומים שלך</h2><p class="hint">לחץ על אלבום כדי לפתוח אותו ישירות.</p></div><a class="pill" href="albums.html">כל האלבומים ←</a></div><div id="albums" class="cards dashboard-albums"></div></div></main><script src="js/api.js"></script><script src="js/layout.js"></script>
 <script>
 (function(){
   const s = getSession();
