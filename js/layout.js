@@ -35,20 +35,22 @@ function mountLayout(active=""){
     menuBtn.type="button";
     menuBtn.setAttribute("aria-label","פתיחת תפריט");
     menuBtn.setAttribute("aria-expanded","false");
-    menuBtn.innerHTML="☰";
+    const menuClosedIcon='☰';
+    const menuOpenIcon='<svg class="menu-close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    menuBtn.innerHTML=menuClosedIcon;
     top.insertBefore(menuBtn,nav);
     menuBtn.addEventListener("click",()=>{
       const open=nav.classList.toggle("mobile-open");
       menuBtn.classList.toggle("open",open);
       menuBtn.setAttribute("aria-expanded",String(open));
-      menuBtn.innerHTML=open?"×":"☰";
+      menuBtn.innerHTML=open?menuOpenIcon:menuClosedIcon;
     });
     nav.addEventListener("click",e=>{
       if(e.target.closest("a")){
         nav.classList.remove("mobile-open");
         menuBtn.classList.remove("open");
         menuBtn.setAttribute("aria-expanded","false");
-        menuBtn.innerHTML="☰";
+        menuBtn.innerHTML=menuClosedIcon;
       }
     });
   }

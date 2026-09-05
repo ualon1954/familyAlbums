@@ -7,7 +7,9 @@
 
 /* V3.1 responsive navigation */
 .menu-toggle{display:none;border:1px solid #0002;background:#fff9;border-radius:12px;width:44px;height:42px;font-size:24px;line-height:1;align-items:center;justify-content:center;flex:0 0 auto}
-.menu-toggle.open{font-size:30px}
+.menu-toggle.open{font-size:30px;position:relative;z-index:650;background:#fff!important;color:#2a2724!important;border-color:#0003!important}
+.dark .menu-toggle.open{background:#24211f!important;color:#fff!important;border-color:#fff3!important}
+.menu-close-icon{width:25px;height:25px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
 @media(max-width:850px){
   .top{position:sticky;top:0;z-index:500;min-height:66px;height:auto;gap:12px;padding:10px 18px;flex-wrap:nowrap}
   .menu-toggle{display:inline-flex;order:0}
@@ -224,34 +226,3 @@ body.modal-open{overflow:hidden}
   .hero{grid-template-columns:1fr 1fr;padding-top:24px}
   .hero-image{min-height:220px}
 }
-
-/* Home album photo-count badge: always visible */
-.card .cover{position:relative;overflow:hidden}
-.card .cover .album-count-badge{
-  opacity:1 !important;
-  visibility:visible !important;
-  transform:none !important;
-  pointer-events:none;
-  z-index:3;
-}
-.card:hover .cover .album-count-badge,
-.card:focus-within .cover .album-count-badge{
-  opacity:1 !important;
-  visibility:visible !important;
-  transform:none !important;
-}
-.dark .card .cover .album-count-badge{
-  background:rgba(0,0,0,.72);
-  color:#fff;
-  border-color:rgba(255,255,255,.2);
-}
-
-
-/* About page — complete Dark Mode coverage */
-.dark .about-hero{color:#f3eee9}
-.dark .about-hero p{color:#c8c0b9}
-.dark .story h2{color:#f3eee9}
-.dark .story p{color:#c8c0b9}
-.dark .story blockquote{background:#24211f;color:#f3eee9;border-right-color:#d29a6d;box-shadow:0 10px 30px rgba(0,0,0,.16)}
-.dark .about-image{box-shadow:0 30px 80px rgba(0,0,0,.38)}
-.dark footer{color:#aaa;border-top-color:rgba(255,255,255,.08)}
