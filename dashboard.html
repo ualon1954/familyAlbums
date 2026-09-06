@@ -27,7 +27,7 @@
 </a>
 </div>
 
-<div class="panel"><div class="panel-heading-row"><div><h2>האלבומים שלך</h2><p class="hint">לחץ על אלבום כדי לפתוח אותו ישירות.</p></div><a class="pill" href="albums.html">כל האלבומים ←</a></div><div id="albums" class="cards dashboard-albums"></div></div></main><script src="js/api.js"></script><script src="js/layout.js"></script>
+</main><script src="js/api.js"></script><script src="js/layout.js"></script>
 <script>
 (function(){
   const s = getSession();
@@ -60,28 +60,18 @@
     });
   }
 
+  function renderDashboardData(data){
+    document.getElementById("albumCount").textContent = Number(data?.albums ?? 0) || 0;
+    document.getElementById("photoCount").textContent = Number(data?.photos ?? 0) || 0;
+    document.getElementById("favCount").textContent = Number(data?.favorites ?? 0) || 0;
+  }
   (async function(){
     try {
+      // R6: render a recent session cache immediately, then refresh in the background.
+      const cached=API.cacheGet("dashboard","main",60000);
+      if(cached)renderDashboardData(cached);
       const r = await API.call("dashboard",{token:s.token});
-      if(r && r.ok){
-        // Album count is set from the filtered real-albums list below.
-        // This avoids a transient +1 if an older backend still includes the virtual __ALL__ album.
-        document.getElementById("photoCount").textContent = r.data.photos ?? 0;
-        document.getElementById("favCount").textContent = r.data.favorites ?? 0;
-      }
-
-      // Load a clickable album preview directly into the dashboard.
-      const ar = await API.call("albums",{token:s.token}, "GET");
-      if(ar && ar.ok){
-        const list = (Array.isArray(ar.data) ? ar.data : []).filter(a => a && !a.isVirtual && a.id !== "__ALL__");
-        // Count only real albums. The virtual "__ALL__" album must never affect the dashboard counter.
-        document.getElementById("albumCount").textContent = list.length;
-        document.getElementById("albums").innerHTML = list.slice(0,6).map((a,i)=>`
-          <a class="card dashboard-album-card" href="album.html?id=${encodeURIComponent(a.id)}">
-            <div class="cover c${i%4}" style="${a.coverUrl ? `background-image:url('${esc(a.coverUrl)}')` : ""}" role="img" aria-label="${esc(a.title||"אלבום")}"><span class="album-count-badge" aria-label="${Number(a.photoCount)||0} תמונות">📷 ${Number(a.photoCount)||0}</span></div>
-            <div class="card-body"><h3>${esc(a.title||"אלבום")}</h3><p>${esc(a.description||"פתיחת האלבום")}</p></div>
-          </a>`).join("") || "<p>לא נמצאו אלבומים.</p>";
-      }
+      if(r && r.ok){API.cacheSet("dashboard","main",r.data);renderDashboardData(r.data);}
     } catch(e) {
       console.error("dashboard:", e);
     }

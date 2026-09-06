@@ -51,6 +51,7 @@
 .cover-photo:disabled{opacity:.55;cursor:wait}
 .cover-photo-no-image{aspect-ratio:1/1;display:grid;place-items:center;background:#eee;color:#777}
 .dark .cover-photo-no-image{background:#333;color:#bbb}
+.upload-status{font-size:12px;min-width:72px;font-weight:700}.upload-status.waiting{opacity:.55}.upload-status.uploading{color:#b26a00}.upload-status.done{color:#188038}.upload-status.error{color:#b00020}.upload-summary{font-weight:700}
 </style>
 <link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>מרכז ניהול</h1><p id="who"></p></div></div><section class="panel api-status-panel" id="apiStatusPanel">
 <h2>🔌 מצב חיבור API</h2>
@@ -67,7 +68,9 @@
 </button></div><select id="ur"><option>FAMILY</option><option>GUEST</option><option>ADMIN</option></select><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 const S=requireLogin("ADMIN");
 let adminAlbums=[];
-if(S){mountLayout("");who.textContent="מחובר: "+S.user.name;loadAdmin();loadPermissions();checkApiStatus()}
+// R15B: audit-log flushing is scheduled by Apps Script in the background.
+// The browser no longer calls flushAdminLogs after admin actions.
+if(S){mountLayout("");who.textContent="מחובר: "+S.user.name;initAdminPage_();checkApiStatus()}
 async function checkApiStatus(){
   const el=document.getElementById("apiStatus");
   if(!el)return;
@@ -88,7 +91,10 @@ async function checkApiStatus(){
 
     // Compatibility is checked by API family + capabilities, NOT by an exact build string.
     // A new Apps Script deployment may legitimately have a different build ID.
-    const REQUIRED_API_PREFIX="3.5.10";
+    const REQUIRED_API_PREFIX=String(window.APP_CONFIG?.REQUIRED_API_PREFIX||"3.5.10");
+    const appVersion=String(window.APP_CONFIG?.APP_VERSION||"").trim();
+    const appBuild=String(window.APP_CONFIG?.APP_BUILD||"").trim();
+    const appBuildDate=String(window.APP_CONFIG?.APP_BUILD_DATE||"").trim();
     const REQUIRED_ACTIONS=["setAlbumCover","coverPhotos","uploadCoverPhoto","setAlbumExternalCover","clearAlbumCover"];
     const compatibleVersion=version.startsWith(REQUIRED_API_PREFIX);
     const missingActions=REQUIRED_ACTIONS.filter(a=>!actions.includes(a));
@@ -97,6 +103,10 @@ async function checkApiStatus(){
     let html=`<b>✓ API מחובר</b>`;
     html+=`<br>גרסת API: <b>${esc(version||"לא ידועה")}</b>`;
     html+=`<br>Server Build: <b>${esc(build||"שרת ישן ללא Build ID")}</b>`;
+    html+=`<br><br><b>גרסת האתר</b>`;
+    html+=`<br>App Version: <b>${esc(appVersion||"לא ידועה")}</b>`;
+    html+=`<br>App Build: <b>${esc(appBuild||"לא ידוע")}</b>`;
+    if(appBuildDate) html+=`<br>App Build Date: ${esc(appBuildDate)}`;
     if(buildDate) html+=`<br>תאריך Build: ${esc(buildDate)}`;
     if(serverTime) html+=`<br>זמן שרת: ${esc(serverTime)}`;
     html+=`<br>פעולות מעטפת: ${esc(actions.join(", ")||"לא התקבלו")}`;
@@ -115,6 +125,36 @@ async function checkApiStatus(){
     el.innerHTML=html;
   }catch(e){
     el.innerHTML=`<span style="color:#b00020;font-weight:700">✕ ${esc(e.message||String(e))}</span>`;
+  }
+}
+let uploadPrepareSeq=0,uploadPreparePromise=null,uploadPreparedAlbumId="";
+async function prepareSelectedAlbum_(){
+  const albumId=String(as.value||"");if(!albumId)return null;
+  if(uploadPreparedAlbumId===albumId&&uploadPreparePromise)return uploadPreparePromise;
+  const seq=++uploadPrepareSeq;
+  uploadPreparePromise=API.call("prepareAlbumUpload",{token:S.token,albumId}).then(r=>{
+    if(seq===uploadPrepareSeq&&r?.ok){uploadPreparedAlbumId=albumId;console.info("[Upload folder prepared]",r.data)}
+    return r;
+  }).catch(e=>{console.warn("Upload folder prepare failed",e);return null;});
+  return uploadPreparePromise;
+}
+// R15C: selecting/browsing albums must not trigger a Drive request. Preparation
+// starts only when files are actually chosen (and upload() has a safe fallback).
+as.addEventListener("change",()=>{uploadPreparedAlbumId="";uploadPreparePromise=null;});
+async function initAdminPage_(){
+  // R15C: one initial request for album cards + users + permission album list + permissions.
+  // This removes the cold-start race between loadAdmin() and loadPermissions().
+  try{
+    const r=await API.call("adminPageBootstrap",{token:S.token});
+    if(!r.ok)throw new Error(r.message||"טעינת מסך הניהול נכשלה");
+    const d=r.data||{};
+    adminAlbums=(Array.isArray(d.albums)?d.albums:[]).filter(a=>a&&!a.isVirtual&&String(a.id)!=="__ALL__");
+    renderAdminAlbums_();
+    applyPermissionsBootstrapData_({users:d.users,albums:d.permissionAlbums,permissions:d.permissions});
+    API.cacheSet("adminPermissionsBootstrap","",{users:permUsers,albums:permAlbums,permissions:Array.isArray(d.permissions)?d.permissions:[]});
+  }catch(e){
+    console.warn("Admin combined bootstrap failed; using compatibility loaders",e);
+    await Promise.allSettled([loadAdmin(),loadPermissions()]);
   }
 }
 async function loadAdmin(){
@@ -138,12 +178,175 @@ function albumManageHtml(a){
     <div class="cover-manager"><div class="cover-current">${cover}<span>${a.coverUrl?'תמונת המעטפת הנוכחית':'בחר תמונה מתוך האלבום'}</span></div></div>
   </div>`;
 }
-async function newAlbum(){let r=await API.call("createAlbum",{token:S.token,title:at.value,description:ad.value});am.textContent=r.ok?"✓ נוצר":"✕ "+r.message;if(r.ok){at.value="";ad.value="";loadAdmin()}}
-async function newUser(){let r=await API.call("createUser",{token:S.token,name:un.value,email:ue.value,password:up.value,role:ur.value});msg.textContent=r.ok?"✓ נוצר":"✕ "+r.message}
+function renderAdminAlbums_(){
+  as.innerHTML=adminAlbums.map(a=>`<option value="${esc(a.id)}">${esc(a.title)}</option>`).join("");
+  manage.innerHTML=adminAlbums.map(a=>albumManageHtml(a)).join("") || "<p>אין אלבומים.</p>";
+}
+function renderPermissionUsers_(selectedId){
+  const keep=String(selectedId||permUser?.value||"");
+  permUser.innerHTML=permUsers.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.email)} (${esc(x.role)})</option>`).join("");
+  if(keep&&permUsers.some(x=>String(x.id)===keep))permUser.value=keep;
+}
+function renderPermissionAlbums_(selectedId){
+  const keep=String(selectedId||permAlbum?.value||"");
+  permAlbum.innerHTML=permAlbums.map(x=>`<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("");
+  if(keep&&permAlbums.some(x=>String(x.id)===keep))permAlbum.value=keep;
+}
+function updateAdminBootstrapCache_(){
+  if(!permissionsBootstrapReady)return;
+  const explicit=[];
+  for(const [key,v] of permDrafts.entries()){
+    const parts=key.split("::");
+    if(parts.length<2)continue;
+    // Only explicit/edited values are useful in the local bootstrap; storing
+    // defaults too is harmless, but keeping the current draft guarantees UI consistency.
+    explicit.push({userId:parts[0],albumId:parts.slice(1).join("::"),canView:!!v.canView,canUpload:!!v.canUpload,canDelete:!!v.canDelete});
+  }
+  API.cacheSet("adminPermissionsBootstrap","",{users:permUsers,albums:permAlbums,permissions:explicit});
+}
+function mergePermissionAlbums_(...lists){
+  const byId=new Map();
+  lists.flat().forEach(x=>{
+    if(!x||!x.id||String(x.id)==="__ALL__")return;
+    byId.set(String(x.id),Object.assign({},byId.get(String(x.id))||{},x));
+  });
+  return [...byId.values()];
+}
+async function newAlbum(){
+  const title=at.value.trim(),description=ad.value;
+  if(!title){am.textContent="✕ שם האלבום חובה";return}
+  // Preserve the complete album list before createAlbum. In R15B the permissions
+  // combo could otherwise be rebuilt from a temporarily partial permAlbums array
+  // and show only the newly created album until a manual refresh.
+  const cachedBootstrap=API.cacheGet("adminPermissionsBootstrap","",120000);
+  const albumsBeforeCreate=mergePermissionAlbums_(
+    Array.isArray(cachedBootstrap?.albums)?cachedBootstrap.albums:[],
+    Array.isArray(permAlbums)?permAlbums:[],
+    Array.isArray(adminAlbums)?adminAlbums.map(x=>({id:x.id,title:x.title})):[]
+  );
+  const started=performance.now();
+  let r=await API.call("createAlbum",{token:S.token,title,description});
+  am.textContent=r.ok?`✓ נוצר (${((performance.now()-started)/1000).toFixed(1)}s)`:"✕ "+r.message;
+  if(!r.ok)return;
+  const a=Object.assign({coverUrl:"",photoCount:0},r.data||{});
+  adminAlbums=mergePermissionAlbums_(adminAlbums,[a]).map(x=>Object.assign({coverUrl:"",photoCount:0},x));
+  renderAdminAlbums_();
+  permAlbums=mergePermissionAlbums_(albumsBeforeCreate,permAlbums,[{id:a.id,title:a.title}]);
+  renderPermissionAlbums_(a.id);
+  at.value="";ad.value="";
+  API.cacheRemove("albums","");API.cacheRemove("homeAlbums","");updateAdminBootstrapCache_();
+}
+function mergePermissionUsers_(...lists){
+  const byId=new Map();
+  lists.flat().forEach(x=>{
+    if(!x||!x.id)return;
+    byId.set(String(x.id),Object.assign({},byId.get(String(x.id))||{},x));
+  });
+  return [...byId.values()];
+}
+async function newUser(){
+  const started=performance.now();
+  // Preserve the complete users list already loaded into the permissions bootstrap.
+  // In R15A, a createUser response could arrive while permUsers was temporarily
+  // incomplete and the new user then became the only option in the combo.
+  const cachedBootstrap=API.cacheGet("adminPermissionsBootstrap","",120000);
+  const usersBeforeCreate=mergePermissionUsers_(
+    Array.isArray(cachedBootstrap?.users)?cachedBootstrap.users:[],
+    Array.isArray(permUsers)?permUsers:[]
+  );
+  let r=await API.call("createUser",{token:S.token,name:un.value,email:ue.value,password:up.value,role:ur.value});
+  msg.textContent=r.ok?`✓ נוצר (${((performance.now()-started)/1000).toFixed(1)}s)`:"✕ "+r.message;
+  if(!r.ok)return;
+  const u=Object.assign({active:true},r.data||{});
+  permUsers=mergePermissionUsers_(usersBeforeCreate,permUsers,[u]);
+  renderPermissionUsers_(u.id);
+  un.value="";ue.value="";up.value="";
+  API.cacheRemove("albums","");API.cacheRemove("homeAlbums","");updateAdminBootstrapCache_();
+  applyPermValues({canView:true,canUpload:false,canDelete:false});
+  permDrafts.set(`${String(u.id)}::${String(permAlbum?.value||"")}`,{canView:true,canUpload:false,canDelete:false});
+  // R15C: no listUsers reconciliation request is needed. The complete
+  // bootstrap list is already retained locally and the new user is merged into it.
+}
 async function editAlbum(id,title){let n=prompt("שם חדש",title);if(!n)return;let r=await API.call("updateAlbum",{token:S.token,id,title:n});toast(r.ok?"עודכן":"שגיאה","info");loadAdmin()}
 async function delAlbum(id){if(!confirm("למחוק את האלבום?"))return;let r=await API.call("deleteAlbum",{token:S.token,id});toast(r.ok?"נמחק":"שגיאה","info");loadAdmin()}
-files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" placeholder="כותרת לתמונה"><input class="meta-date" data-i="${idx}" type="number" min="1800" max="2200" step="1" placeholder="שנה (למשל 1985)" title="שנת התמונה בלבד"><input class="meta-caption" data-i="${idx}" placeholder="תיאור / כיתוב (אופציונלי)">`;photoMeta.appendChild(row)})};
-async function upload(){if(!as.value||!files.files.length){um.textContent="בחר אלבום ותמונות";return}um.textContent="מעלה...";const selected=[...files.files];for(let idx=0;idx<selected.length;idx++){const f=selected[idx];const b=await new Promise((ok,no)=>{let fr=new FileReader();fr.onload=()=>ok(fr.result.split(",")[1]);fr.onerror=no;fr.readAsDataURL(f)});const titleInput=document.querySelector(`.meta-title[data-i="${idx}"]`),dateInput=document.querySelector(`.meta-date[data-i="${idx}"]`),captionInput=document.querySelector(`.meta-caption[data-i="${idx}"]`);let r=await API.call("uploadPhoto",{token:S.token,albumId:as.value,fileName:f.name,mimeType:f.type,base64:b,photoTitle:titleInput?.value.trim()||"",photoDate:dateInput?.value||"",caption:captionInput?.value.trim()||""});if(!r.ok){um.textContent=r.message;return}}um.textContent="✓ כל התמונות הועלו בהצלחה";files.value="";photoMeta.innerHTML="";loadAdmin()}
+files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" placeholder="כותרת לתמונה"><input class="meta-date" data-i="${idx}" type="number" min="1800" max="2200" step="1" placeholder="שנה (למשל 1985)" title="שנת התמונה בלבד"><input class="meta-caption" data-i="${idx}" placeholder="תיאור / כיתוב (אופציונלי)"><span class="upload-status waiting" data-upload-status="${idx}">ממתינה</span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
+function readBlobBase64_(blob){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(fr.error||new Error("קריאת הקובץ נכשלה"));fr.readAsDataURL(blob)})}
+function readImageBitmap_(file){
+  if(window.createImageBitmap)return createImageBitmap(file);
+  return new Promise((ok,no)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(url);ok(img)};img.onerror=()=>{URL.revokeObjectURL(url);no(new Error("קריאת התמונה נכשלה"))};img.src=url;});
+}
+async function prepareUploadImage_(file){
+  // R12: optimize for the actual gallery display (large view is ~2000px).
+  // Large JPEG/WebP photos are adaptively compressed to reduce the JSON/Base64
+  // transfer through Apps Script. Small images and GIFs remain untouched.
+  const maxDim=2200,targetBytes=550*1024,hardOptimizeBytes=850*1024;
+  if(!file.type.startsWith("image/")||file.type==="image/gif")return {blob:file,fileName:file.name,mimeType:file.type||"application/octet-stream",optimized:false};
+  let img;try{img=await readImageBitmap_(file)}catch(e){return {blob:file,fileName:file.name,mimeType:file.type||"image/jpeg",optimized:false}}
+  const w=img.width||img.naturalWidth||0,h=img.height||img.naturalHeight||0,largest=Math.max(w,h);
+  const canLossy=file.type!=="image/png";
+  if(!w||!h||(largest<=maxDim&&file.size<=hardOptimizeBytes)){if(img.close)img.close();return {blob:file,fileName:file.name,mimeType:file.type||"image/jpeg",optimized:false,width:w,height:h};}
+  const scale=Math.min(1,maxDim/largest),tw=Math.max(1,Math.round(w*scale)),th=Math.max(1,Math.round(h*scale));
+  const canvas=document.createElement("canvas");canvas.width=tw;canvas.height=th;const ctx=canvas.getContext("2d",{alpha:true});ctx.drawImage(img,0,0,tw,th);if(img.close)img.close();
+  const outType=file.type==="image/png"?"image/png":(file.type==="image/webp"?"image/webp":"image/jpeg");
+  let blob;
+  if(!canLossy){
+    blob=await new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error("דחיסת התמונה נכשלה")),outType));
+  }else{
+    let quality=.86;
+    blob=await new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error("דחיסת התמונה נכשלה")),outType,quality));
+    if(blob.size>targetBytes){quality=.80;blob=await new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error("דחיסת התמונה נכשלה")),outType,quality));}
+    if(blob.size>targetBytes*1.25){quality=.74;blob=await new Promise((ok,no)=>canvas.toBlob(b=>b?ok(b):no(new Error("דחיסת התמונה נכשלה")),outType,quality));}
+  }
+  if(blob.size>=file.size*.97)return {blob:file,fileName:file.name,mimeType:file.type||outType,optimized:false,width:w,height:h};
+  let fileName=file.name;if(outType==="image/jpeg"&&!/\.jpe?g$/i.test(fileName))fileName=fileName.replace(/\.[^.]+$/,"" )+".jpg";
+  return {blob,fileName,mimeType:outType,optimized:true,width:tw,height:th,originalBytes:file.size,uploadBytes:blob.size};
+}
+function setUploadStatus_(idx,text,state){const el=document.querySelector(`[data-upload-status="${idx}"]`);if(el){el.textContent=text;el.className="upload-status "+state}}
+async function uploadOne_(item,albumId){
+  const {f,idx}=item,totalStart=performance.now();setUploadStatus_(idx,"מכין...","uploading");
+  const prepStart=performance.now();
+  const prepared=await prepareUploadImage_(f);
+  const prepareMs=Math.round(performance.now()-prepStart);
+  const saved=prepared.optimized&&prepared.originalBytes?Math.max(0,Math.round((1-prepared.uploadBytes/prepared.originalBytes)*100)):0;
+  setUploadStatus_(idx,prepared.optimized?`מעלה... חיסכון ${saved}%`:"מעלה...","uploading");
+  const base64Start=performance.now();
+  const base64=await readBlobBase64_(prepared.blob);
+  const base64Ms=Math.round(performance.now()-base64Start);
+  const titleInput=document.querySelector(`.meta-title[data-i="${idx}"]`),dateInput=document.querySelector(`.meta-date[data-i="${idx}"]`),captionInput=document.querySelector(`.meta-caption[data-i="${idx}"]`);
+  const apiStart=performance.now();
+  const r=await API.call("uploadPhoto",{token:S.token,albumId,fileName:prepared.fileName,mimeType:prepared.mimeType,base64,photoTitle:titleInput?.value.trim()||"",photoDate:dateInput?.value||"",caption:captionInput?.value.trim()||"",clientUploadBytes:prepared.blob.size,clientOriginalBytes:f.size});
+  const apiMs=Math.round(performance.now()-apiStart);
+  if(!r.ok)throw new Error(r.message||"העלאה נכשלה");
+  const t=r.data?.uploadTiming||{},serverMs=Number(r.meta?.serverMs)||0,networkOverheadMs=Math.max(0,apiMs-serverMs),endToEndMs=Math.round(performance.now()-totalStart);
+  const diag={fileName:prepared.fileName,prepareMs,base64Ms,apiMs,serverMs,networkOverheadMs,endToEndMs,serverTrace:r.meta?.trace||{},uploadTiming:t};
+  const timing=` · Total ${(endToEndMs/1000).toFixed(1)}s · API ${(apiMs/1000).toFixed(1)}s · Server ${(serverMs/1000).toFixed(1)}s · Drive ${(Number(t.driveMs||0)/1000).toFixed(1)}s · Sheets ${(Number(t.sheetsMs||0)/1000).toFixed(1)}s`;
+  setUploadStatus_(idx,`✓ הושלמה${timing}`,"done");
+  console.info("[Upload R13 diagnostic]",diag);
+  try{sessionStorage.setItem("FPA_LAST_UPLOAD_DIAGNOSTIC",JSON.stringify(diag));}catch(e){}
+  return r;
+}
+async function upload(){
+  if(!as.value||!files.files.length){um.textContent="בחר אלבום ותמונות";return}
+  const albumId=as.value;
+  // Usually already running from files.onchange. If not, prepare once here.
+  try{if(uploadPreparedAlbumId!==String(albumId))await prepareSelectedAlbum_();}catch(e){}
+  const items=[...files.files].map((f,idx)=>({f,idx}));
+  const concurrency=Math.min(3,items.length);let next=0,done=0,failed=0;const errors=[];
+  um.className="upload-summary";um.textContent=`מעלה 0 מתוך ${items.length}...`;
+  async function worker(){while(true){const pos=next++;if(pos>=items.length)return;const item=items[pos];try{await uploadOne_(item,albumId);done++;}catch(e){failed++;errors.push(`${item.f.name}: ${e.message||e}`);setUploadStatus_(item.idx,"✕ שגיאה","error");}um.textContent=`הושלמו ${done} מתוך ${items.length}${failed?` · שגיאות ${failed}`:""}`;}}
+  await Promise.all(Array.from({length:concurrency},worker));
+  // R13: flush Photos metadata and ActivityLog outside the critical upload path.
+  // The success state above is already visible; both writes are performed in
+  // separate requests and Photos metadata is batched into one Sheet write.
+  void Promise.allSettled([
+    API.call("flushUploadPhotos",{token:S.token}).then(r=>{if(r?.ok)console.info("[Upload photo metadata flushed]",r.data)}),
+    API.call("flushUploadLogs",{token:S.token}).then(r=>{if(r?.ok&&r.data?.flushed)console.info("[Upload logs flushed]",r.data.flushed)})
+  ]).then(()=>{API.cacheClear();}).catch(()=>{});
+  API.cacheClear();
+  if(failed){um.textContent=`הסתיים: ${done} הועלו, ${failed} נכשלו. ${errors[0]||""}`;return}
+  um.textContent=`✓ כל ${done} התמונות הועלו בהצלחה`;
+  files.value="";photoMeta.innerHTML="";await loadAdmin();
+}
 async function openCoverManager(albumId){
   const album=adminAlbums.find(a=>String(a.id)===String(albumId));
   if(!album){toast("האלבום לא נמצא");return;}
@@ -231,8 +434,31 @@ async function clearCover(){
   closeCoverManager();
   await loadAdmin();
 }
-let permUsers=[],permAlbums=[];
-async function loadPermissions(){const [u,a]=await Promise.all([API.call("listUsers",{token:S.token}),API.call("albums",{token:S.token})]);if(u.ok){permUsers=u.data||[];permUser.innerHTML=permUsers.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.email)} (${esc(x.role)})</option>`).join("")}if(a.ok){permAlbums=(Array.isArray(a.data)?a.data:[]).filter(x=>x && !x.isVirtual && String(x.id)!=="__ALL__");permAlbum.innerHTML=permAlbums.map(x=>`<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("")}await loadPermValues()}const permDrafts=new Map();let permLoadSeq=0;
+let permUsers=[],permAlbums=[];const permDrafts=new Map();let permLoadSeq=0,permissionsBootstrapReady=false;
+function applyPermissionsBootstrapData_(data){
+  data=data||{};
+  permUsers=Array.isArray(data.users)?data.users:[];
+  permAlbums=(Array.isArray(data.albums)?data.albums:[]).filter(x=>x&&String(x.id)!=="__ALL__");
+  permDrafts.clear();
+  (Array.isArray(data.permissions)?data.permissions:[]).forEach(p=>{
+    const k=`${String(p.userId||"")}::${String(p.albumId||"")}`;
+    permDrafts.set(k,{canView:!!p.canView,canUpload:!!p.canUpload,canDelete:!!p.canDelete});
+  });
+  permissionsBootstrapReady=true;
+  renderPermissionUsers_();renderPermissionAlbums_();
+  loadPermValues();
+}
+async function loadPermissions(){
+  const cached=API.cacheGet("adminPermissionsBootstrap","",120000);
+  let data=cached;
+  if(!data){
+    const r=await API.call("adminPermissionsBootstrap",{token:S.token});
+    if(!r.ok){permMsg.textContent="✕ "+(r.message||"טעינת הרשאות נכשלה");return}
+    data=r.data||{};API.cacheSet("adminPermissionsBootstrap","",data);
+  }
+  applyPermissionsBootstrapData_(data);
+}
+
 function permKey(){return `${String(permUser?.value||"")}::${String(permAlbum?.value||"")}`}
 function rememberPermDraft(){
   const k=permKey();if(!k||k==="::")return;
@@ -247,6 +473,12 @@ async function loadPermValues(){
   if(!permUser.value||!permAlbum.value)return;
   const key=permKey(),seq=++permLoadSeq;
   if(permDrafts.has(key)){applyPermValues(permDrafts.get(key));permMsg.textContent="";return}
+  // R15 bootstrap already loaded every explicit permission. No row means the
+  // server's normal default: view=true, upload/delete=false.
+  if(permissionsBootstrapReady){
+    const values={canView:true,canUpload:false,canDelete:false};
+    permDrafts.set(key,values);applyPermValues(values);permMsg.textContent="";return;
+  }
   const userId=permUser.value,albumId=permAlbum.value;
   const r=await API.call("getPermissions",{token:S.token,userId,albumId});
   if(seq!==permLoadSeq||userId!==permUser.value||albumId!==permAlbum.value)return;
@@ -260,30 +492,18 @@ async function savePerms(){
   if(!currentUser){permMsg.textContent="✕ בחר משתמש";return}
   const entries=[...permDrafts.entries()]
     .filter(([key])=>key.startsWith(currentUser+"::"))
-    .map(([key,values])=>({albumId:key.split("::").slice(1).join("::"),values}))
+    .map(([key,values])=>({albumId:key.split("::").slice(1).join("::"),canView:!!values.canView,canUpload:!!values.canUpload,canDelete:!!values.canDelete}))
     .filter(x=>x.albumId&&x.albumId!=="__ALL__");
 
   if(!entries.length){permMsg.textContent="אין שינויים לשמירה";return}
-
   permMsg.textContent=`שומר ${entries.length} הרשאות...`;
-  let saved=0;
-  for(const item of entries){
-    const r=await API.call("savePermissions",{
-      token:S.token,
-      userId:currentUser,
-      albumId:item.albumId,
-      canView:!!item.values.canView,
-      canUpload:!!item.values.canUpload,
-      canDelete:!!item.values.canDelete
-    });
-    if(!r.ok){
-      permMsg.textContent=`✕ השמירה נעצרה באלבום ${item.albumId}: ${r.message||"שגיאה"}`;
-      return;
-    }
-    saved++;
-  }
-  permMsg.textContent=`✓ נשמרו הרשאות עבור ${saved} אלבומים`;
+  const started=performance.now();
+  const r=await API.call("savePermissionsBatch",{token:S.token,userId:currentUser,entries});
+  if(!r.ok){permMsg.textContent=`✕ ${r.message||"שגיאה בשמירת הרשאות"}`;return}
+  const seconds=((performance.now()-started)/1000).toFixed(1);
+  permMsg.textContent=`✓ נשמרו הרשאות עבור ${Number(r.data?.updatedCount)||entries.length} אלבומים (${seconds}s)`;
   toast("ההרשאות לכל האלבומים שנבחרו נשמרו","info");
+  updateAdminBootstrapCache_();
 }
 [permView,permUpload,permDelete].forEach(el=>el?.addEventListener("change",rememberPermDraft));
 permUser?.addEventListener("change",loadPermValues);

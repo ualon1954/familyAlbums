@@ -9,6 +9,24 @@
 </script>
 <link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">MY PHOTOS</span><h1>♥ המועדפים שלי</h1><p>כאן ניתן להסיר תמונות מהמועדפים בלי למחוק אותן מהאלבום.</p></div></div><div id="grid" class="gallery"></div></main><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 const s=requireLogin(); if(s){mountLayout('favorites');loadFavorites();}
-async function loadFavorites(){const r=await API.call('favorites',{token:s.token},'GET');if(!r.ok){grid.innerHTML='<p>'+esc(r.message)+'</p>';return}grid.innerHTML=(r.data||[]).map((p,n)=>`<figure class="photo-card"><div class="photo-wrap"><img src="${esc(p.imageUrl)}" loading="lazy" referrerpolicy="no-referrer" alt="${esc(p.photoTitle||'ללא כותרת')}"><button class="favorite-btn active" title="הסר מהמועדפים" aria-label="הסר מהמועדפים" onclick="event.preventDefault();event.stopPropagation();removeFavorite('${esc(p.id)}',this)">♥</button></div><figcaption><strong>${esc(p.photoTitle||'ללא כותרת')}</strong>${(p.albumTitle||p.photoDate)?`<small>📁 ${esc(p.albumTitle||'ללא אלבום')}${p.photoDate?' • '+esc(String(p.photoDate).match(/(?:19|20|21)\d{2}/)?.[0]||p.photoDate):''}</small>`:''}</figcaption></figure>`).join('')||'<p>אין מועדפים עדיין.</p>'}
-async function removeFavorite(photoId,btn){const r=await API.call('toggleFavorite',{token:s.token,photoId});if(!r.ok){toast(r.message,'error');return}if(r.data&&r.data.favorite===false){const fig=btn.closest('figure');fig?.remove();if(!grid.querySelector('figure'))grid.innerHTML='<p>אין מועדפים עדיין.</p>';toast('התמונה הוסרה מהמועדפים','info');}}
+async function loadFavorites(){const r=await API.call('favorites',{token:s.token},'GET');if(!r.ok){grid.innerHTML='<p>'+esc(r.message)+'</p>';return}grid.innerHTML=(r.data||[]).map((p,n)=>`<figure class="photo-card"><div class="photo-wrap"><img src="${esc(p.thumbnailUrl||p.imageUrl)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" alt="${esc(p.photoTitle||'ללא כותרת')}"><button class="favorite-btn active" title="הסר מהמועדפים" aria-label="הסר מהמועדפים" onclick="event.preventDefault();event.stopPropagation();removeFavorite('${esc(p.id)}',this)">♥</button></div><figcaption><strong>${esc(p.photoTitle||'ללא כותרת')}</strong>${(p.albumTitle||p.photoDate)?`<small>📁 ${esc(p.albumTitle||'ללא אלבום')}${p.photoDate?' • '+esc(String(p.photoDate).match(/(?:19|20|21)\d{2}/)?.[0]||p.photoDate):''}</small>`:''}</figcaption></figure>`).join('')||'<p>אין מועדפים עדיין.</p>'}
+async function removeFavorite(photoId,btn){
+  if(btn?.dataset.pending==='1')return;
+  const fig=btn?.closest('figure');
+  const placeholder=document.createComment('favorite-placeholder');
+  if(fig){fig.parentNode?.insertBefore(placeholder,fig);fig.remove();}
+  if(!grid.querySelector('figure')){const empty=document.createElement('p');empty.id='favoritesEmptyPending';empty.textContent='אין מועדפים עדיין.';grid.appendChild(empty);}
+  if(btn)btn.dataset.pending='1';
+  try{
+    const r=await API.call('toggleFavorite',{token:s.token,photoId});
+    if(!r.ok||r.data?.favorite!==false)throw new Error(r.message||'לא ניתן להסיר מהמועדפים');
+    API.cacheRemove('dashboard','main');
+    placeholder.remove();
+  }catch(e){
+    document.getElementById('favoritesEmptyPending')?.remove();
+    if(fig&&placeholder.parentNode)placeholder.parentNode.replaceChild(fig,placeholder);
+    if(btn)delete btn.dataset.pending;
+    toast(e.message||'לא ניתן להסיר מהמועדפים','error');
+  }
+}
 </script></body></html>

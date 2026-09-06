@@ -73,14 +73,29 @@ function renderAlbums(items){
       <div class="album-card-body"><h2>${title}</h2><p>${desc}</p></div>
     </a>`;
   }).join("");
+  wireAlbumPrefetch();
+}
+function wireAlbumPrefetch(){
+  if(root.dataset.prefetchReady==='1')return;
+  root.dataset.prefetchReady='1';
+  const run=e=>{
+    const a=e.target?.closest?.('a.album-card[href*="album.html?id="]');
+    if(!a||!root.contains(a))return;
+    try{const u=new URL(a.href,location.href);API.prefetchAlbumView(u.searchParams.get('id'));}catch(_){}
+  };
+  root.addEventListener('pointerover',run,{passive:true});
+  root.addEventListener('focusin',run);
+  root.addEventListener('touchstart',run,{passive:true});
 }
 (async()=>{
   try{
-    // Use the same GET endpoint used successfully by the dashboard.
-    // This prevents the albums page from depending on a different POST implementation.
+    // R6: show a recent list instantly, then refresh it in the background.
+    const cached=API.cacheGet("albums","list",60000);
+    if(cached)renderAlbums(cached);
     const r=await API.call("albums",{token:session.token},"GET");
     if(!r || r.ok!==true) throw new Error(r?.message||"שגיאה בטעינת האלבומים");
     const items=Array.isArray(r.data)?r.data:[];
+    API.cacheSet("albums","list",items);
     renderAlbums(items);
   }catch(e){
     console.error("albums:",e);

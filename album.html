@@ -90,7 +90,8 @@ mountLayout('albums');
 const params=new URLSearchParams(location.search);
 const id=String(params.get('id')||'').trim();
 let session=getSession();
-let photos=[],filteredPhotos=[],i=0,slideTimer=null;
+let photos=[],filteredPhotos=[],i=0,slideTimer=null,renderLimit=60;
+const RENDER_STEP=60;
 const titleEl=document.getElementById('title'),descriptionEl=document.getElementById('description'),gallery=document.getElementById('gallery'),viewer=document.getElementById('viewer'),big=document.getElementById('big'),caption=document.getElementById('caption'),viewerDots=document.getElementById('viewerDots'),searchTitle=document.getElementById('searchTitle'),searchAlbum=document.getElementById('searchAlbum'),searchYear=document.getElementById('searchYear'),sortYear=document.getElementById('sortYear'),photoCount=document.getElementById('photoCount');
 function photoYear(v){const m=String(v||'').match(/(?:^|[^0-9])((?:19|20|21)[0-9]{2})(?:[^0-9]|$)/);return m?m[1]:'';}
 function photoTitle(p){return String(p?.photoTitle||p?.caption||p?.fileName||'ללא כותרת').trim();}
@@ -103,13 +104,23 @@ async function init(){
   gallery.innerHTML='<p>טוען תמונות...</p>';
   try{
     const token=session.token;
-    const ar=await API.call('album',{id,token},'POST');
-    if(!ar.ok)throw new Error(ar.message||'לא ניתן לטעון את האלבום');
-    const album=ar.data||{};
+    const cacheKey='albumView:'+id;
+    // R6: a short session cache makes returning to an album nearly immediate.
+    const cached=API.cacheGet('albumView',id,60000);
+    if(cached){
+      const album=cached.album||{};
+      titleEl.textContent=album.title||'אלבום';descriptionEl.textContent=album.description||'';
+      photos=Array.isArray(cached.photos)?cached.photos:[];renderLimit=RENDER_STEP;applyFilters();
+      // R7: a very fresh prefetch is already current enough; avoid a second Apps Script round-trip.
+      if(API.cacheAge('albumView',id)<15000)return;
+      await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    const r=await API.call('albumView',{albumId:id,token},'POST');
+    if(!r.ok)throw new Error(r.message||'לא ניתן לטעון את האלבום');
+    API.cacheSet('albumView',id,r.data);
+    const album=r.data?.album||{};
     titleEl.textContent=album.title||'אלבום';descriptionEl.textContent=album.description||'';
-    const r=await API.call('photos',{albumId:id,token},'POST');
-    if(!r.ok)throw new Error(r.message||'לא ניתן לטעון את התמונות');
-    photos=Array.isArray(r.data)?r.data:[];
+    photos=Array.isArray(r.data?.photos)?r.data.photos:[];renderLimit=RENDER_STEP;
     applyFilters();
   }catch(e){console.error(e);gallery.innerHTML=`<div class="load-error"><strong>לא ניתן לטעון את התמונות</strong><p>${esc(e?.message||'שגיאה לא ידועה')}</p><button class="pill" type="button" onclick="init()">↻ נסה שוב</button></div>`;photoCount.textContent='';}
 }
@@ -117,19 +128,66 @@ function applyFilters(){
   const q=searchTitle.value.trim().toLowerCase(),a=searchAlbum.value.trim().toLowerCase(),y=searchYear.value.trim();
   filteredPhotos=photos.filter(p=>(!q||photoTitle(p).toLowerCase().includes(q))&&(!a||albumTitle(p).toLowerCase().includes(a))&&(!y||photoYear(p.photoDate)===y));
   filteredPhotos.sort((a,b)=>{const ya=Number(photoYear(a.photoDate))||0,yb=Number(photoYear(b.photoDate))||0;return sortYear.value==='oldest'?ya-yb:yb-ya;});
+  renderLimit=RENDER_STEP;
   renderGallery();
 }
 function renderGallery(){
+  const visible=filteredPhotos.slice(0,renderLimit);
   photoCount.textContent=`${filteredPhotos.length} מתוך ${photos.length} תמונות`;
-  gallery.innerHTML=filteredPhotos.map((p,n)=>{
-    const title=esc(photoTitle(p)),cap=photoCaption(p),url=esc(p.imageUrl||'');
-    return `<figure class="photo-card"><div class="photo-wrap"><img src="${url}" loading="lazy" referrerpolicy="no-referrer" alt="${title}" onerror="this.closest('figure').classList.add('img-error');this.alt='לא ניתן להציג את התמונה';" onclick="openPhoto(${n})"><button class="favorite-btn ${p.isFavorite?'active':''}" type="button" aria-label="${p.isFavorite?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${n})">${p.isFavorite?'♥':'♡'}</button>${p.canDelete?`<button class="delete-photo-btn" type="button" aria-label="מחיקת תמונה" onclick="event.preventDefault();event.stopPropagation();deletePhoto(${n})">🗑️</button>`:''}</div><figcaption><strong>${title}</strong>${cap?`<small>📁 ${esc(cap)}</small>`:''}</figcaption></figure>`;
-  }).join('')||'<p>לא נמצאו תמונות התואמות לחיפוש.</p>';
+  const cards=visible.map((p,n)=>{
+    const title=esc(photoTitle(p)),cap=photoCaption(p),url=esc(p.thumbnailUrl||p.imageUrl||'');
+    return `<figure class="photo-card"><div class="photo-wrap"><img src="${url}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" alt="${title}" onerror="this.closest('figure').classList.add('img-error');this.alt='לא ניתן להציג את התמונה';" onclick="openPhoto(${n})"><button class="favorite-btn ${p.isFavorite?'active':''}" type="button" aria-label="${p.isFavorite?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${n},this)">${p.isFavorite?'♥':'♡'}</button>${p.canDelete?`<button class="delete-photo-btn" type="button" aria-label="מחיקת תמונה" onclick="event.preventDefault();event.stopPropagation();deletePhoto(${n})">🗑️</button>`:''}</div><figcaption><strong>${title}</strong>${cap?`<small>📁 ${esc(cap)}</small>`:''}</figcaption></figure>`;
+  }).join('');
+  const more=renderLimit<filteredPhotos.length?`<div class="gallery-more"><button id="loadMorePhotos" class="pill" type="button">טען עוד ${Math.min(RENDER_STEP,filteredPhotos.length-renderLimit)} תמונות</button></div>`:'';
+  gallery.innerHTML=cards+more||'<p>לא נמצאו תמונות התואמות לחיפוש.</p>';
+  const moreBtn=document.getElementById('loadMorePhotos');if(moreBtn)moreBtn.onclick=()=>{renderLimit+=RENDER_STEP;renderGallery();};
 }
 function renderViewerDots(){if(!viewerDots)return;viewerDots.innerHTML=filteredPhotos.map((_,n)=>`<button class="viewer-dot ${n===i?'active':''}" type="button" aria-label="תמונה ${n+1} מתוך ${filteredPhotos.length}" aria-current="${n===i?'true':'false'}" onclick="openPhoto(${n})"></button>`).join('');const active=viewerDots.querySelector('.viewer-dot.active');if(active)active.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
 function openPhoto(n){if(!filteredPhotos.length)return;i=n;const p=filteredPhotos[i];big.src=p.imageUrl||'';big.alt=photoTitle(p);caption.innerHTML=`<strong>${esc(photoTitle(p))}</strong><small>📁 ${esc(photoCaption(p))}</small>`;viewer.classList.add('open');viewer.setAttribute('aria-hidden','false');renderViewerDots();}
-async function toggleFav(n){const p=filteredPhotos[n],s=getSession();if(!s){location.replace('index.html?autoLogin=1&loginRequired=1');return;}try{const r=await API.call('toggleFavorite',{token:s.token,photoId:p.id});if(!r.ok)throw new Error(r.message||'שגיאה');p.isFavorite=!!r.data?.favorite;const original=photos.find(x=>String(x.id)===String(p.id));if(original)original.isFavorite=p.isFavorite;renderGallery();}catch(e){toast(e.message||'לא ניתן לעדכן מועדפים','error');}}
-async function deletePhoto(n){const p=filteredPhotos[n];if(!p?.canDelete)return;if(!confirm('למחוק את התמונה? התמונה תוסר מהאלבום וגם מהמועדפים.'))return;const s=getSession();if(!s)return;try{const r=await API.call('deletePhoto',{token:s.token,id:p.id});if(!r.ok)throw new Error(r.message||'שגיאה');photos=photos.filter(x=>String(x.id)!==String(p.id));filteredPhotos=filteredPhotos.filter(x=>String(x.id)!==String(p.id));renderGallery();toast('התמונה נמחקה','info');}catch(e){toast(e.message||'לא ניתן למחוק את התמונה','error');}}
+async function toggleFav(n,btn){
+  const p=filteredPhotos[n],s=getSession();
+  if(!s){location.replace('index.html?autoLogin=1&loginRequired=1');return;}
+  if(btn?.dataset.pending==='1')return;
+  const previous=!!p.isFavorite, optimistic=!previous;
+  // R6A: optimistic favorite UI. The heart changes immediately while Apps Script saves in the background.
+  p.isFavorite=optimistic;
+  const original=photos.find(x=>String(x.id)===String(p.id));
+  if(original)original.isFavorite=optimistic;
+  if(btn){
+    btn.dataset.pending='1';
+    btn.classList.toggle('active',optimistic);
+    btn.textContent=optimistic?'♥':'♡';
+    btn.setAttribute('aria-label',optimistic?'הסר ממועדפים':'הוסף למועדפים');
+  }
+  try{
+    const r=await API.call('toggleFavorite',{token:s.token,photoId:p.id});
+    if(!r.ok)throw new Error(r.message||'שגיאה');
+    const saved=!!r.data?.favorite;
+    p.isFavorite=saved;
+    if(original)original.isFavorite=saved;
+    // Invalidate cached counters/views only after the server confirms the write.
+    API.cacheRemove('albumView',id);
+    API.cacheRemove('dashboard','main');
+    if(btn){
+      btn.classList.toggle('active',saved);
+      btn.textContent=saved?'♥':'♡';
+      btn.setAttribute('aria-label',saved?'הסר ממועדפים':'הוסף למועדפים');
+    }
+  }catch(e){
+    // Roll back the optimistic state if the server could not save it.
+    p.isFavorite=previous;
+    if(original)original.isFavorite=previous;
+    if(btn){
+      btn.classList.toggle('active',previous);
+      btn.textContent=previous?'♥':'♡';
+      btn.setAttribute('aria-label',previous?'הסר ממועדפים':'הוסף למועדפים');
+    }
+    toast(e.message||'לא ניתן לעדכן מועדפים','error');
+  }finally{
+    if(btn)delete btn.dataset.pending;
+  }
+}
+async function deletePhoto(n){const p=filteredPhotos[n];if(!p?.canDelete)return;if(!confirm('למחוק את התמונה? התמונה תוסר מהאלבום וגם מהמועדפים.'))return;const s=getSession();if(!s)return;try{const r=await API.call('deletePhoto',{token:s.token,id:p.id});if(!r.ok)throw new Error(r.message||'שגיאה');API.cacheRemove('albumView',id);API.cacheRemove('dashboard','main');API.cacheRemove('albums','list');photos=photos.filter(x=>String(x.id)!==String(p.id));filteredPhotos=filteredPhotos.filter(x=>String(x.id)!==String(p.id));renderGallery();toast('התמונה נמחקה','info');}catch(e){toast(e.message||'לא ניתן למחוק את התמונה','error');}}
 function move(n){if(!filteredPhotos.length)return;i=(i+n+filteredPhotos.length)%filteredPhotos.length;openPhoto(i);}
 function closeViewer(){viewer.classList.remove('open');viewer.setAttribute('aria-hidden','true');if(viewerDots)viewerDots.innerHTML='';if(slideTimer){clearInterval(slideTimer);slideTimer=null;}}
 const toggleSearch=document.getElementById('toggleSearch'),photoTools=document.getElementById('photoTools');
