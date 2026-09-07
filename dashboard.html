@@ -9,7 +9,7 @@
   }
 })();
 </script>
-<link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><span id="userName"></span><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">לוח בקרה</span><h1>שלום, <span id="hello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div><div class="dashboard-grid">
+<link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">לוח בקרה</span><h1>שלום, <span id="hello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div><div class="dashboard-grid">
 <a class="metric metric-link" href="albums.html" aria-label="פתיחת אלבומים">
   <span>📚</span><strong id="albumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים ←</b>
 </a>
@@ -48,8 +48,9 @@
     });
   });
   const name = s.user.name || s.user.email || "משתמש";
-  document.getElementById("hello").textContent = name;
-  document.getElementById("userName").textContent = name;
+  const helloEl=document.getElementById("hello");
+  if(helloEl) helloEl.textContent=name;
+  // #userName was intentionally removed in R15W; the unified header user is rendered by layout.js.
 
   // Admin-only dashboard shortcuts. Trash and Administration are intentionally
   // shown only to ADMIN users, matching the permissions used by layout.js.

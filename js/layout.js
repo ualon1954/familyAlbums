@@ -17,6 +17,8 @@ function mountLayout(active=""){
     brand.setAttribute("aria-label","אלבומים משפחתיים – דף הבית");
   }
 
+  const user=getSession()?.user;
+  const isAdmin=String(user?.role||"").toUpperCase()==="ADMIN";
   const navItems=[
     ["index.html","ראשי","home"],
     ["dashboard.html","לוח בקרה","dashboard"],
@@ -24,9 +26,82 @@ function mountLayout(active=""){
     ["favorites.html","מועדפים","favorites"],
     ["about.html","אודות","about"]
   ];
-  const user=getSession()?.user;
-  if(user?.role==="ADMIN") navItems.push(["trash.html","סל מחזור","trash"]);
+  if(isAdmin){
+    navItems.push(["trash.html","סל מחזור","trash"]);
+    navItems.push(["admin.html","ניהול","admin"]);
+  }
   nav.innerHTML=navItems.map(x=>`<a class="${active===x[2]?"active":""}" href="${x[0]}">${x[1]}</a>`).join("");
+
+  // R15V: normalize header actions on every page.
+  // Some older pages have theme as a direct child and others have an .actions wrapper.
+  let actions=top.querySelector(".actions");
+  if(!actions){
+    actions=document.createElement("div");
+    actions.className="actions";
+    top.appendChild(actions);
+  }
+
+  // Move any direct theme button into the shared actions area.
+  [...top.children].forEach(el=>{
+    if(el===actions)return;
+    if(el.tagName==="BUTTON" && /toggleTheme\s*\(/i.test(String(el.getAttribute("onclick")||""))){
+      actions.appendChild(el);
+    }
+  });
+
+  top.querySelectorAll("#adminLink").forEach(el=>el.remove());
+  top.querySelectorAll(".login-open").forEach(el=>el.remove());
+
+  // Remove legacy logout buttons so there is exactly one logout control.
+  top.querySelectorAll("button").forEach(btn=>{
+    const label=(btn.textContent||"").trim();
+    const onclick=String(btn.getAttribute("onclick")||"");
+    if(btn.classList.contains("header-logout") || label==="יציאה" || /logout\s*\(/i.test(onclick)){
+      btn.remove();
+    }
+  });
+
+  // Ensure the theme control is first, and logout is the final toolbar control.
+  let themeBtn=actions.querySelector('button[onclick*="toggleTheme"]');
+  if(!themeBtn){
+    themeBtn=document.createElement("button");
+    themeBtn.type="button";
+    themeBtn.textContent="◐";
+    themeBtn.setAttribute("aria-label","החלפת מצב תצוגה");
+    themeBtn.addEventListener("click",()=>{ if(typeof window.toggleTheme==="function") window.toggleTheme(); });
+    actions.prepend(themeBtn);
+  }
+
+  if(user){
+    const logoutBtn=document.createElement("button");
+    logoutBtn.type="button";
+    logoutBtn.className="header-logout";
+    logoutBtn.textContent="יציאה";
+    logoutBtn.setAttribute("aria-label","יציאה מהמערכת");
+    logoutBtn.addEventListener("click",()=>{
+      if(typeof window.logout==="function") window.logout();
+      else if(window.SessionManager?.logout) SessionManager.logout();
+    });
+    actions.appendChild(logoutBtn);
+  }
+
+  // One consistent signed-in user identity on every page.
+  let headerUser=top.querySelector(".header-user");
+  if(!headerUser){
+    headerUser=document.createElement("div");
+    headerUser.className="header-user";
+    headerUser.setAttribute("aria-label","המשתמש המחובר");
+    if(actions) actions.insertAdjacentElement("beforebegin",headerUser);
+    else nav.insertAdjacentElement("afterend",headerUser);
+  }
+  if(user){
+    const displayName=String(user.name||user.email||"משתמש").trim();
+    const initial=(displayName.charAt(0)||"U").toUpperCase();
+    headerUser.innerHTML=`<span class="header-user-avatar" aria-hidden="true">${esc(initial)}</span><span class="header-user-copy"><small>מחובר</small><strong title="${esc(displayName)}">${esc(displayName)}</strong></span>`;
+    headerUser.hidden=false;
+  }else{
+    headerUser.hidden=true;
+  }
 
   const pageNames={
     home:"ראשי",
@@ -34,7 +109,8 @@ function mountLayout(active=""){
     albums:"אלבומים",
     favorites:"מועדפים",
     about:"אודות",
-    trash:"סל מחזור"
+    trash:"סל מחזור",
+    admin:"ניהול"
   };
   let mobilePageName=top.querySelector(".mobile-page-name");
   if(!mobilePageName){
@@ -76,8 +152,6 @@ function mountLayout(active=""){
 
   const userEl=document.querySelector("#userName");
   if(userEl)userEl.textContent=user?user.name:"אורח";
-  const admin=document.querySelector("#adminLink");
-  if(admin&&user?.role==="ADMIN")admin.style.display="inline-flex";
 }
 
 /* Navigation safety fix: Albums must always open the albums list, never Admin. */

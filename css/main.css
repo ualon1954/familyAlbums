@@ -1065,3 +1065,432 @@ body.dark .about-role-note{
 body.dark .about-role-note strong{
   color:#f0b98d !important;
 }
+
+/* R15S — unified navigation */
+.top nav{align-items:center;gap:16px}
+.top nav .nav-logout{border:1px solid #b93636;background:#c83e3e;color:#fff;border-radius:22px;padding:8px 15px;font-weight:850;line-height:1.2;box-shadow:0 4px 12px rgba(160,38,38,.16)}
+.top nav .nav-logout:hover{background:#ad3030;border-color:#9e2929}
+.dark .top nav .nav-logout{background:#b83a3a;color:#fff;border-color:#d55b5b}
+.dark .top nav .nav-logout:hover{background:#cc4646}
+@media(max-width:1100px) and (min-width:851px){.top{gap:18px;padding-inline:3%}.top nav{gap:10px}.top nav a{font-size:14px}.top nav .nav-logout{padding:7px 11px;font-size:14px}}
+@media(max-width:850px){.top nav .nav-logout{width:100%;min-height:46px;display:flex;align-items:center;justify-content:flex-start;padding:12px 14px;margin-top:5px;border-radius:11px;font-size:16px}}
+
+
+/* R15U — unified signed-in user identity */
+.header-user{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  max-width:190px;
+  padding:6px 10px 6px 12px;
+  border:1px solid rgba(42,39,36,.10);
+  border-radius:18px;
+  background:rgba(255,255,255,.58);
+  color:#2a2724;
+  line-height:1.05;
+}
+.header-user[hidden]{display:none!important}
+.header-user-avatar{
+  flex:0 0 30px;
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#a16e48;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+}
+.header-user-copy{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.header-user-copy small{
+  font-size:10px;
+  color:#817972;
+  font-weight:700;
+}
+.header-user-copy strong{
+  display:block;
+  max-width:125px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:13px;
+  font-weight:900;
+}
+.dark .header-user{
+  background:#24211f;
+  color:#f3eee9;
+  border-color:rgba(255,255,255,.10);
+}
+.dark .header-user-copy small{color:#aaa29b}
+.dark .header-user-avatar{background:#b8794f;color:#fff}
+
+/* The login modal is automatic when no Session exists; no header login button is shown. */
+.top .login-open{display:none!important}
+
+@media(max-width:850px){
+  .header-user{
+    order:3;
+    max-width:118px;
+    padding:5px 7px;
+    gap:6px;
+    border-radius:14px;
+  }
+  .header-user-avatar{
+    flex-basis:27px;
+    width:27px;height:27px;
+    font-size:12px;
+  }
+  .header-user-copy small{display:none}
+  .header-user-copy strong{
+    max-width:72px;
+    font-size:12px;
+  }
+  .actions{order:4}
+}
+
+@media(max-width:560px){
+  .top{gap:6px}
+  .header-user{
+    max-width:96px;
+    padding:4px 6px;
+  }
+  .header-user-avatar{
+    flex-basis:24px;
+    width:24px;height:24px;
+    font-size:11px;
+  }
+  .header-user-copy strong{
+    max-width:58px;
+    font-size:11px;
+  }
+}
+
+@media(max-width:420px){
+  .header-user{max-width:82px}
+  .header-user-copy strong{max-width:45px}
+}
+
+
+/* R15V — logout after theme + stable mobile header */
+.top .actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.top .actions .header-logout{
+  border:1px solid #b93636;
+  background:#c83e3e;
+  color:#fff;
+  border-radius:22px;
+  padding:8px 15px;
+  min-height:40px;
+  font-weight:850;
+  line-height:1.1;
+  box-shadow:0 4px 12px rgba(160,38,38,.16);
+}
+.top .actions .header-logout:hover{
+  background:#ad3030;
+  border-color:#9e2929;
+}
+.dark .top .actions .header-logout{
+  background:#b83a3a;
+  border-color:#d55b5b;
+  color:#fff;
+}
+.dark .top .actions .header-logout:hover{background:#cc4646}
+
+/* Old menu logout no longer participates in layout. */
+.top nav .nav-logout{display:none!important}
+
+@media(max-width:850px){
+  /* Keep the compact header stable on every page, including About. */
+  .brand .brand-name{display:none!important}
+  .brand{flex:0 0 auto;min-width:auto}
+  .mobile-page-name{
+    display:block;
+    flex:1 1 auto;
+    min-width:0;
+    max-width:none;
+    margin-inline:4px;
+    text-align:center;
+  }
+  .header-user{
+    flex:0 1 auto;
+    max-width:104px;
+  }
+  .top .actions{
+    gap:5px;
+    flex:0 0 auto;
+  }
+  .top .actions button{
+    min-width:38px;
+    min-height:38px;
+    padding:7px 9px;
+    border-radius:12px;
+  }
+  .top .actions .header-logout{
+    min-width:auto;
+    padding:7px 10px;
+    font-size:13px;
+    border-radius:12px;
+  }
+}
+
+@media(max-width:560px){
+  .header-user{
+    max-width:78px;
+    padding:4px 5px;
+  }
+  .header-user-avatar{display:none}
+  .header-user-copy strong{max-width:66px}
+  .top .actions .header-logout{
+    padding:7px 8px;
+    font-size:12px;
+  }
+}
+
+@media(max-width:390px){
+  .header-user{display:none}
+  .mobile-page-name{font-size:14px}
+  .top .actions button{min-width:36px;padding:6px 7px}
+  .top .actions .header-logout{font-size:11px}
+}
+
+
+/* R15X — polished mobile header with a stronger family-album logo */
+@media(max-width:850px){
+  .top{
+    min-height:68px;
+    height:68px;
+    padding:7px 10px;
+    gap:7px;
+  }
+
+  /* Hamburger stays on the edge and uses a consistent square touch target. */
+  .menu-toggle{
+    flex:0 0 48px;
+    width:48px;
+    height:48px;
+    border-radius:14px;
+  }
+
+  /* Make the logo the visual anchor of the mobile header. */
+  .brand{
+    order:1;
+    flex:0 0 50px;
+    width:50px;
+    height:50px;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:visible;
+  }
+  .brand .brand-mark{
+    width:48px !important;
+    height:44px !important;
+    flex:0 0 48px !important;
+    border-radius:13px !important;
+    border:2px solid rgba(255,255,255,.82);
+    box-shadow:0 5px 16px rgba(161,110,72,.28),0 0 0 2px rgba(161,110,72,.18);
+    transform:none;
+  }
+  .brand .brand-heart{
+    font-size:24px;
+    line-height:1;
+  }
+  .brand .brand-name{display:none!important}
+
+  /* Page name gets the flexible center space instead of competing with controls. */
+  .mobile-page-name{
+    order:2;
+    flex:1 1 auto;
+    min-width:0;
+    max-width:none;
+    margin:0 5px;
+    text-align:center;
+    font-size:16px;
+    font-weight:900;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+
+  /* User + theme + logout remain compact as one control group. */
+  .header-user{
+    order:3;
+    flex:0 1 auto;
+    max-width:88px;
+    padding:4px 6px;
+    border-radius:13px;
+  }
+  .header-user-avatar{
+    flex-basis:25px;
+    width:25px;height:25px;
+    font-size:11px;
+  }
+  .header-user-copy strong{
+    max-width:48px;
+    font-size:11px;
+  }
+  .top .actions{
+    order:4;
+    gap:5px;
+  }
+  .top .actions button{
+    min-width:42px;
+    height:42px;
+    min-height:42px;
+    padding:7px 9px;
+    border-radius:13px;
+  }
+  .top .actions .header-logout{
+    min-width:auto;
+    padding:7px 10px;
+    font-size:12px;
+  }
+
+  /* Menu itself starts below the taller polished header. */
+  .top nav{
+    top:calc(100% + 7px);
+  }
+}
+
+@media(max-width:600px){
+  .top{
+    padding-inline:7px;
+    gap:5px;
+  }
+  .menu-toggle{
+    flex-basis:46px;
+    width:46px;height:46px;
+  }
+  .brand{
+    flex-basis:47px;
+    width:47px;height:47px;
+  }
+  .brand .brand-mark{
+    width:45px !important;
+    height:42px !important;
+    flex-basis:45px !important;
+  }
+  .mobile-page-name{
+    font-size:15px;
+    margin-inline:2px;
+  }
+  .header-user{
+    max-width:70px;
+  }
+  .header-user-avatar{display:none}
+  .header-user-copy strong{max-width:58px}
+  .top .actions button{
+    min-width:39px;
+    width:auto;
+    height:39px;
+    min-height:39px;
+    padding:6px 8px;
+  }
+  .top .actions .header-logout{
+    padding-inline:8px;
+    font-size:11px;
+  }
+}
+
+@media(max-width:430px){
+  .top{gap:4px}
+  .header-user{display:none}
+  .mobile-page-name{font-size:14px}
+  .top .actions .header-logout{padding-inline:7px}
+}
+
+
+/* R15Y — mobile user: initial circle + username, without "מחובר" */
+@media(max-width:850px){
+  .header-user{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    max-width:118px;
+    padding:4px 6px;
+  }
+  .header-user-avatar{
+    display:grid !important;
+    flex:0 0 24px;
+    width:24px;
+    height:24px;
+    font-size:11px;
+  }
+  .header-user-copy small{display:none !important}
+  .header-user-copy strong{
+    max-width:76px;
+    font-size:11px;
+  }
+}
+@media(max-width:600px){
+  .header-user{
+    display:inline-flex;
+    max-width:105px;
+    padding:4px 5px;
+  }
+  .header-user-avatar{
+    display:grid !important;
+    flex-basis:22px;
+    width:22px;
+    height:22px;
+    font-size:10px;
+  }
+  .header-user-copy strong{max-width:68px}
+}
+@media(max-width:430px){
+  .header-user{
+    display:inline-flex !important;
+    max-width:92px;
+  }
+  .header-user-copy strong{max-width:56px}
+}
+
+
+/* R15Z — mandatory field asterisk */
+.required-star{
+  color:#d62828 !important;
+  font-weight:900;
+}
+.dark .required-star{
+  color:#ff6b6b !important;
+}
+
+
+/* R15ZB — proper red required asterisks */
+.required-field{
+  display:grid;
+  gap:6px;
+  width:100%;
+  min-width:0;
+}
+.required-field-label{
+  display:block;
+  padding-inline:2px;
+  font-size:13px;
+  font-weight:800;
+  color:#5f5751;
+}
+.required-star{
+  color:#d62828 !important;
+  font-weight:900;
+}
+.dark .required-field-label{color:#d7cec7}
+.dark .required-star{color:#ff6b6b !important}
+.required-field > input,
+.required-field > select,
+.required-field .password-field-wrap,
+.required-field .password-field-wrap input{width:100%}
+.photo-meta-row .meta-required{min-width:0}
+@media(max-width:700px){
+  .required-field-label{font-size:12px}
+}
