@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>ניהול</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>ניהול</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
 (function(){
   const s=getSession();
   if(!s || !s.user || !s.token){
@@ -59,7 +59,7 @@
 <div id="apiStatus" class="cover-status">טרם בוצעה בדיקה.</div>
 <button type="button" class="btn" onclick="checkApiStatus()">בדוק חיבור וגרסה</button>
 </section>
-<div class="admin-grid"><section class="panel"><h2>➕ אלבום</h2><input id="at" placeholder="שם אלבום"><textarea id="ad" placeholder="תיאור"></textarea><button class="btn" onclick="newAlbum()">צור</button><p id="am"></p></section><section class="panel"><h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple><p class="hint">בחר תמונות — ניתן להגדיר כותרת ותאריך בנפרד לכל תמונה:</p><div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button><p id="um"></p></section><section class="panel"><h2>👤 משתמש</h2><input id="un" placeholder="שם"><input id="ue" type="email" placeholder="אימייל"><div class="password-field-wrap"><input id="up" type="password" placeholder="סיסמה">
+<div class="admin-grid"><section class="panel"><h2>➕ אלבום</h2><input id="at" placeholder="שם אלבום"><textarea id="ad" placeholder="תיאור"></textarea><button class="btn" onclick="newAlbum()">צור</button><p id="am"></p></section><section class="panel"><h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple><p class="hint">בחר תמונות — חובה להזין כותרת ושנה לכל תמונה:</p><div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button><p id="um"></p></section><section class="panel"><h2>👤 משתמש</h2><input id="un" placeholder="שם"><input id="ue" type="email" placeholder="אימייל"><div class="password-field-wrap"><input id="up" type="password" placeholder="סיסמה">
 <button type="button" class="password-toggle-eye" aria-label="הצג סיסמה" title="הצג סיסמה" data-password-toggle="up">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
@@ -269,7 +269,7 @@ async function newUser(){
 }
 async function editAlbum(id,title){let n=prompt("שם חדש",title);if(!n)return;let r=await API.call("updateAlbum",{token:S.token,id,title:n});toast(r.ok?"עודכן":"שגיאה","info");loadAdmin()}
 async function delAlbum(id){if(!confirm("למחוק את האלבום?"))return;let r=await API.call("deleteAlbum",{token:S.token,id});toast(r.ok?"נמחק":"שגיאה","info");loadAdmin()}
-files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" placeholder="כותרת לתמונה"><input class="meta-date" data-i="${idx}" type="number" min="1800" max="2200" step="1" placeholder="שנה (למשל 1985)" title="שנת התמונה בלבד"><input class="meta-caption" data-i="${idx}" placeholder="תיאור / כיתוב (אופציונלי)"><span class="upload-status waiting" data-upload-status="${idx}">ממתינה</span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
+files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה *"><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה * (למשל 1985)" title="שנת התמונה בלבד"><span class="upload-status waiting" data-upload-status="${idx}">ממתינה</span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
 function readBlobBase64_(blob){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(fr.error||new Error("קריאת הקובץ נכשלה"));fr.readAsDataURL(blob)})}
 function readImageBitmap_(file){
   if(window.createImageBitmap)return createImageBitmap(file);
@@ -312,9 +312,12 @@ async function uploadOne_(item,albumId){
   const base64Start=performance.now();
   const base64=await readBlobBase64_(prepared.blob);
   const base64Ms=Math.round(performance.now()-base64Start);
-  const titleInput=document.querySelector(`.meta-title[data-i="${idx}"]`),dateInput=document.querySelector(`.meta-date[data-i="${idx}"]`),captionInput=document.querySelector(`.meta-caption[data-i="${idx}"]`);
+  const titleInput=document.querySelector(`.meta-title[data-i="${idx}"]`),dateInput=document.querySelector(`.meta-date[data-i="${idx}"]`);
+  const photoTitle=titleInput?.value.trim()||"",photoYear=String(dateInput?.value||"").trim();
+  if(!photoTitle)throw new Error("חובה להזין כותרת לתמונה");
+  if(!/^(19|20|21)\d{2}$/.test(photoYear))throw new Error("חובה להזין שנה תקינה");
   const apiStart=performance.now();
-  const r=await API.call("uploadPhoto",{token:S.token,albumId,fileName:prepared.fileName,mimeType:prepared.mimeType,base64,photoTitle:titleInput?.value.trim()||"",photoDate:dateInput?.value||"",caption:captionInput?.value.trim()||"",clientUploadBytes:prepared.blob.size,clientOriginalBytes:f.size});
+  const r=await API.call("uploadPhoto",{token:S.token,albumId,fileName:prepared.fileName,mimeType:prepared.mimeType,base64,photoTitle,photoDate:photoYear,caption:"",clientUploadBytes:prepared.blob.size,clientOriginalBytes:f.size});
   const apiMs=Math.round(performance.now()-apiStart);
   if(!r.ok)throw new Error(r.message||"העלאה נכשלה");
   const t=r.data?.uploadTiming||{},serverMs=Number(r.meta?.serverMs)||0,networkOverheadMs=Math.max(0,apiMs-serverMs),endToEndMs=Math.round(performance.now()-totalStart);
@@ -327,6 +330,19 @@ async function uploadOne_(item,albumId){
 }
 async function upload(){
   if(!as.value||!files.files.length){um.textContent="בחר אלבום ותמונות";return}
+  const missing=[];
+  [...files.files].forEach((f,idx)=>{
+    const title=document.querySelector(`.meta-title[data-i="${idx}"]`)?.value.trim()||"";
+    const year=String(document.querySelector(`.meta-date[data-i="${idx}"]`)?.value||"").trim();
+    if(!title||!/^(19|20|21)\d{2}$/.test(year))missing.push(idx);
+  });
+  if(missing.length){
+    um.className="upload-summary";
+    um.textContent="חובה להזין כותרת ושנה תקינה לכל תמונה לפני ההעלאה";
+    const first=missing[0];
+    document.querySelector(`.meta-title[data-i="${first}"]`)?.focus();
+    return;
+  }
   const albumId=as.value;
   // Usually already running from files.onchange. If not, prepare once here.
   try{if(uploadPreparedAlbumId!==String(albumId))await prepareSelectedAlbum_();}catch(e){}

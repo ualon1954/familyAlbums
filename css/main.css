@@ -434,3 +434,43 @@ input,textarea,select,button{max-width:100%;box-sizing:border-box}
   background:#302c29;
   color:#f4efe9;
 }
+
+
+/* R15D — restore fixed top header on every screen size */
+.top{
+  position:fixed !important;
+  top:0;
+  right:0;
+  left:0;
+  width:100%;
+  z-index:500;
+}
+body{padding-top:74px}
+@media(max-width:850px){body{padding-top:66px}}
+@media(max-width:600px){body{padding-top:58px}}
+@media(max-height:520px) and (orientation:landscape){
+  .top{position:fixed !important}
+  body{padding-top:58px}
+}
+
+/* R15D — login modal starts in dark mode independently of site theme */
+.login-modal.modal-dark .login-modal-card{
+  background:#24211f;
+  border-color:rgba(255,255,255,.08);
+  color:#f3eee9;
+}
+.login-modal.modal-dark .login-modal-card>p{color:#aaa29b}
+.login-modal.modal-dark .login-modal-card input{
+  background:#171514;
+  color:#fff;
+  border-color:rgba(255,255,255,.14);
+}
+.login-modal.modal-dark .login-modal-card input::placeholder{color:#aaa29b}
+.login-modal.modal-dark .login-close{color:#aaa}
+.login-modal.modal-dark .password-toggle{color:#d29a6d}
+.login-modal.modal-dark .login-theme-toggle{
+  background:#171514;
+  color:#f3eee9;
+  border-color:rgba(255,255,255,.14);
+}
+.login-modal.modal-dark .login-theme-toggle:hover{background:#302b28}

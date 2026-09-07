@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום</title><link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום</title><link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
 (function(){
   const s=getSession();
   if(!s || !s.user || !s.token){
@@ -84,7 +84,7 @@
   .viewer #x .viewer-close-text{display:block!important;font-size:40px!important;line-height:1!important}
   .viewer-arrow-icon{width:24px;height:24px}
 }
-</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Albums</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ALBUM</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="שנה" aria-label="חיפוש לפי שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור" title="סגור"><span class="viewer-close-text" aria-hidden="true">×</span></button><button id="r" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
+</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Albums</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ALBUM</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="משנה" aria-label="חיפוש משנה"><input id="searchYearTo" type="number" min="1800" max="2200" placeholder="עד שנה" aria-label="חיפוש עד שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור" title="סגור"><span class="viewer-close-text" aria-hidden="true">×</span></button><button id="r" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 'use strict';
 mountLayout('albums');
 const params=new URLSearchParams(location.search);
@@ -92,7 +92,7 @@ const id=String(params.get('id')||'').trim();
 let session=getSession();
 let photos=[],filteredPhotos=[],i=0,slideTimer=null,renderLimit=60;
 const RENDER_STEP=60;
-const titleEl=document.getElementById('title'),descriptionEl=document.getElementById('description'),gallery=document.getElementById('gallery'),viewer=document.getElementById('viewer'),big=document.getElementById('big'),caption=document.getElementById('caption'),viewerDots=document.getElementById('viewerDots'),searchTitle=document.getElementById('searchTitle'),searchAlbum=document.getElementById('searchAlbum'),searchYear=document.getElementById('searchYear'),sortYear=document.getElementById('sortYear'),photoCount=document.getElementById('photoCount');
+const titleEl=document.getElementById('title'),descriptionEl=document.getElementById('description'),gallery=document.getElementById('gallery'),viewer=document.getElementById('viewer'),big=document.getElementById('big'),caption=document.getElementById('caption'),viewerDots=document.getElementById('viewerDots'),searchTitle=document.getElementById('searchTitle'),searchAlbum=document.getElementById('searchAlbum'),searchYear=document.getElementById('searchYear'),searchYearTo=document.getElementById('searchYearTo'),sortYear=document.getElementById('sortYear'),photoCount=document.getElementById('photoCount');
 function photoYear(v){const m=String(v||'').match(/(?:^|[^0-9])((?:19|20|21)[0-9]{2})(?:[^0-9]|$)/);return m?m[1]:'';}
 function photoTitle(p){return String(p?.photoTitle||p?.caption||p?.fileName||'ללא כותרת').trim();}
 function albumTitle(p){return String(p?.albumTitle||'').trim();}
@@ -125,8 +125,24 @@ async function init(){
   }catch(e){console.error(e);gallery.innerHTML=`<div class="load-error"><strong>לא ניתן לטעון את התמונות</strong><p>${esc(e?.message||'שגיאה לא ידועה')}</p><button class="pill" type="button" onclick="init()">↻ נסה שוב</button></div>`;photoCount.textContent='';}
 }
 function applyFilters(){
-  const q=searchTitle.value.trim().toLowerCase(),a=searchAlbum.value.trim().toLowerCase(),y=searchYear.value.trim();
-  filteredPhotos=photos.filter(p=>(!q||photoTitle(p).toLowerCase().includes(q))&&(!a||albumTitle(p).toLowerCase().includes(a))&&(!y||photoYear(p.photoDate)===y));
+  const q=searchTitle.value.trim().toLowerCase(),a=searchAlbum.value.trim().toLowerCase(),yFrom=searchYear.value.trim(),yTo=searchYearTo.value.trim();
+
+  const fromComplete=/^\d{4}$/.test(yFrom);
+  const toComplete=/^\d{4}$/.test(yTo);
+  if(fromComplete && toComplete && Number(yTo) < Number(yFrom)){
+    alert('עד שנה לא יכול להיות קטן ממשנה');
+    searchYearTo.focus();
+    filteredPhotos=[];
+    renderPhotos();
+    return;
+  }
+
+  filteredPhotos=photos.filter(p=>{
+    const py=Number(photoYear(p.photoDate))||0;
+    const fromOk=!yFrom||py>=Number(yFrom);
+    const toOk=!yTo||py<=Number(yTo);
+    return (!q||photoTitle(p).toLowerCase().includes(q))&&(!a||albumTitle(p).toLowerCase().includes(a))&&fromOk&&toOk;
+  });
   filteredPhotos.sort((a,b)=>{const ya=Number(photoYear(a.photoDate))||0,yb=Number(photoYear(b.photoDate))||0;return sortYear.value==='oldest'?ya-yb:yb-ya;});
   renderLimit=RENDER_STEP;
   renderGallery();
@@ -198,6 +214,6 @@ document.getElementById('x').onclick=closeViewer;document.getElementById('r').on
 document.addEventListener('keydown',e=>{if(!viewer.classList.contains('open'))return;if(e.key==='Escape')closeViewer();else if(e.key==='ArrowRight')move(1);else if(e.key==='ArrowLeft')move(-1);});
 let viewerTouchX=null;viewer.addEventListener('touchstart',e=>{viewerTouchX=e.changedTouches?.[0]?.clientX??null;},{passive:true});viewer.addEventListener('touchend',e=>{if(viewerTouchX===null)return;const x=e.changedTouches?.[0]?.clientX??viewerTouchX,dx=x-viewerTouchX;viewerTouchX=null;if(Math.abs(dx)>45)move(dx<0?1:-1);},{passive:true});
 document.getElementById('start').onclick=()=>{if(!filteredPhotos.length)return;openPhoto(0);if(slideTimer)clearInterval(slideTimer);slideTimer=setInterval(()=>{if(!viewer.classList.contains('open')){clearInterval(slideTimer);slideTimer=null;}else move(1);},2800);};
-[searchTitle,searchAlbum,searchYear].forEach(el=>el.addEventListener('input',applyFilters));sortYear.addEventListener('change',applyFilters);document.getElementById('clearFilters').onclick=()=>{searchTitle.value='';searchAlbum.value='';searchYear.value='';sortYear.value='newest';applyFilters();};
+[searchTitle,searchAlbum,searchYear,searchYearTo].forEach(el=>el.addEventListener('input',applyFilters));sortYear.addEventListener('change',applyFilters);document.getElementById('clearFilters').onclick=()=>{searchTitle.value='';searchAlbum.value='';searchYear.value='';searchYearTo.value='';sortYear.value='newest';applyFilters();};
 init();
 </script></body></html>

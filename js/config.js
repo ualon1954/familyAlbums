@@ -2,7 +2,7 @@
 window.APP_CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbwDQp4lNf_kNzkAK7EUsrJGECZOClrQqxLMjSqTVbgk4a-aGRz9WTtHVNOGMl5gjTrTTA/exec",
   APP_VERSION: "3.5.10",
-  APP_BUILD: "2026-09-06-R15C-ADMIN-DARK-INPUTS",
-  APP_BUILD_DATE: "2026-09-06 Asia/Jerusalem",
+  APP_BUILD: "2026-09-07-R15D-YEAR-RANGE-VALIDATION",
+  APP_BUILD_DATE: "2026-09-07 Asia/Jerusalem",
   REQUIRED_API_PREFIX: "3.5.10"
 };
