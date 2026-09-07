@@ -28,6 +28,25 @@ function mountLayout(active=""){
   if(user?.role==="ADMIN") navItems.push(["trash.html","סל מחזור","trash"]);
   nav.innerHTML=navItems.map(x=>`<a class="${active===x[2]?"active":""}" href="${x[0]}">${x[1]}</a>`).join("");
 
+  const pageNames={
+    home:"ראשי",
+    dashboard:"לוח בקרה",
+    albums:"אלבומים",
+    favorites:"מועדפים",
+    about:"אודות",
+    trash:"סל מחזור"
+  };
+  let mobilePageName=top.querySelector(".mobile-page-name");
+  if(!mobilePageName){
+    mobilePageName=document.createElement("span");
+    mobilePageName.className="mobile-page-name";
+    mobilePageName.setAttribute("aria-current","page");
+    nav.insertAdjacentElement("beforebegin",mobilePageName);
+  }
+  const path=(location.pathname.split("/").pop()||"index.html").toLowerCase();
+  const currentLabel=path==="admin.html"?"ניהול":(path==="album.html"?"אלבום":(pageNames[active]||""));
+  mobilePageName.textContent=currentLabel;
+
   let menuBtn=top.querySelector(".menu-toggle");
   if(!menuBtn){
     menuBtn=document.createElement("button");

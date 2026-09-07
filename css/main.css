@@ -474,3 +474,53 @@ body{padding-top:74px}
   border-color:rgba(255,255,255,.14);
 }
 .login-modal.modal-dark .login-theme-toggle:hover{background:#302b28}
+
+
+/* R15E — upload metadata layout, mobile page name and stronger active navigation */
+.photo-meta-row{
+  grid-template-columns:minmax(160px,1.1fr) minmax(260px,2fr) minmax(150px,.8fr) auto;
+}
+.photo-meta-row .meta-title{min-width:260px}
+.upload-status:empty{display:none}
+
+.mobile-page-name{
+  display:none;
+  font-weight:900;
+  font-size:16px;
+  line-height:1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:36vw;
+}
+
+@media(max-width:850px){
+  .mobile-page-name{
+    display:block;
+    order:1;
+    margin-inline:2px auto;
+  }
+  .brand{order:2;margin:0}
+  .actions{order:3}
+  .menu-toggle{order:0}
+  .top nav a.active{
+    background:#eee6de;
+    color:#7a4b2d;
+    font-weight:900;
+    border:1px solid rgba(161,110,72,.45);
+    box-shadow:inset 4px 0 0 #a16e48,0 3px 10px rgba(0,0,0,.08);
+  }
+  .dark .top nav a.active{
+    background:#3b312b;
+    color:#f3c59f;
+    border-color:rgba(210,154,109,.42);
+    box-shadow:inset 4px 0 0 #d29a6d,0 3px 12px rgba(0,0,0,.28);
+  }
+}
+@media(max-width:700px){
+  .photo-meta-row{grid-template-columns:1fr}
+  .photo-meta-row .meta-title{min-width:0;width:100%}
+}
+@media(max-width:420px){
+  .mobile-page-name{font-size:15px;max-width:34vw}
+}

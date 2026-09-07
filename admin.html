@@ -59,13 +59,13 @@
 <div id="apiStatus" class="cover-status">טרם בוצעה בדיקה.</div>
 <button type="button" class="btn" onclick="checkApiStatus()">בדוק חיבור וגרסה</button>
 </section>
-<div class="admin-grid"><section class="panel"><h2>➕ אלבום</h2><input id="at" placeholder="שם אלבום"><textarea id="ad" placeholder="תיאור"></textarea><button class="btn" onclick="newAlbum()">צור</button><p id="am"></p></section><section class="panel"><h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple><p class="hint">בחר תמונות — חובה להזין כותרת ושנה לכל תמונה:</p><div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button><p id="um"></p></section><section class="panel"><h2>👤 משתמש</h2><input id="un" placeholder="שם"><input id="ue" type="email" placeholder="אימייל"><div class="password-field-wrap"><input id="up" type="password" placeholder="סיסמה">
+<div class="admin-grid"><section class="panel"><h2>➕ אלבום</h2><input id="at" required aria-required="true" placeholder="שם אלבום *"><textarea id="ad" placeholder="תיאור (אופציונלי)"></textarea><button class="btn" onclick="newAlbum()">צור</button><p id="am"></p></section><section class="panel"><h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple><p class="hint">בחר תמונות — חובה להזין כותרת ושנה לכל תמונה:</p><div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button><p id="um"></p></section><section class="panel"><h2>👤 משתמש</h2><input id="un" required aria-required="true" placeholder="שם *"><input id="ue" required aria-required="true" type="email" placeholder="אימייל *"><div class="password-field-wrap"><input id="up" required aria-required="true" type="password" placeholder="סיסמה *">
 <button type="button" class="password-toggle-eye" aria-label="הצג סיסמה" title="הצג סיסמה" data-password-toggle="up">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
 <circle cx="12" cy="12" r="2.8"/>
 </svg>
-</button></div><select id="ur"><option>FAMILY</option><option>GUEST</option><option>ADMIN</option></select><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main><script src="js/api.js"></script><script src="js/layout.js"></script><script>
+</button></div><select id="ur" required aria-required="true"><option value="" disabled selected>תפקיד *</option><option value="FAMILY">FAMILY</option><option value="GUEST">GUEST</option><option value="ADMIN">ADMIN</option></select><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 const S=requireLogin("ADMIN");
 let adminAlbums=[];
 // R15B: audit-log flushing is scheduled by Apps Script in the background.
@@ -214,7 +214,13 @@ function mergePermissionAlbums_(...lists){
 }
 async function newAlbum(){
   const title=at.value.trim(),description=ad.value;
-  if(!title){am.textContent="✕ שם האלבום חובה";return}
+  if(!title){am.textContent="✕ שם האלבום חובה";at.focus();return}
+  const normalizeAlbumName=v=>String(v||"").trim().replace(/\s+/g," ").toLocaleLowerCase("he-IL");
+  if(adminAlbums.some(a=>normalizeAlbumName(a.title)===normalizeAlbumName(title))){
+    am.textContent="✕ האלבום כבר קיים";
+    at.focus();
+    return;
+  }
   // Preserve the complete album list before createAlbum. In R15B the permissions
   // combo could otherwise be rebuilt from a temporarily partial permAlbums array
   // and show only the newly created album until a manual refresh.
@@ -245,6 +251,11 @@ function mergePermissionUsers_(...lists){
   return [...byId.values()];
 }
 async function newUser(){
+  const name=un.value.trim(),email=ue.value.trim(),password=up.value,role=ur.value;
+  if(!name){msg.textContent="✕ שם הוא שדה חובה";un.focus();return}
+  if(!email){msg.textContent="✕ אימייל הוא שדה חובה";ue.focus();return}
+  if(!password){msg.textContent="✕ סיסמה היא שדה חובה";up.focus();return}
+  if(!role){msg.textContent="✕ תפקיד הוא שדה חובה";ur.focus();return}
   const started=performance.now();
   // Preserve the complete users list already loaded into the permissions bootstrap.
   // In R15A, a createUser response could arrive while permUsers was temporarily
@@ -254,13 +265,13 @@ async function newUser(){
     Array.isArray(cachedBootstrap?.users)?cachedBootstrap.users:[],
     Array.isArray(permUsers)?permUsers:[]
   );
-  let r=await API.call("createUser",{token:S.token,name:un.value,email:ue.value,password:up.value,role:ur.value});
+  let r=await API.call("createUser",{token:S.token,name,email,password,role});
   msg.textContent=r.ok?`✓ נוצר (${((performance.now()-started)/1000).toFixed(1)}s)`:"✕ "+r.message;
   if(!r.ok)return;
   const u=Object.assign({active:true},r.data||{});
   permUsers=mergePermissionUsers_(usersBeforeCreate,permUsers,[u]);
   renderPermissionUsers_(u.id);
-  un.value="";ue.value="";up.value="";
+  un.value="";ue.value="";up.value="";ur.value="";
   API.cacheRemove("albums","");API.cacheRemove("homeAlbums","");updateAdminBootstrapCache_();
   applyPermValues({canView:true,canUpload:false,canDelete:false});
   permDrafts.set(`${String(u.id)}::${String(permAlbum?.value||"")}`,{canView:true,canUpload:false,canDelete:false});
@@ -269,7 +280,7 @@ async function newUser(){
 }
 async function editAlbum(id,title){let n=prompt("שם חדש",title);if(!n)return;let r=await API.call("updateAlbum",{token:S.token,id,title:n});toast(r.ok?"עודכן":"שגיאה","info");loadAdmin()}
 async function delAlbum(id){if(!confirm("למחוק את האלבום?"))return;let r=await API.call("deleteAlbum",{token:S.token,id});toast(r.ok?"נמחק":"שגיאה","info");loadAdmin()}
-files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה *"><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה * (למשל 1985)" title="שנת התמונה בלבד"><span class="upload-status waiting" data-upload-status="${idx}">ממתינה</span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
+files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה *"><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה * (למשל 1985)" title="שנת התמונה בלבד"><span class="upload-status" data-upload-status="${idx}"></span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
 function readBlobBase64_(blob){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(fr.error||new Error("קריאת הקובץ נכשלה"));fr.readAsDataURL(blob)})}
 function readImageBitmap_(file){
   if(window.createImageBitmap)return createImageBitmap(file);
