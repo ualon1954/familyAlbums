@@ -1,21 +1,109 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אודות</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/theme.js"></script><link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><button onclick="toggleTheme()">◐</button></header><main><section class="about-hero"><span class="eyebrow">OUR STORY</span><h1>הסיפור המשפחתי<br><em>שלנו</em></h1><p>מקום שנבנה כדי לשמור את הרגעים שאסור לשכוח.</p></section><section class="section story"><div class="about-image"></div><div><h2>יותר מאלבום</h2><p>ימי הולדת, חגים, טיולים, חתונות ומפגשים משפחתיים — כולם במקום אחד.</p><p>המערכת משתמשת ב-Google Sheets כבסיס נתונים וב-Google Drive לאחסון התמונות.</p><blockquote>“תמונה טובה לא רק מראה רגע — היא מחזירה אותנו אליו.”</blockquote></div></section><section class="section privacy-section">
-      <div class="privacy-card">
-        <div class="privacy-lock" aria-hidden="true">🔒</div>
-        <h2>האלבום המשפחתי הוא פרטי</h2>
-        <p>התמונות והתכנים מיועדים לבני המשפחה ולמוזמנים בלבד. הפרטיות של בני המשפחה חשובה לנו, ולכן<br class="privacy-break">
-        הגישה לאלבום יכולה להיות מוגבלת למשתמשים מורשים בלבד.</p>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אודות</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/theme.js"></script><link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><button onclick="toggleTheme()">◐</button></header><main class="about-main">
+<section class="about-hero about-hero-redesign">
+  <span class="eyebrow">המשפחה שלנו · הסיפור שלנו</span>
+  <h1>הסיפור המשפחתי<br><em>שלנו</em></h1>
+  <p>מקום פרטי ומשפחתי לשמור בו את התמונות, הזיכרונות והסיפורים שמלווים אותנו לאורך השנים.</p>
+</section>
+
+<section class="section story about-story-redesign">
+  <div class="about-image" role="img" aria-label="זיכרונות משפחתיים"></div>
+  <div class="about-story-copy">
+    <span class="eyebrow">למה יצרנו את האלבום</span>
+    <h2>כי הזיכרונות שלנו ראויים למקום משלהם</h2>
+    <p>ימי הולדת, חגים, טיולים, מפגשים משפחתיים ורגעים קטנים מהחיים — כולם מצטברים לסיפור אחד גדול.</p>
+    <p>האלבום נועד לאפשר לנו לשמור את הרגעים האלה בצורה מסודרת, נעימה וקלה לצפייה, ולחזור אליהם בכל זמן.</p>
+    <blockquote>“תמונה טובה לא רק מראה רגע — היא מחזירה אותנו אליו.”</blockquote>
+  </div>
+</section>
+
+<section class="section about-values-section" aria-labelledby="aboutValuesTitle">
+  <div class="about-values-head">
+    <span class="eyebrow">מה חשוב לנו</span>
+    <h2 id="aboutValuesTitle">מה חשוב לנו באלבום המשפחתי</h2>
+  </div>
+  <div class="about-values-grid">
+    <article class="about-value-card">
+      <div class="about-value-icon" aria-hidden="true">♥</div>
+      <h3>משפחה במרכז</h3>
+      <p>האלבום נבנה קודם כול עבור בני המשפחה — כדי שיהיה פשוט למצוא, לראות ולשתף זיכרונות משותפים.</p>
+    </article>
+    <article class="about-value-card">
+      <div class="about-value-icon" aria-hidden="true">🔒</div>
+      <h3>פרטיות</h3>
+      <p>התמונות והתכנים מיועדים לבני המשפחה ולמוזמנים בלבד, והגישה יכולה להיות מוגבלת למשתמשים מורשים.</p>
+    </article>
+    <article class="about-value-card">
+      <div class="about-value-icon" aria-hidden="true">⌛</div>
+      <h3>זיכרונות לאורך השנים</h3>
+      <p>המטרה היא לשמור את הסיפור המשפחתי גם לדורות הבאים — בצורה מסודרת שקל לחזור אליה.</p>
+    </article>
+  </div>
+</section>
+<section class="section about-closing-section">
+  <div class="about-closing-card">
+    <span class="about-closing-heart" aria-hidden="true">♥</span>
+    <div>
+      <span class="eyebrow">זיכרונות משותפים</span>
+      <h2>הסיפור ממשיך להיכתב</h2>
+      <p>כל תמונה חדשה מוסיפה עוד רגע לסיפור המשפחתי שלנו.</p>
+    </div>
+    <a class="btn" href="albums.html">לאלבומים ←</a>
+  </div>
+</section>
+<section id="aboutRolesSection" class="section about-roles-section" aria-labelledby="aboutRolesTitle" hidden>
+  <div class="about-values-head">
+    <span class="eyebrow">תפקידים והרשאות</span>
+    <h2 id="aboutRolesTitle">מי יכול לעשות מה במערכת?</h2>
+    <p class="about-roles-intro">לכל משתמש מוגדר תפקיד. מנהל המערכת קובע גם את ההרשאות לכל אלבום, כך שניתן להתאים את רמת הגישה לכל משתמש.</p>
+  </div>
+
+  <div class="about-roles-grid">
+    <article class="about-role-card about-role-admin">
+      <div class="about-role-icon" aria-hidden="true">⚙️</div>
+      <div>
+        <h3>ADMIN — מנהל</h3>
+        <p>מנהל המערכת. יכול לנהל אלבומים, משתמשים והרשאות, להעלות ולמחוק תמונות, ולגשת לסל המחזור לצורך שחזור או מחיקה לצמיתות.</p>
+        <small>למנהל יש גישה מלאה לכל האלבומים.</small>
       </div>
-    </section>
-    <section class="section about-version-section">
-      <div class="about-version-card">
-        <h2>גרסת המערכת</h2>
-        <p id="appVersionInfo">טוען פרטי גרסה…</p>
+    </article>
+
+    <article class="about-role-card">
+      <div class="about-role-icon" aria-hidden="true">♥</div>
+      <div>
+        <h3>FAMILY — משפחה</h3>
+        <p>משתמש משפחתי רגיל. יכול לצפות באלבומים שהותרו לו, להשתמש במועדפים, ובהתאם להרשאות שהגדיר המנהל גם להעלות תמונות או לערוך ולמחוק תמונות.</p>
+        <small>ההרשאות נקבעות בנפרד לכל אלבום.</small>
       </div>
-    </section></main><footer>© 2026 אלבום משפחתי</footer><script src="js/layout.js"></script><script>
-mountLayout("about");
+    </article>
+
+    <article class="about-role-card">
+      <div class="about-role-icon" aria-hidden="true">👤</div>
+      <div>
+        <h3>GUEST — אורח</h3>
+        <p>משתמש מוזמן שאינו חייב להיות בן משפחה. יכול לצפות באלבומים שהותרו לו ולהשתמש במועדפים. אם המנהל מעניק לו הרשאה מתאימה, ניתן לאפשר גם העלאה או עריכה ומחיקה של תמונות.</p>
+        <small>גם לאורח ניתן להגדיר הרשאות שונות לכל אלבום.</small>
+      </div>
+    </article>
+  </div>
+
+  <div class="about-role-note">
+    <strong>חשוב לדעת:</strong>
+    <span>במערכת הנוכחית ההבדל בין FAMILY ל־GUEST הוא בעיקר סוג המשתמש. ההרשאות בפועל נקבעות על ידי המנהל לכל משתמש ולכל אלבום: צפייה, העלאה ועריכה/מחיקה.</span>
+  </div>
+</section>
+</main><footer class="about-footer">
+  <span>© 2026 אלבום משפחתי</span>
+  <span class="footer-version">גרסה: 3.5.10</span>
+</footer><script src="js/layout.js"></script><script>mountLayout("about");</script><script src="js/session-manager.js"></script><script>
 (function(){
-  const c=window.APP_CONFIG||{};
-  const el=document.getElementById("appVersionInfo");
-  if(el) el.innerHTML=`App Version: <b>${c.APP_VERSION||"לא ידועה"}</b><br>App Build: <b>${c.APP_BUILD||"לא ידוע"}</b>${c.APP_BUILD_DATE?`<br>תאריך Build: ${c.APP_BUILD_DATE}`:""}`;
+  const section=document.getElementById("aboutRolesSection");
+  if(!section) return;
+  let session=null;
+  try{
+    if(window.SessionManager?.getSession) session=SessionManager.getSession();
+    else if(typeof getSession==="function") session=getSession();
+  }catch(_){}
+  const isAdmin=String(session?.user?.role||"").toUpperCase()==="ADMIN";
+  section.hidden=!isAdmin;
 })();
-</script><script src="js/session-manager.js"></script></body></html>
+</script></body></html>

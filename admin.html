@@ -20,6 +20,18 @@
 }
 .password-toggle-eye:hover{opacity:1;background:rgba(128,128,128,.12)}
 .password-toggle-eye svg{width:21px;height:21px;pointer-events:none}
+
+.duplicate-confirm-modal[hidden]{display:none!important}
+.duplicate-confirm-modal{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.46);backdrop-filter:blur(3px)}
+.duplicate-confirm-card{width:min(440px,calc(100vw - 32px));background:#fff;color:#2a2724;border-radius:24px;padding:28px;box-shadow:0 24px 80px rgba(0,0,0,.28);text-align:right}
+.duplicate-confirm-card h2{margin:0 0 14px;font-size:26px}
+.duplicate-confirm-card p{margin:7px 0;line-height:1.6}
+.duplicate-confirm-question{font-weight:800}
+.duplicate-confirm-actions{display:flex;gap:10px;margin-top:22px}
+.duplicate-confirm-actions button{min-width:92px;padding:11px 22px;border-radius:24px;font-weight:800}
+.duplicate-no{border:1px solid #0002;background:#f0f2f5;color:#2a2724}
+.dark .duplicate-confirm-card{background:#24211f;color:#f4efe9;border:1px solid #fff1}
+.dark .duplicate-no{background:#34302d;color:#f4efe9;border-color:#fff2}
 </style>
 
 <style id="album-cover-manager-style">
@@ -65,7 +77,19 @@
 <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
 <circle cx="12" cy="12" r="2.8"/>
 </svg>
-</button></div><select id="ur" required aria-required="true"><option value="" disabled selected>תפקיד *</option><option value="FAMILY">FAMILY</option><option value="GUEST">GUEST</option><option value="ADMIN">ADMIN</option></select><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main><script src="js/api.js"></script><script src="js/layout.js"></script><script>
+</button></div><select id="ur" required aria-required="true"><option value="" disabled selected>תפקיד *</option><option value="FAMILY">FAMILY</option><option value="GUEST">GUEST</option><option value="ADMIN">ADMIN</option></select><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main>
+<div id="duplicateConfirmModal" class="duplicate-confirm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="duplicateConfirmTitle">
+  <div class="duplicate-confirm-card">
+    <h2 id="duplicateConfirmTitle">הקובץ כבר קיים</h2>
+    <p id="duplicateConfirmText"></p>
+    <p class="duplicate-confirm-question">להחליף אותו?</p>
+    <div class="duplicate-confirm-actions">
+      <button type="button" class="btn duplicate-yes" data-duplicate-answer="yes">כן</button>
+      <button type="button" class="duplicate-no" data-duplicate-answer="no">לא</button>
+    </div>
+  </div>
+</div>
+<script src="js/api.js"></script><script src="js/layout.js"></script><script>
 const S=requireLogin("ADMIN");
 let adminAlbums=[];
 // R15B: audit-log flushing is scheduled by Apps Script in the background.
@@ -256,6 +280,13 @@ async function newUser(){
   if(!email){msg.textContent="✕ אימייל הוא שדה חובה";ue.focus();return}
   if(!password){msg.textContent="✕ סיסמה היא שדה חובה";up.focus();return}
   if(!role){msg.textContent="✕ תפקיד הוא שדה חובה";ur.focus();return}
+  const normalizedEmail=email.toLowerCase();
+  const existingUser=(Array.isArray(permUsers)?permUsers:[]).find(u=>String(u?.email||"").trim().toLowerCase()===normalizedEmail);
+  if(existingUser){
+    msg.textContent="✕ המשתמש כבר קיים";
+    ue.focus();
+    return;
+  }
   const started=performance.now();
   // Preserve the complete users list already loaded into the permissions bootstrap.
   // In R15A, a createUser response could arrive while permUsers was temporarily
@@ -280,7 +311,7 @@ async function newUser(){
 }
 async function editAlbum(id,title){let n=prompt("שם חדש",title);if(!n)return;let r=await API.call("updateAlbum",{token:S.token,id,title:n});toast(r.ok?"עודכן":"שגיאה","info");loadAdmin()}
 async function delAlbum(id){if(!confirm("למחוק את האלבום?"))return;let r=await API.call("deleteAlbum",{token:S.token,id});toast(r.ok?"נמחק":"שגיאה","info");loadAdmin()}
-files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה *"><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה * (למשל 1985)" title="שנת התמונה בלבד"><span class="upload-status" data-upload-status="${idx}"></span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
+files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה *"><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה *" title="שנת התמונה בלבד"><span class="upload-status" data-upload-status="${idx}"></span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
 function readBlobBase64_(blob){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(fr.error||new Error("קריאת הקובץ נכשלה"));fr.readAsDataURL(blob)})}
 function readImageBitmap_(file){
   if(window.createImageBitmap)return createImageBitmap(file);
@@ -328,16 +359,47 @@ async function uploadOne_(item,albumId){
   if(!photoTitle)throw new Error("חובה להזין כותרת לתמונה");
   if(!/^(19|20|21)\d{2}$/.test(photoYear))throw new Error("חובה להזין שנה תקינה");
   const apiStart=performance.now();
-  const r=await API.call("uploadPhoto",{token:S.token,albumId,fileName:prepared.fileName,mimeType:prepared.mimeType,base64,photoTitle,photoDate:photoYear,caption:"",clientUploadBytes:prepared.blob.size,clientOriginalBytes:f.size});
+  const r=await API.call("uploadPhoto",{token:S.token,albumId,fileName:prepared.fileName,mimeType:prepared.mimeType,base64,photoTitle,photoDate:photoYear,caption:"",replaceExistingId:item.replaceExistingId||"",clientUploadBytes:prepared.blob.size,clientOriginalBytes:f.size});
   const apiMs=Math.round(performance.now()-apiStart);
   if(!r.ok)throw new Error(r.message||"העלאה נכשלה");
   const t=r.data?.uploadTiming||{},serverMs=Number(r.meta?.serverMs)||0,networkOverheadMs=Math.max(0,apiMs-serverMs),endToEndMs=Math.round(performance.now()-totalStart);
   const diag={fileName:prepared.fileName,prepareMs,base64Ms,apiMs,serverMs,networkOverheadMs,endToEndMs,serverTrace:r.meta?.trace||{},uploadTiming:t};
   const timing=` · Total ${(endToEndMs/1000).toFixed(1)}s · API ${(apiMs/1000).toFixed(1)}s · Server ${(serverMs/1000).toFixed(1)}s · Drive ${(Number(t.driveMs||0)/1000).toFixed(1)}s · Sheets ${(Number(t.sheetsMs||0)/1000).toFixed(1)}s`;
-  setUploadStatus_(idx,`✓ הושלמה${timing}`,"done");
+  setUploadStatus_(idx,`${r.data?.replaced?"✓ הוחלף":"✓ הושלמה"}${timing}`,"done");
   console.info("[Upload R13 diagnostic]",diag);
   try{sessionStorage.setItem("FPA_LAST_UPLOAD_DIAGNOSTIC",JSON.stringify(diag));}catch(e){}
   return r;
+}
+
+function askReplaceDuplicate_(fileName){
+  return new Promise(resolve=>{
+    const modal=document.getElementById("duplicateConfirmModal");
+    const text=document.getElementById("duplicateConfirmText");
+    if(!modal){resolve(false);return}
+    text.textContent=`הקובץ "${fileName}" כבר קיים.`;
+    modal.hidden=false;
+    const yes=modal.querySelector('[data-duplicate-answer="yes"]');
+    const no=modal.querySelector('[data-duplicate-answer="no"]');
+    let finished=false;
+    const finish=value=>{
+      if(finished)return;
+      finished=true;
+      modal.hidden=true;
+      yes.removeEventListener("click",onYes);
+      no.removeEventListener("click",onNo);
+      document.removeEventListener("keydown",onKey);
+      resolve(value);
+    };
+    const onYes=()=>finish(true);
+    const onNo=()=>finish(false);
+    const onKey=e=>{
+      if(e.key==="Escape"){e.preventDefault();finish(false)}
+    };
+    yes.addEventListener("click",onYes);
+    no.addEventListener("click",onNo);
+    document.addEventListener("keydown",onKey);
+    yes.focus();
+  });
 }
 async function upload(){
   if(!as.value||!files.files.length){um.textContent="בחר אלבום ותמונות";return}
@@ -357,10 +419,46 @@ async function upload(){
   const albumId=as.value;
   // Usually already running from files.onchange. If not, prepare once here.
   try{if(uploadPreparedAlbumId!==String(albumId))await prepareSelectedAlbum_();}catch(e){}
-  const items=[...files.files].map((f,idx)=>({f,idx}));
+
+  // R15M: one server-side duplicate lookup for the whole selection.
+  // Existing file names are confirmed one by one: Yes = replace, No = skip.
+  const selected=[...files.files];
+  let duplicateRows=[];
+  try{
+    const dr=await API.call("checkUploadDuplicates",{token:S.token,albumId,fileNames:selected.map(f=>f.name)});
+    if(!dr?.ok)throw new Error(dr?.message||"בדיקת כפילויות נכשלה");
+    duplicateRows=Array.isArray(dr.data)?dr.data:[];
+  }catch(e){
+    um.className="upload-summary";
+    um.textContent="✕ לא ניתן לבדוק כפילויות: "+(e.message||e);
+    return;
+  }
+
+  const items=[];
+  let skipped=0;
+  for(let idx=0;idx<selected.length;idx++){
+    const f=selected[idx],dup=duplicateRows[idx];
+    if(dup?.exists){
+      const replace=await askReplaceDuplicate_(f.name);
+      if(!replace){
+        skipped++;
+        setUploadStatus_(idx,"דולג — הקובץ כבר קיים","error");
+        continue;
+      }
+      items.push({f,idx,replaceExistingId:String(dup.photoId||"")});
+    }else{
+      items.push({f,idx,replaceExistingId:""});
+    }
+  }
+  if(!items.length){
+    um.className="upload-summary";
+    um.textContent=skipped?`לא הועלו קבצים · ${skipped} קבצים כבר קיימים`:"לא נבחרו קבצים להעלאה";
+    return;
+  }
+
   const concurrency=Math.min(3,items.length);let next=0,done=0,failed=0;const errors=[];
-  um.className="upload-summary";um.textContent=`מעלה 0 מתוך ${items.length}...`;
-  async function worker(){while(true){const pos=next++;if(pos>=items.length)return;const item=items[pos];try{await uploadOne_(item,albumId);done++;}catch(e){failed++;errors.push(`${item.f.name}: ${e.message||e}`);setUploadStatus_(item.idx,"✕ שגיאה","error");}um.textContent=`הושלמו ${done} מתוך ${items.length}${failed?` · שגיאות ${failed}`:""}`;}}
+  um.className="upload-summary";um.textContent=`מעלה 0 מתוך ${items.length}${skipped?` · דולגו ${skipped}`:""}...`;
+  async function worker(){while(true){const pos=next++;if(pos>=items.length)return;const item=items[pos];try{await uploadOne_(item,albumId);done++;}catch(e){failed++;errors.push(`${item.f.name}: ${e.message||e}`);setUploadStatus_(item.idx,"✕ שגיאה","error");}um.textContent=`הושלמו ${done} מתוך ${items.length}${skipped?` · דולגו ${skipped}`:""}${failed?` · שגיאות ${failed}`:""}`;}}
   await Promise.all(Array.from({length:concurrency},worker));
   // R13: flush Photos metadata and ActivityLog outside the critical upload path.
   // The success state above is already visible; both writes are performed in
@@ -370,8 +468,8 @@ async function upload(){
     API.call("flushUploadLogs",{token:S.token}).then(r=>{if(r?.ok&&r.data?.flushed)console.info("[Upload logs flushed]",r.data.flushed)})
   ]).then(()=>{API.cacheClear();}).catch(()=>{});
   API.cacheClear();
-  if(failed){um.textContent=`הסתיים: ${done} הועלו, ${failed} נכשלו. ${errors[0]||""}`;return}
-  um.textContent=`✓ כל ${done} התמונות הועלו בהצלחה`;
+  if(failed){um.textContent=`הסתיים: ${done} הועלו, ${failed} נכשלו${skipped?`, ${skipped} דולגו`:""}. ${errors[0]||""}`;return}
+  um.textContent=`✓ ${done} תמונות הועלו בהצלחה${skipped?` · ${skipped} דולגו כי כבר קיימות`:""}`;
   files.value="";photoMeta.innerHTML="";await loadAdmin();
 }
 async function openCoverManager(albumId){

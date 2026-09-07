@@ -524,3 +524,523 @@ body{padding-top:74px}
 @media(max-width:420px){
   .mobile-page-name{font-size:15px;max-width:34vw}
 }
+
+
+/* R15F — cleaner, more engaging home page; no album cards on home */
+.home-main{overflow:hidden}
+.home-hero{position:relative}
+.home-hero-copy{position:relative;z-index:1}
+.home-hero-copy p{max-width:620px}
+.home-hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:26px}
+.home-secondary-link{
+  display:inline-flex;align-items:center;min-height:44px;
+  font-weight:800;text-decoration:none;color:inherit;
+  border-bottom:1px solid rgba(42,39,36,.28)
+}
+.dark .home-secondary-link{border-bottom-color:rgba(255,255,255,.25)}
+.home-welcome{padding-top:22px;padding-bottom:22px}
+.home-welcome-card{
+  max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:auto 1fr;align-items:center;gap:28px;
+  padding:34px 38px;border-radius:28px;
+  background:linear-gradient(135deg,#faf7f3,#f0e8df);
+  border:1px solid rgba(42,39,36,.07);
+}
+.home-welcome-icon{
+  width:78px;height:78px;border-radius:24px;
+  display:grid;place-items:center;font-size:34px;
+  background:#fff;color:#a16e48;
+  box-shadow:0 12px 28px rgba(69,49,34,.09)
+}
+.home-welcome-card h2{font-size:clamp(28px,4vw,46px);line-height:1.12;margin:8px 0 12px}
+.home-welcome-card p{margin:0;max-width:820px;color:#6b645f;font-size:17px;line-height:1.75}
+.home-stats{margin-top:10px}
+.home-cta{padding-top:30px}
+.home-cta-card{
+  max-width:1180px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;gap:30px;
+  padding:42px;border-radius:30px;
+  background:#2a2724;color:#f8f3ee;
+  box-shadow:0 20px 50px rgba(35,29,25,.13)
+}
+.home-cta-card h2{font-size:clamp(30px,4vw,46px);margin:8px 0 10px}
+.home-cta-card p{margin:0;color:#c9c1bb;font-size:17px;line-height:1.7;max-width:700px}
+.home-cta-card .btn{flex:0 0 auto}
+.dark .home-welcome-card{
+  background:linear-gradient(135deg,#2c2825,#24211f);
+  border-color:rgba(255,255,255,.08)
+}
+.dark .home-welcome-icon{background:#191715;color:#d29a6d;box-shadow:none}
+.dark .home-welcome-card p{color:#bdb6b0}
+.dark .home-cta-card{background:#191715;border:1px solid rgba(255,255,255,.08)}
+@media(max-width:850px){
+  .home-welcome-card{padding:28px;gap:20px}
+  .home-cta-card{padding:32px;align-items:flex-start}
+}
+@media(max-width:600px){
+  .home-hero-actions{gap:14px}
+  .home-welcome{padding-top:14px;padding-bottom:14px}
+  .home-welcome-card{grid-template-columns:1fr;padding:24px 20px;border-radius:22px}
+  .home-welcome-icon{width:58px;height:58px;border-radius:18px;font-size:26px}
+  .home-welcome-card h2{font-size:clamp(27px,9vw,36px)}
+  .home-welcome-card p{font-size:16px}
+  .home-cta{padding-top:20px}
+  .home-cta-card{display:grid;padding:28px 20px;border-radius:24px}
+  .home-cta-card .btn{width:100%;text-align:center}
+}
+
+
+/* R15G — About page: less technical, more family-focused */
+.about-hero-redesign{
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:24px;
+}
+.about-hero-redesign p{
+  max-width:760px;
+  margin-inline:auto;
+  font-size:18px;
+  line-height:1.8;
+}
+.about-story-redesign{
+  align-items:center;
+  gap:clamp(34px,6vw,76px);
+}
+.about-story-copy h2{
+  font-size:clamp(32px,4.5vw,52px);
+  line-height:1.12;
+  margin:8px 0 20px;
+}
+.about-story-copy p{
+  font-size:17px;
+  line-height:1.8;
+}
+.about-values-section{
+  padding-top:28px;
+}
+.about-values-head{
+  text-align:center;
+  max-width:820px;
+  margin:0 auto 30px;
+}
+.about-values-head h2{
+  font-size:clamp(30px,4.4vw,48px);
+  margin:8px 0 0;
+}
+.about-values-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  max-width:1180px;
+  margin:0 auto;
+}
+.about-value-card{
+  padding:30px 26px;
+  border-radius:24px;
+  background:#faf8f5;
+  border:1px solid rgba(42,39,36,.08);
+  text-align:center;
+}
+.about-value-icon{
+  width:58px;height:58px;
+  display:grid;place-items:center;
+  margin:0 auto 18px;
+  border-radius:18px;
+  background:#fff;
+  font-size:26px;
+  color:#a16e48;
+  box-shadow:0 10px 24px rgba(69,49,34,.08);
+}
+.about-value-card h3{
+  margin:0 0 12px;
+  font-size:22px;
+}
+.about-value-card p{
+  margin:0;
+  color:#6b645f;
+  line-height:1.75;
+}
+.about-closing-card{
+  max-width:1180px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:24px;
+  padding:34px 38px;
+  border-radius:28px;
+  background:#2a2724;
+  color:#f8f3ee;
+}
+.about-closing-heart{
+  width:64px;height:64px;
+  display:grid;place-items:center;
+  border-radius:20px;
+  background:#3a342f;
+  color:#e4ad82;
+  font-size:28px;
+}
+.about-closing-card h2{
+  margin:6px 0 8px;
+  font-size:clamp(28px,4vw,42px);
+}
+.about-closing-card p{
+  margin:0;
+  color:#c9c1bb;
+  line-height:1.7;
+}
+.about-version-simple{
+  text-align:center;
+  padding:16px 20px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.about-version-simple p{
+  margin:0;
+  font-size:14px;
+  color:#8a837d;
+}
+.dark .about-value-card{
+  background:#24211f;
+  border-color:rgba(255,255,255,.08);
+}
+.dark .about-value-icon{
+  background:#191715;
+  color:#d29a6d;
+  box-shadow:none;
+}
+.dark .about-value-card p{color:#bdb6b0}
+.dark .about-closing-card{
+  background:#191715;
+  border:1px solid rgba(255,255,255,.08);
+}
+.dark .about-closing-heart{background:#2b2724;color:#d29a6d}
+.dark .about-version-simple{background:transparent;border:0;box-shadow:none}
+.dark .about-version-simple p{color:#8f8882}
+@media(max-width:850px){
+  .about-values-grid{grid-template-columns:1fr}
+  .about-value-card{text-align:right}
+  .about-value-icon{margin:0 0 18px auto}
+  .about-closing-card{grid-template-columns:auto 1fr}
+  .about-closing-card .btn{grid-column:1/-1;width:100%;text-align:center}
+}
+@media(max-width:600px){
+  .about-hero-redesign{padding-inline:12px}
+  .about-hero-redesign p{font-size:16px}
+  .about-story-copy h2{font-size:clamp(28px,9vw,38px)}
+  .about-value-card{padding:24px 20px}
+  .about-closing-card{grid-template-columns:1fr;padding:26px 20px}
+  .about-closing-heart{width:54px;height:54px;border-radius:17px}
+}
+
+
+/* R15I — Hebrew heading typography
+   Hebrew labels need more size and much less tracking than the original English uppercase style. */
+:root{
+  --heading-font:"Segoe UI","Arial Hebrew",Arial,sans-serif;
+}
+
+/* Primary page and section headings */
+main h1,
+main h2,
+.albums-head h1,
+.heading h1,
+.heading h2,
+.login-modal-card h2{
+  font-family:var(--heading-font);
+  font-weight:850;
+  letter-spacing:-0.035em;
+  text-wrap:balance;
+}
+
+/* The former English "eyebrow" labels are now Hebrew sub-headings. */
+.eyebrow{
+  font-family:var(--heading-font) !important;
+  display:inline-block;
+  font-size:15.5px !important;
+  line-height:1.45;
+  font-weight:850;
+  letter-spacing:.01em !important;
+  color:#9a6846;
+}
+
+/* Make translated labels feel intentional rather than like tiny English captions. */
+.hero .eyebrow,
+.about-hero .eyebrow,
+.home-welcome-card .eyebrow,
+.home-cta-card .eyebrow,
+.about-story-copy .eyebrow,
+.about-values-head .eyebrow,
+.about-closing-card .eyebrow,
+.albums-head .eyebrow{
+  padding:5px 11px;
+  border-radius:999px;
+  background:rgba(161,110,72,.09);
+  border:1px solid rgba(161,110,72,.14);
+}
+
+/* Slightly more natural Hebrew spacing in the large hero titles. */
+.hero h1,
+.about-hero h1{
+  letter-spacing:-0.045em !important;
+  line-height:1.01;
+}
+
+/* Section titles should remain comfortably readable on desktop. */
+.home-welcome-card h2,
+.home-cta-card h2,
+.about-story-copy h2,
+.about-values-head h2,
+.about-closing-card h2{
+  letter-spacing:-0.03em;
+}
+
+/* Dark mode */
+.dark .eyebrow{color:#e0aa80}
+.dark .hero .eyebrow,
+.dark .about-hero .eyebrow,
+.dark .home-welcome-card .eyebrow,
+.dark .home-cta-card .eyebrow,
+.dark .about-story-copy .eyebrow,
+.dark .about-values-head .eyebrow,
+.dark .about-closing-card .eyebrow,
+.dark .albums-head .eyebrow{
+  background:rgba(210,154,109,.10);
+  border-color:rgba(210,154,109,.18);
+}
+
+/* Mobile: do not shrink Hebrew labels back to the old 10px English size. */
+@media(max-width:600px){
+  .eyebrow{
+    font-size:14px !important;
+    letter-spacing:0 !important;
+    line-height:1.4;
+  }
+  main h1,
+  main h2,
+  .albums-head h1,
+  .heading h1,
+  .heading h2{
+    letter-spacing:-0.03em !important;
+  }
+}
+
+
+/* R15J — clear role explanations on About page */
+.about-roles-section{padding-top:34px}
+.about-roles-intro{
+  max-width:780px;
+  margin:14px auto 0;
+  color:#6b645f;
+  font-size:17px;
+  line-height:1.75;
+}
+.about-roles-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  max-width:1180px;
+  margin:0 auto;
+}
+.about-role-card{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:28px 24px;
+  border-radius:24px;
+  background:#faf8f5;
+  border:1px solid rgba(42,39,36,.08);
+}
+.about-role-icon{
+  flex:0 0 auto;
+  width:54px;height:54px;
+  display:grid;place-items:center;
+  border-radius:17px;
+  background:#fff;
+  font-size:24px;
+  box-shadow:0 10px 24px rgba(69,49,34,.07);
+}
+.about-role-card h3{
+  margin:2px 0 10px;
+  font-size:21px;
+  line-height:1.3;
+}
+.about-role-card p{
+  margin:0 0 12px;
+  color:#625b56;
+  line-height:1.7;
+}
+.about-role-card small{
+  display:block;
+  color:#8b6b55;
+  font-weight:750;
+  line-height:1.55;
+}
+.about-role-admin{border-color:rgba(161,110,72,.22)}
+.about-role-note{
+  max-width:1180px;
+  margin:18px auto 0;
+  padding:17px 20px;
+  border-radius:16px;
+  background:rgba(161,110,72,.08);
+  border:1px solid rgba(161,110,72,.14);
+  line-height:1.7;
+}
+.about-role-note strong{margin-left:5px}
+.dark .about-roles-intro{color:#bdb6b0}
+.dark .about-role-card{
+  background:#24211f;
+  border-color:rgba(255,255,255,.08);
+}
+.dark .about-role-admin{border-color:rgba(210,154,109,.25)}
+.dark .about-role-icon{
+  background:#191715;
+  box-shadow:none;
+}
+.dark .about-role-card p{color:#bdb6b0}
+.dark .about-role-card small{color:#d3a27c}
+.dark .about-role-note{
+  background:rgba(210,154,109,.09);
+  border-color:rgba(210,154,109,.16);
+}
+@media(max-width:900px){
+  .about-roles-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .about-roles-intro{font-size:16px}
+  .about-role-card{padding:22px 18px}
+  .about-role-icon{width:48px;height:48px;border-radius:15px;font-size:21px}
+}
+
+
+/* R15L — About footer version */
+.about-footer{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px 18px;
+}
+.about-footer .footer-version{
+  opacity:.72;
+  font-size:.92em;
+}
+@media(max-width:600px){
+  .about-footer{gap:5px 12px}
+}
+
+
+/* R15O — Complete Light Mode alignment for Home + About
+   Some promotional cards were intentionally dark even in light mode.
+   In light mode every Home/About content section now uses a light surface;
+   dark surfaces are reserved for .dark mode only. */
+
+/* Home */
+.home-cta-card{
+  background:#fff !important;
+  color:#2a2724 !important;
+  border:1px solid rgba(42,39,36,.08) !important;
+  box-shadow:0 16px 42px rgba(55,43,34,.08) !important;
+}
+.home-cta-card p{color:#6b645f !important}
+.home-cta-card .btn{
+  background:#2a2724;
+  color:#fff;
+}
+
+/* About closing card */
+.about-closing-card{
+  background:#fff !important;
+  color:#2a2724 !important;
+  border:1px solid rgba(42,39,36,.08) !important;
+  box-shadow:0 16px 42px rgba(55,43,34,.08);
+}
+.about-closing-heart{
+  background:#f2ebe4 !important;
+  color:#a16e48 !important;
+}
+.about-closing-card p{color:#6b645f !important}
+
+/* About role area (ADMIN only) */
+.about-role-card{
+  background:#faf8f5;
+  color:#2a2724;
+}
+.about-role-icon{
+  background:#fff;
+  color:#2a2724;
+}
+.about-role-note{
+  color:#2a2724;
+}
+
+/* Light footer + text consistency */
+body:not(.dark) .about-footer,
+body:not(.dark) footer{
+  color:#777;
+  border-top-color:rgba(42,39,36,.08);
+}
+
+/* Restore intended dark surfaces only when dark mode is active */
+.dark .home-cta-card{
+  background:#191715 !important;
+  color:#f8f3ee !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
+}
+.dark .home-cta-card p{color:#c9c1bb !important}
+.dark .home-cta-card .btn{
+  background:#f3eee9;
+  color:#1b1816;
+}
+
+.dark .about-closing-card{
+  background:#191715 !important;
+  color:#f8f3ee !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none;
+}
+.dark .about-closing-heart{
+  background:#2b2724 !important;
+  color:#d29a6d !important;
+}
+.dark .about-closing-card p{color:#c9c1bb !important}
+
+
+/* R15P — Family Albums brand */
+.brand .brand-name{
+  display:inline-flex;
+  align-items:baseline;
+  gap:5px;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.45px;
+  white-space:nowrap;
+}
+.brand .brand-name-main{
+  color:inherit;
+}
+.brand .brand-name-accent{
+  color:#a16e48;
+  font-weight:850;
+  position:relative;
+}
+.brand .brand-name-accent::after{
+  content:"";
+  position:absolute;
+  right:0;
+  left:0;
+  bottom:-5px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(161,110,72,.75),transparent);
+}
+.dark .brand .brand-name-accent{
+  color:#e0aa80;
+}
+
+/* Small screens keep the existing compact behavior: icon only. */
+@media(max-width:560px){
+  .brand .brand-name{display:none !important}
+}

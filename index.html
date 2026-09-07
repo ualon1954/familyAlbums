@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>Family Photo Album</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום משפחתי</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/theme.js"></script>
 <style id="password-toggle-eye-style">
 .password-field-wrap{position:relative;display:flex;align-items:center}
 .password-field-wrap input{width:100%;padding-right:48px!important}
@@ -19,7 +19,49 @@
 .login-input-wrap input{padding-left:48px!important}
 .login-input-wrap .password-field-wrap{width:100%}
 .login-input-wrap .password-field-wrap .field-icon{display:none}
-</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><a id="adminLink" class="pill" style="display:none" href="admin.html">ניהול</a><button class="pill login-open" type="button" onclick="openLoginModal()">כניסה</button></div></header><main><section class="hero"><div><span class="eyebrow">OUR FAMILY · OUR STORY</span><h1>החיים שלנו<br><em>בתמונות</em></h1><p>אלבום משפחתי דיגיטלי לשמירת טיולים, חגים, אירועים והרגעים הקטנים.</p><a class="btn" href="albums.html">גלה את האלבומים</a></div><div class="hero-image"></div></section><section class="stats"><div><strong>∞</strong><small>זיכרונות</small></div><div><strong>24/7</strong><small>גישה</small></div><div><strong>100%</strong><small>משפחתי</small></div><div><strong>☁</strong><small>Google Drive</small></div></section><section class="section"><div class="heading"><h2>אלבומים אחרונים</h2><a href="albums.html">לכל האלבומים ←</a></div><div id="recentAlbums" class="cards"></div></section></main>
+</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><a id="adminLink" class="pill" style="display:none" href="admin.html">ניהול</a><button class="pill login-open" type="button" onclick="openLoginModal()">כניסה</button></div></header><main class="home-main">
+<section class="hero home-hero">
+  <div class="home-hero-copy">
+    <span class="eyebrow">המשפחה שלנו · הסיפור שלנו</span>
+    <h1>הזיכרונות שלנו<br><em>נשארים קרובים</em></h1>
+    <p>מקום משפחתי אחד לכל התמונות, הרגעים והסיפורים שאנחנו רוצים לשמור — ולחזור אליהם שוב ושוב.</p>
+    <div class="home-hero-actions">
+      <a class="btn" href="albums.html">פתיחת האלבומים</a>
+      <a class="home-secondary-link" href="about.html">הסיפור שלנו ←</a>
+    </div>
+  </div>
+  <div class="hero-image home-hero-image" role="img" aria-label="תמונה משפחתית"></div>
+</section>
+
+<section class="home-welcome section" aria-labelledby="homeWelcomeTitle">
+  <div class="home-welcome-card">
+    <span class="home-welcome-icon" aria-hidden="true">♥</span>
+    <div>
+      <span class="eyebrow">זיכרונות משותפים</span>
+      <h2 id="homeWelcomeTitle">כל המשפחה. כל הזיכרונות. במקום אחד.</h2>
+      <p>טיולים, חגים, אירועים ורגעים קטנים מהחיים — מסודרים באלבומים פרטיים ונגישים לבני המשפחה.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stats home-stats" aria-label="יתרונות האלבום">
+  <div><strong>∞</strong><small>זיכרונות לשמור</small></div>
+  <div><strong>24/7</strong><small>גישה מכל מקום</small></div>
+  <div><strong>♥</strong><small>רק למשפחה</small></div>
+  <div><strong>☁</strong><small>שמירה בענן</small></div>
+</section>
+
+<section class="section home-cta">
+  <div class="home-cta-card">
+    <div>
+      <span class="eyebrow">האלבום המשפחתי</span>
+      <h2>מוכנים להיזכר?</h2>
+      <p>היכנסו לאלבומים ובחרו את התקופה, האירוע או הרגע שאליו תרצו לחזור.</p>
+    </div>
+    <a class="btn" href="albums.html">לכל האלבומים ←</a>
+  </div>
+</section>
+</main>
 
 <!-- Login Modal -->
 <div id="loginModal" class="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
@@ -48,49 +90,7 @@
     <div id="modalLoginMsg" class="login-message" role="alert"></div>
   </div>
 </div>
-<footer>© 2026 Family Photo Album ULTIMATE</footer><script src="js/api.js"></script><script src="js/layout.js"></script><script>mountLayout("home");
-const recentAlbumsEl = document.getElementById("recentAlbums");
-(async function loadRecentAlbums(){
-  if (!recentAlbumsEl) return;
-  try {
-    const cached=API.cacheGet("homeAlbums","top3",60000);
-    if(cached){
-      const cachedAlbums=(Array.isArray(cached)?cached:[]).filter(a=>a&&!a.isVirtual&&String(a.id)!=="__ALL__").slice(0,3);
-      recentAlbumsEl.innerHTML=cachedAlbums.map(renderAlbumCard).join("")||"<p>אין אלבומים עדיין.</p>";
-      wireAlbumPrefetch(recentAlbumsEl);
-    }
-    const s=getSession();
-    const r = await API.call("homeAlbums", s?.token?{token:s.token}:{}, "GET");
-    if (!r || r.ok === false) throw new Error((r && r.message) || "שגיאה בטעינת האלבומים");
-    const albums = (Array.isArray(r.data) ? r.data : []).filter(a => a && !a.isVirtual && String(a.id) !== "__ALL__").slice(0,3);
-    API.cacheSet("homeAlbums","top3",albums);
-    recentAlbumsEl.innerHTML = albums.map(renderAlbumCard).join("") || "<p>אין אלבומים עדיין.</p>";
-    wireAlbumPrefetch(recentAlbumsEl);
-  } catch (e) {
-    console.error("loadRecentAlbums:", e);
-    recentAlbumsEl.innerHTML = "<p>חבר את Google Apps Script כדי לטעון נתונים.</p>";
-  }
-})();
-
-function wireAlbumPrefetch(root){
-  if(!root||root.dataset.prefetchReady==='1')return;
-  root.dataset.prefetchReady='1';
-  const prefetchFromEvent=e=>{
-    const a=e.target?.closest?.('a.card[href*="album.html?id="]');
-    if(!a||!root.contains(a))return;
-    try{const u=new URL(a.href,location.href);API.prefetchAlbumView(u.searchParams.get('id'));}catch(_){}
-  };
-  root.addEventListener('pointerover',prefetchFromEvent,{passive:true});
-  root.addEventListener('focusin',prefetchFromEvent);
-  root.addEventListener('touchstart',prefetchFromEvent,{passive:true});
-}
-function renderAlbumCard(a, i) {
-  const id = encodeURIComponent((a && a.id) || "");
-  const title = esc((a && a.title) || "אלבום ללא כותרת");
-  const description = esc((a && a.description) || "אלבום משפחתי");
-  const cover = a && a.coverUrl ? ` style="background-image:url('${esc(a.coverUrl)}')"` : "";
-  return `<a class="card" href="album.html?id=${id}"><div class="cover c${i % 4}"${cover}></div><div class="card-body"><h3>${title}</h3><p>${description}</p></div></a>`;
-}</script>
+<footer>© 2026 אלבום משפחתי</footer><script src="js/api.js"></script><script src="js/layout.js"></script><script>mountLayout("home");</script>
 
 <script>
 function shouldAutoOpenLogin(){

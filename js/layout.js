@@ -13,7 +13,7 @@ function mountLayout(active=""){
 
   const brand=top.querySelector(".brand");
   if(brand){
-    brand.innerHTML='<span class="brand-mark" aria-hidden="true"><span class="brand-heart">♥</span></span><span class="brand-name">אלבומים</span>';
+    brand.innerHTML='<span class="brand-mark" aria-hidden="true"><span class="brand-heart">♥</span></span><span class="brand-name"><span class="brand-name-main">אלבומים</span><span class="brand-name-accent">משפחתיים</span></span>';
     brand.setAttribute("aria-label","אלבומים משפחתיים – דף הבית");
   }
 
