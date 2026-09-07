@@ -32,9 +32,10 @@
 (function(){
   const s = getSession();
 
-  // If there is no logged-in user, show the login screen automatically.
+  // R15Q: there is no standalone login screen. Missing Session always returns
+  // to the home page and opens the mandatory loginModal.
   if (!s || !s.user || !s.token) {
-    location.replace("login.html?auto=1&return=dashboard.html");
+    location.replace("index.html?autoLogin=1&loginRequired=1&return=dashboard.html");
     return;
   }
 

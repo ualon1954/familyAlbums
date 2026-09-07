@@ -1044,3 +1044,24 @@ body:not(.dark) footer{
 @media(max-width:560px){
   .brand .brand-name{display:none !important}
 }
+
+
+/* R15R — About role cards: dark-mode title contrast */
+.dark .about-role-card h3,
+body.dark .about-role-card h3{
+  color:#f7f1eb !important;
+  opacity:1 !important;
+  text-shadow:none;
+}
+.dark .about-role-card h3 .role-label,
+body.dark .about-role-card h3 .role-label{
+  color:#e0aa80 !important;
+}
+.dark .about-role-note,
+body.dark .about-role-note{
+  color:#d8d0ca !important;
+}
+.dark .about-role-note strong,
+body.dark .about-role-note strong{
+  color:#f0b98d !important;
+}
