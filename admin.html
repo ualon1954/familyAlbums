@@ -32,6 +32,57 @@
 .duplicate-no{border:1px solid #0002;background:#f0f2f5;color:#2a2724}
 .dark .duplicate-confirm-card{background:#24211f;color:#f4efe9;border:1px solid #fff1}
 .dark .duplicate-no{background:#34302d;color:#f4efe9;border-color:#fff2}
+
+.user-manage-separator{border:0;border-top:1px solid rgba(127,127,127,.18);margin:22px 0}
+.user-manage-heading{margin:0 0 6px}
+.user-manage-list{display:grid;gap:9px;margin-top:12px}
+.user-manage-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border:1px solid rgba(127,127,127,.18);border-radius:14px;padding:11px 12px;
+}
+.user-manage-info{min-width:0;display:grid;gap:3px}
+.user-manage-info b,.user-manage-info span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-manage-info span{font-size:.84rem;opacity:.72}
+.user-manage-role{font-size:.76rem;font-weight:800;letter-spacing:.02em}
+.user-manage-buttons{display:flex;gap:6px;flex:0 0 auto}
+.user-manage-buttons button{
+  width:34px;height:34px;min-width:34px;border-radius:50%;padding:0;
+  display:grid;place-items:center;cursor:pointer;border:1px solid rgba(127,127,127,.22);
+  background:#fff;color:#2a2724
+}
+.user-manage-buttons .delete-user-btn{color:#b3261e}
+.dark .user-manage-row{border-color:#fff2}
+.dark .user-manage-buttons button{background:#302c29;color:#f4efe9;border-color:#fff2}
+.dark .user-manage-buttons .delete-user-btn{color:#ff8b83}
+.user-manage-modal{
+  position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(7px)
+}
+.user-manage-modal.open{display:flex}
+.user-manage-card{
+  width:min(460px,94vw);background:#fff;color:#2a2724;border-radius:20px;padding:22px;
+  box-shadow:0 20px 65px rgba(0,0,0,.35)
+}
+.dark .user-manage-card{background:#24211f;color:#f4efe9}
+.user-manage-card h2{margin:0 0 18px}
+.user-manage-card label{display:grid;gap:7px;margin:12px 0;font-weight:800}
+.user-manage-card input,.user-manage-card select{
+  width:100%;box-sizing:border-box;border:1px solid rgba(42,39,36,.18);border-radius:12px;
+  padding:11px 12px;background:#fff;color:#2a2724;font:inherit
+}
+.dark .user-manage-card input,.dark .user-manage-card select{
+  background:#302c29!important;color:#f4efe9!important;border-color:#fff2!important
+}
+.user-manage-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.user-manage-actions button{border:0;border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer}
+.user-manage-save{background:#a16e48;color:#fff}
+.user-manage-cancel{background:#ece7e2;color:#2a2724}
+.user-manage-delete{background:#b3261e;color:#fff}
+.dark .user-manage-cancel{background:#3a3532;color:#f4efe9}
+@media(max-width:600px){
+  .user-manage-row{align-items:flex-start}
+  .user-manage-buttons{margin-top:2px}
+}
 </style>
 
 <style id="album-cover-manager-style">
@@ -64,8 +115,72 @@
 .cover-photo-no-image{aspect-ratio:1/1;display:grid;place-items:center;background:#eee;color:#777}
 .dark .cover-photo-no-image{background:#333;color:#bbb}
 .upload-status{font-size:12px;min-width:72px;font-weight:700}.upload-status.waiting{opacity:.55}.upload-status.uploading{color:#b26a00}.upload-status.done{color:#188038}.upload-status.error{color:#b00020}.upload-summary{font-weight:700}
+
+/* R15ZP — simplified Albums section in Admin */
+.album-manage-simple{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.album-manage-simple-main{display:flex;align-items:center;gap:12px;min-width:0}
+.album-manage-simple-text{display:grid;gap:4px;min-width:0}
+.album-manage-simple-text b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cover-current.compact{padding:0;border:0;background:transparent;flex:0 0 auto}
+.cover-current.compact img,.cover-current.compact .empty{width:58px;height:58px;border-radius:12px}
+.simple-cover-btn{flex:0 0 auto;padding:9px 14px;border-radius:12px;cursor:pointer}
+.cover-dialog-simple{width:min(760px,96vw)}
+.cover-simple-upload{
+  padding:14px;
+  border:1px solid #0001;
+  border-radius:16px;
+  background:#00000004;
+  margin-bottom:14px;
+}
+.dark .cover-simple-upload{border-color:#fff1;background:#fff1}
+.cover-simple-upload h3{margin:0 0 4px}
+.cover-upload-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.cover-upload-line input[type="file"]{flex:1;min-width:220px}
+.cover-simple-divider{display:flex;align-items:center;gap:12px;margin:18px 0}
+.cover-simple-divider:before,.cover-simple-divider:after{content:"";height:1px;background:#0002;flex:1}
+.dark .cover-simple-divider:before,.dark .cover-simple-divider:after{background:#fff2}
+.cover-simple-divider span{opacity:.65;font-weight:800}
+.cover-actions-simple{justify-content:flex-end;margin-top:16px}
+@media(max-width:700px){
+  .album-manage-simple{align-items:stretch;flex-direction:column}
+  .simple-cover-btn{width:100%}
+  .cover-upload-line{align-items:stretch;flex-direction:column}
+  .cover-upload-line input[type="file"],.cover-upload-line button{width:100%}
+}
 </style>
-<link rel="stylesheet" href="css/session-manager.css"></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>מרכז ניהול</h1><p id="who"></p></div></div><section class="panel api-status-panel" id="apiStatusPanel">
+<link rel="stylesheet" href="css/session-manager.css">
+<style id="r15zs-delete-actions">
+/* R15ZS — emphasize user delete */
+.user-manage-buttons .delete-user-btn,.dark .user-manage-buttons .delete-user-btn{background:#b3261e!important;color:#fff!important;border:1px solid #e35d54!important;box-shadow:0 4px 14px rgba(179,38,30,.28)!important}
+.user-manage-buttons .delete-user-btn:hover,.user-manage-buttons .delete-user-btn:focus-visible,.dark .user-manage-buttons .delete-user-btn:hover,.dark .user-manage-buttons .delete-user-btn:focus-visible{background:#d13a31!important;color:#fff!important;border-color:#ff8b83!important}
+.user-manage-buttons .delete-user-btn:disabled{opacity:.38!important;cursor:not-allowed!important}
+.user-manage-delete{background:#b3261e!important;color:#fff!important}
+</style>
+
+<style id="r15zt-edit-actions">
+/* R15ZT — emphasize user edit */
+.user-manage-buttons .edit-user-btn,
+.dark .user-manage-buttons .edit-user-btn{
+  background:#188038!important;
+  color:#fff!important;
+  border:1px solid #45b966!important;
+  box-shadow:0 4px 14px rgba(24,128,56,.28)!important;
+}
+.user-manage-buttons .edit-user-btn:hover,
+.user-manage-buttons .edit-user-btn:focus-visible,
+.dark .user-manage-buttons .edit-user-btn:hover,
+.dark .user-manage-buttons .edit-user-btn:focus-visible{
+  background:#24964a!important;
+  color:#fff!important;
+  border-color:#72d58d!important;
+}
+</style>
+</head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>מרכז ניהול</h1><p id="who"></p></div></div><section class="panel api-status-panel" id="apiStatusPanel">
 <h2>🔌 מצב חיבור API</h2>
 <p class="hint">בדיקה זו מאפשרת לוודא שהדפדפן מחובר לגרסת Google Apps Script שתומכת בתמונות מעטפת.</p>
 <div id="apiStatus" class="cover-status">טרם בוצעה בדיקה.</div>
@@ -77,7 +192,51 @@
 <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
 <circle cx="12" cy="12" r="2.8"/>
 </svg>
-</button></div></label><label class="required-field"><span class="required-field-label">תפקיד <span class="required-star">*</span></span><select id="ur" required aria-required="true"><option value="" disabled selected hidden>נא לבחור תפקיד</option><option value="FAMILY">FAMILY</option><option value="GUEST">GUEST</option><option value="ADMIN">ADMIN</option></select></label><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p></section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main>
+</button></div></label><label class="required-field"><span class="required-field-label">תפקיד <span class="required-star">*</span></span><select id="ur" required aria-required="true"><option value="" disabled selected hidden>נא לבחור תפקיד</option><option value="FAMILY">FAMILY</option><option value="GUEST">GUEST</option><option value="ADMIN">ADMIN</option></select></label><button class="btn" onclick="newUser()">צור משתמש</button><p id="msg"></p>
+<hr class="user-manage-separator">
+<h3 class="user-manage-heading">משתמשים קיימים</h3>
+<p class="hint">עריכה כוללת שם, אימייל, תפקיד ואפשרות לשינוי סיסמה.</p>
+<div id="userManageList" class="user-manage-list"></div>
+</section><section class="panel"><h2>📋 אלבומים</h2><p class="hint">לכל אלבום ניתן לבחור תמונת מעטפת מיוחדת שתוצג בכרטיס האלבום.</p><div id="manage"></div></section><section class="panel permissions-panel"><h2>🔐 ניהול הרשאות</h2><p class="hint">בחר משתמש ואלבום והגדר מה מותר לו לבצע.</p><select id="permUser"></select><select id="permAlbum"></select><label class="perm-check"><input id="permView" type="checkbox"> צפייה באלבום</label><label class="perm-check"><input id="permUpload" type="checkbox"> העלאת תמונות</label><label class="perm-check"><input id="permDelete" type="checkbox"> עריכה ומחיקת תמונות</label><button class="btn" onclick="savePerms()">שמור הרשאות</button><p id="permMsg"></p></section></div></main>
+
+<div id="userEditModal" class="user-manage-modal" aria-hidden="true">
+  <div class="user-manage-card" role="dialog" aria-modal="true" aria-labelledby="userEditTitle">
+    <h2 id="userEditTitle">עריכת משתמש</h2>
+    <label>שם
+      <input id="editUserName" type="text" required>
+    </label>
+    <label>אימייל
+      <input id="editUserEmail" type="email" required>
+    </label>
+    <label>תפקיד
+      <select id="editUserRole" required>
+        <option value="ADMIN">ADMIN</option>
+        <option value="FAMILY">FAMILY</option>
+        <option value="GUEST">GUEST</option>
+      </select>
+    </label>
+    <label>סיסמה חדשה
+      <input id="editUserPassword" type="password" placeholder="השאר ריק כדי לא לשנות">
+    </label>
+    <div class="user-manage-actions">
+      <button id="cancelUserEdit" class="user-manage-cancel" type="button">ביטול</button>
+      <button id="saveUserEdit" class="user-manage-save" type="button">שמור</button>
+    </div>
+  </div>
+</div>
+
+<div id="userDeleteModal" class="user-manage-modal" aria-hidden="true">
+  <div class="user-manage-card" role="dialog" aria-modal="true" aria-labelledby="userDeleteTitle">
+    <h2 id="userDeleteTitle">מחיקת משתמש</h2>
+    <p>האם למחוק את המשתמש <strong id="deleteUserName"></strong>?</p>
+    <p class="hint">המשתמש לא יוכל להתחבר יותר למערכת.</p>
+    <div class="user-manage-actions">
+      <button id="cancelUserDelete" class="user-manage-cancel" type="button">לא</button>
+      <button id="confirmUserDelete" class="user-manage-delete" type="button">כן, מחק</button>
+    </div>
+  </div>
+</div>
+
 <div id="duplicateConfirmModal" class="duplicate-confirm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="duplicateConfirmTitle">
   <div class="duplicate-confirm-card">
     <h2 id="duplicateConfirmTitle">הקובץ כבר קיים</h2>
@@ -175,6 +334,7 @@ async function initAdminPage_(){
     adminAlbums=(Array.isArray(d.albums)?d.albums:[]).filter(a=>a&&!a.isVirtual&&String(a.id)!=="__ALL__");
     renderAdminAlbums_();
     applyPermissionsBootstrapData_({users:d.users,albums:d.permissionAlbums,permissions:d.permissions});
+    renderUserManageList_();
     API.cacheSet("adminPermissionsBootstrap","",{users:permUsers,albums:permAlbums,permissions:Array.isArray(d.permissions)?d.permissions:[]});
   }catch(e){
     console.warn("Admin combined bootstrap failed; using compatibility loaders",e);
@@ -192,14 +352,15 @@ function albumManageHtml(a){
   const cover=a.coverUrl
     ? `<img src="${esc(a.coverUrl)}" alt="${esc(a.title)}" loading="lazy">`
     : `<div class="empty">אין<br>מעטפת</div>`;
-  return `<div class="manage-row album-manage-row">
-    <div class="album-manage-title"><b>${esc(a.title)}</b><span class="cover-status">${a.coverUrl?'✓ מעטפת מוגדרת':'לא הוגדרה מעטפת'}</span></div>
-    <div class="album-manage-actions">
-      <button type="button" onclick="editAlbum('${esc(a.id)}','${esc(a.title).replace(/'/g,"&#39;")}')">עריכה</button>
-      <button type="button" class="cover-primary-btn" onclick="openCoverManager('${esc(a.id)}')">🖼️ ${a.coverUrl?'שנה תמונת מעטפת':'בחר תמונת מעטפת'}</button>
-      <button type="button" onclick="delAlbum('${esc(a.id)}')">מחיקה</button>
+  return `<div class="manage-row album-manage-row album-manage-simple">
+    <div class="album-manage-simple-main">
+      <div class="cover-current compact">${cover}</div>
+      <div class="album-manage-simple-text">
+        <b>${esc(a.title)}</b>
+        <span class="cover-status">${a.coverUrl?'✓ מעטפת מוגדרת':'לא הוגדרה מעטפת'}</span>
+      </div>
     </div>
-    <div class="cover-manager"><div class="cover-current">${cover}<span>${a.coverUrl?'תמונת המעטפת הנוכחית':'בחר תמונה מתוך האלבום'}</span></div></div>
+    <button type="button" class="cover-primary-btn simple-cover-btn" onclick="openCoverManager('${esc(a.id)}')">🖼️ ${a.coverUrl?'שנה מעטפת':'בחר מעטפת'}</button>
   </div>`;
 }
 function renderAdminAlbums_(){
@@ -302,6 +463,7 @@ async function newUser(){
   const u=Object.assign({active:true},r.data||{});
   permUsers=mergePermissionUsers_(usersBeforeCreate,permUsers,[u]);
   renderPermissionUsers_(u.id);
+  renderUserManageList_();
   un.value="";ue.value="";up.value="";ur.value="";
   API.cacheRemove("albums","");API.cacheRemove("homeAlbums","");updateAdminBootstrapCache_();
   applyPermValues({canView:true,canUpload:false,canDelete:false});
@@ -309,8 +471,131 @@ async function newUser(){
   // R15C: no listUsers reconciliation request is needed. The complete
   // bootstrap list is already retained locally and the new user is merged into it.
 }
-async function editAlbum(id,title){let n=prompt("שם חדש",title);if(!n)return;let r=await API.call("updateAlbum",{token:S.token,id,title:n});toast(r.ok?"עודכן":"שגיאה","info");loadAdmin()}
-async function delAlbum(id){if(!confirm("למחוק את האלבום?"))return;let r=await API.call("deleteAlbum",{token:S.token,id});toast(r.ok?"נמחק":"שגיאה","info");loadAdmin()}
+
+let editUserId="";
+let deleteUserId="";
+const userManageList=document.getElementById("userManageList");
+const userEditModal=document.getElementById("userEditModal");
+const userDeleteModal=document.getElementById("userDeleteModal");
+const editUserName=document.getElementById("editUserName");
+const editUserEmail=document.getElementById("editUserEmail");
+const editUserRole=document.getElementById("editUserRole");
+const editUserPassword=document.getElementById("editUserPassword");
+const deleteUserName=document.getElementById("deleteUserName");
+
+function activePermUsers_(){
+  return (Array.isArray(permUsers)?permUsers:[]).filter(u=>u&&u.active!==false);
+}
+function renderUserManageList_(){
+  if(!userManageList)return;
+  const list=activePermUsers_();
+  if(!list.length){userManageList.innerHTML='<div class="hint">אין משתמשים קיימים.</div>';return;}
+  userManageList.innerHTML=list.map(u=>{
+    const self=String(u.id)===String(S.user.id);
+    return `<div class="user-manage-row">
+      <div class="user-manage-info">
+        <b>${esc(u.name||"ללא שם")}${self?' — אתה':''}</b>
+        <span>${esc(u.email||"")}</span>
+        <span class="user-manage-role">${esc(u.role||"")}</span>
+      </div>
+      <div class="user-manage-buttons">
+        <button type="button" class="edit-user-btn" title="עריכת משתמש" aria-label="עריכת משתמש" data-edit-user="${esc(u.id)}">✎</button>
+        <button type="button" class="delete-user-btn" title="מחיקת משתמש" aria-label="מחיקת משתמש" data-delete-user="${esc(u.id)}" ${self?'disabled':''}>🗑️</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+function findManagedUser_(id){
+  return activePermUsers_().find(u=>String(u.id)===String(id))||null;
+}
+function openUserEdit(id){
+  const u=findManagedUser_(id);if(!u)return;
+  editUserId=String(u.id);
+  editUserName.value=String(u.name||"");
+  editUserEmail.value=String(u.email||"");
+  editUserRole.value=String(u.role||"FAMILY").toUpperCase();
+  editUserPassword.value="";
+  userEditModal.classList.add("open");
+  userEditModal.setAttribute("aria-hidden","false");
+  setTimeout(()=>editUserName.focus(),0);
+}
+function closeUserEdit(){
+  userEditModal.classList.remove("open");
+  userEditModal.setAttribute("aria-hidden","true");
+  editUserId="";
+}
+async function saveUserEdit(){
+  const u=findManagedUser_(editUserId);if(!u)return closeUserEdit();
+  const name=String(editUserName.value||"").trim();
+  const email=String(editUserEmail.value||"").trim();
+  const role=String(editUserRole.value||"").trim();
+  const password=String(editUserPassword.value||"");
+  if(!name){toast("שם משתמש חובה","error");editUserName.focus();return;}
+  if(!email){toast("אימייל חובה","error");editUserEmail.focus();return;}
+  if(!role){toast("יש לבחור תפקיד","error");editUserRole.focus();return;}
+  const btn=document.getElementById("saveUserEdit");btn.disabled=true;
+  try{
+    const r=await API.call("updateUser",{token:S.token,id:editUserId,name,email,role,password});
+    if(!r?.ok)throw new Error(r?.message||"לא ניתן לעדכן משתמש");
+    const updated=r.data||{id:editUserId,name,email,role,active:true};
+    permUsers=permUsers.map(x=>String(x.id)===String(editUserId)?Object.assign({},x,updated):x);
+    renderPermissionUsers_(editUserId);
+    renderUserManageList_();
+    updateAdminBootstrapCache_();
+    closeUserEdit();
+    toast("המשתמש עודכן","success");
+  }catch(e){toast(e.message||"לא ניתן לעדכן משתמש","error");}
+  finally{btn.disabled=false;}
+}
+function openUserDelete(id){
+  const u=findManagedUser_(id);if(!u)return;
+  if(String(id)===String(S.user.id)){toast("לא ניתן למחוק את המשתמש המחובר","error");return;}
+  deleteUserId=String(id);
+  deleteUserName.textContent=String(u.name||u.email||"משתמש");
+  userDeleteModal.classList.add("open");
+  userDeleteModal.setAttribute("aria-hidden","false");
+}
+function closeUserDelete(){
+  userDeleteModal.classList.remove("open");
+  userDeleteModal.setAttribute("aria-hidden","true");
+  deleteUserId="";
+}
+async function confirmUserDelete(){
+  const u=findManagedUser_(deleteUserId);if(!u)return closeUserDelete();
+  const btn=document.getElementById("confirmUserDelete");btn.disabled=true;
+  try{
+    const r=await API.call("deleteUser",{token:S.token,id:deleteUserId});
+    if(!r?.ok)throw new Error(r?.message||"לא ניתן למחוק משתמש");
+    permUsers=permUsers.filter(x=>String(x.id)!==String(deleteUserId));
+    for(const key of [...permDrafts.keys()]){
+      if(key.startsWith(String(deleteUserId)+"::"))permDrafts.delete(key);
+    }
+    renderPermissionUsers_();
+    renderUserManageList_();
+    updateAdminBootstrapCache_();
+    closeUserDelete();
+    toast("המשתמש נמחק","success");
+  }catch(e){toast(e.message||"לא ניתן למחוק משתמש","error");}
+  finally{btn.disabled=false;}
+}
+userManageList?.addEventListener("click",e=>{
+  const editBtn=e.target.closest("[data-edit-user]");
+  if(editBtn){openUserEdit(editBtn.dataset.editUser);return;}
+  const delBtn=e.target.closest("[data-delete-user]");
+  if(delBtn&&!delBtn.disabled)openUserDelete(delBtn.dataset.deleteUser);
+});
+document.getElementById("cancelUserEdit").onclick=closeUserEdit;
+document.getElementById("saveUserEdit").onclick=saveUserEdit;
+document.getElementById("cancelUserDelete").onclick=closeUserDelete;
+document.getElementById("confirmUserDelete").onclick=confirmUserDelete;
+userEditModal.addEventListener("click",e=>{if(e.target===userEditModal)closeUserEdit();});
+userDeleteModal.addEventListener("click",e=>{if(e.target===userDeleteModal)closeUserDelete();});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape")return;
+  if(userEditModal.classList.contains("open"))closeUserEdit();
+  if(userDeleteModal.classList.contains("open"))closeUserDelete();
+});
+
 files.onchange=()=>{photoMeta.innerHTML="";[...files.files].forEach((f,idx)=>{const row=document.createElement("div");row.className="photo-meta-row";row.innerHTML=`<div class="meta-file">🖼️ ${esc(f.name)}</div><label class="required-field meta-required"><span class="required-field-label">כותרת <span class="required-star">*</span></span><input class="meta-title" data-i="${idx}" required aria-required="true" placeholder="כותרת לתמונה"></label><label class="required-field meta-required"><span class="required-field-label">שנה <span class="required-star">*</span></span><input class="meta-date" data-i="${idx}" required aria-required="true" type="number" min="1800" max="2200" step="1" placeholder="שנה" title="שנת התמונה בלבד"></label><span class="upload-status" data-upload-status="${idx}"></span>`;photoMeta.appendChild(row)});if(files.files.length&&as.value)void prepareSelectedAlbum_();};
 function readBlobBase64_(blob){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(fr.error||new Error("קריאת הקובץ נכשלה"));fr.readAsDataURL(blob)})}
 function readImageBitmap_(file){
@@ -474,78 +759,86 @@ async function upload(){
 }
 async function openCoverManager(albumId){
   const album=adminAlbums.find(a=>String(a.id)===String(albumId));
-  if(!album){toast("האלבום לא נמצא");return;}
+  if(!album)return;
   const modal=document.getElementById("coverModal");
   document.getElementById("coverAlbumId").value=String(albumId);
-  document.getElementById("coverAlbumTitle").textContent="בחירת תמונת מעטפת — "+album.title;
+  document.getElementById("coverAlbumTitle").textContent=`תמונת מעטפת — ${album.title||"אלבום"}`;
   document.getElementById("coverUploadStatus").textContent="";
   modal.classList.add("open");
   await refreshCoverGrid(albumId);
 }
 async function refreshCoverGrid(albumId){
-  const grid=document.getElementById("coverGrid"), extGrid=document.getElementById("externalCoverGrid");
-  grid.innerHTML="<div class='cover-empty'>טוען תמונות האלבום...</div>";
-  if(extGrid)extGrid.innerHTML="<div class='cover-empty'>טוען מעטפות חיצוניות...</div>";
+  const grid=document.getElementById("coverGrid");
   const album=adminAlbums.find(a=>String(a.id)===String(albumId));
-
-  // Load the two sources independently. A missing/new backend action must not
-  // hide the normal album photos or make the whole cover dialog fail.
+  grid.innerHTML="<div class='cover-empty'>טוען תמונות...</div>";
   try{
-    const pr=await API.call("photos",{token:S.token,albumId:String(albumId)},"POST");
-    if(!pr.ok)throw Error(pr.message||"לא ניתן לטעון תמונות");
-    const photos=(pr.data||[]).filter(p=>String(p.albumId)===String(albumId));
+    const r=await API.call("photos",{token:S.token,albumId:String(albumId)},"POST");
+    if(!r.ok)throw Error(r.message||"לא ניתן לטעון תמונות");
+    const photos=r.data||[];
     grid.innerHTML=photos.length?photos.map(p=>{
       const src=p.imageUrl||(p.driveFileId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(p.driveFileId)+"&sz=w1000":"");
       const selected=String(album?.coverPhotoId||"")===String(p.id)&&album?.coverSource!=="external";
       return `<button type="button" class="cover-photo ${selected?'selected':''}" data-photo-id="${esc(p.id)}" onclick="chooseAlbumPhotoCover(this.dataset.photoId)">${src?`<img src="${esc(src)}" alt="${esc(p.photoTitle||p.fileName||'תמונה')}" loading="lazy">`:`<div class="cover-photo-no-image">אין תצוגה</div>`}<span>${esc(p.photoTitle||p.fileName||'תמונה')}${selected?' ✓':''}</span></button>`;
-    }).join(""):"<div class='cover-empty'>אין תמונות באלבום.</div>";
+    }).join(""):"<div class='cover-empty'>אין תמונות באלבום. אפשר להעלות תמונת מעטפת מהמחשב.</div>";
   }catch(e){
     grid.innerHTML=`<div class='cover-empty'>לא ניתן לטעון את תמונות האלבום: ${esc(e.message||e)}</div>`;
   }
-
-  if(!extGrid)return;
-  try{
-    const cr=await API.call("coverPhotos",{token:S.token,albumId:String(albumId)},"POST");
-    if(!cr.ok)throw Error(cr.message||"לא ניתן לטעון מעטפות חיצוניות");
-    const covers=cr.data||[];
-    extGrid.innerHTML=covers.length?covers.map(p=>{
-      const src=p.imageUrl||(p.driveFileId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(p.driveFileId)+"&sz=w1000":"");
-      const selected=String(album?.coverExternalId||"")===String(p.id)&&album?.coverSource==='external';
-      return `<button type="button" class="cover-photo ${selected?'selected':''}" data-cover-id="${esc(p.id)}" onclick="chooseExternalCover(this.dataset.coverId)">${src?`<img src="${esc(src)}" alt="${esc(p.fileName||'מעטפת')}" loading="lazy">`:`<div class="cover-photo-no-image">אין תצוגה</div>`}<span>${esc(p.fileName||'מעטפת')}${selected?' ✓':''}</span></button>`;
-    }).join(""):"<div class='cover-empty'>אין מעטפות חיצוניות. הוסף קבצים מהמחשב.</div>";
-  }catch(e){
-    extGrid.innerHTML=`<div class='cover-empty'>לא ניתן לטעון מעטפות חיצוניות: ${esc(e.message||e)}<br><small>יש לפרסם גרסה חדשה של Google Apps Script הכוללת את פעולות המעטפת.</small></div>`;
-  }
-}
-async function uploadExternalCoverPhotos(){
-  const input=document.getElementById("externalCoverFiles"),status=document.getElementById("coverUploadStatus"),albumId=document.getElementById("coverAlbumId")?.value,selected=[...(input?.files||[])];
-  if(!albumId||!selected.length)return; status.textContent=`מעלה ${selected.length} מעטפות...`;
-  try{for(const f of selected){if(!f.type.startsWith("image/"))throw Error(`הקובץ ${f.name} אינו תמונה`);const base64=await new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(String(fr.result).split(",")[1]);fr.onerror=reject;fr.readAsDataURL(f)});const r=await API.call("uploadCoverPhoto",{token:S.token,albumId,fileName:f.name,mimeType:f.type,base64});if(!r.ok)throw Error(r.message||`העלאת ${f.name} נכשלה`);}input.value="";status.textContent="✓ המעטפות נשמרו בנפרד מתמונות האלבום";await loadAdmin();await refreshCoverGrid(albumId);}catch(e){status.textContent="✕ "+(e.message||String(e));}
 }
 async function chooseAlbumPhotoCover(photoId){
-  const albumId=document.getElementById("coverAlbumId")?.value;if(!albumId||!photoId)return;setCoverBusy(true);
-  try{const r=await API.call("setAlbumCover",{token:S.token,albumId,photoId});if(!r.ok)throw Error(r.message||"שמירת תמונת המעטפת נכשלה");toast("✓ תמונת האלבום נבחרה כמעטפת");await loadAdmin();await refreshCoverGrid(albumId);}catch(e){toast(e.message||String(e));}finally{setCoverBusy(false)}
-}
-async function chooseExternalCover(coverId){
-  const albumId=document.getElementById("coverAlbumId")?.value;if(!albumId||!coverId)return;setCoverBusy(true);
-  try{const r=await API.call("setAlbumExternalCover",{token:S.token,albumId,coverId});if(!r.ok)throw Error(r.message||"שמירת המעטפת החיצונית נכשלה");const album=adminAlbums.find(a=>String(a.id)===String(albumId));if(album){album.coverPhotoId="";album.coverSource="external";album.coverExternalId=String(coverId);album.coverUrl=r.data?.coverUrl||album.coverUrl;}toast("✓ המעטפת החיצונית נבחרה");await loadAdmin();await refreshCoverGrid(albumId);}catch(e){toast(e.message||String(e));}finally{setCoverBusy(false)}
-}
-function setCoverBusy(v){document.querySelectorAll('#coverGrid .cover-photo,#externalCoverGrid .cover-photo').forEach(b=>b.disabled=!!v)}
-function closeCoverManager(){document.getElementById("coverModal")?.classList.remove("open")}
-async function chooseCover(photoId){
   const albumId=document.getElementById("coverAlbumId")?.value;
   if(!albumId||!photoId)return;
-  const grid=document.getElementById("coverGrid");
-  grid.querySelectorAll(".cover-photo").forEach(b=>b.disabled=true);
+  setCoverBusy(true);
   try{
     const r=await API.call("setAlbumCover",{token:S.token,albumId,photoId});
     if(!r.ok)throw Error(r.message||"שמירת תמונת המעטפת נכשלה");
-    const album=adminAlbums.find(a=>String(a.id)===String(albumId));
-    if(album){album.coverPhotoId=String(photoId);album.coverSource="album";album.coverExternalId="";album.coverUrl=r.data?.coverUrl||album.coverUrl;}
     toast("✓ תמונת המעטפת עודכנה");
     closeCoverManager();
     await loadAdmin();
-  }catch(e){grid.querySelectorAll(".cover-photo").forEach(b=>b.disabled=false);toast(e.message||String(e));}
+  }catch(e){
+    toast(e.message||String(e));
+  }finally{
+    setCoverBusy(false);
+  }
+}
+async function uploadAndSetCover(){
+  const input=document.getElementById("externalCoverFile");
+  const status=document.getElementById("coverUploadStatus");
+  const albumId=document.getElementById("coverAlbumId")?.value;
+  const f=input?.files?.[0];
+  if(!albumId||!f)return;
+  if(!f.type.startsWith("image/")){status.textContent="✕ יש לבחור קובץ תמונה";return}
+  status.textContent="מעלה ומגדיר תמונת מעטפת...";
+  const uploadBtn=document.getElementById("uploadCoverBtn");
+  if(uploadBtn)uploadBtn.disabled=true;
+  try{
+    const base64=await new Promise((resolve,reject)=>{
+      const fr=new FileReader();
+      fr.onload=()=>resolve(String(fr.result).split(",")[1]);
+      fr.onerror=reject;
+      fr.readAsDataURL(f);
+    });
+    const up=await API.call("uploadCoverPhoto",{token:S.token,albumId,fileName:f.name,mimeType:f.type,base64});
+    if(!up.ok)throw Error(up.message||"העלאת תמונת המעטפת נכשלה");
+    const coverId=up.data?.id;
+    if(!coverId)throw Error("לא התקבל מזהה לתמונת המעטפת");
+    const set=await API.call("setAlbumExternalCover",{token:S.token,albumId,coverId});
+    if(!set.ok)throw Error(set.message||"הגדרת תמונת המעטפת נכשלה");
+    input.value="";
+    status.textContent="✓ תמונת המעטפת הועלתה והוגדרה";
+    toast("✓ תמונת המעטפת עודכנה");
+    closeCoverManager();
+    await loadAdmin();
+  }catch(e){
+    status.textContent="✕ "+(e.message||String(e));
+  }finally{
+    if(uploadBtn)uploadBtn.disabled=false;
+  }
+}
+function setCoverBusy(v){
+  document.querySelectorAll('#coverGrid .cover-photo').forEach(b=>b.disabled=!!v);
+}
+function closeCoverManager(){
+  document.getElementById("coverModal")?.classList.remove("open");
 }
 async function clearCover(){
   const albumId=document.getElementById("coverAlbumId")?.value;
@@ -553,8 +846,6 @@ async function clearCover(){
   if(!confirm("להסיר את תמונת המעטפת?"))return;
   const r=await API.call("clearAlbumCover",{token:S.token,albumId});
   if(!r.ok){toast(r.message||"שגיאה");return;}
-  const album=adminAlbums.find(a=>String(a.id)===String(albumId));
-  if(album){album.coverPhotoId="";album.coverSource="";album.coverExternalId="";album.coverUrl="";}
   toast("✓ תמונת המעטפת הוסרה");
   closeCoverManager();
   await loadAdmin();
@@ -635,15 +926,38 @@ permUser?.addEventListener("change",loadPermValues);
 permAlbum?.addEventListener("change",loadPermValues);
 </script>
 <div id="coverModal" class="cover-modal" role="dialog" aria-modal="true" aria-labelledby="coverAlbumTitle">
-  <div class="cover-dialog">
-    <div class="cover-dialog-head"><h2 id="coverAlbumTitle">בחירת תמונת מעטפת</h2><button type="button" onclick="closeCoverManager()" aria-label="סגור">×</button></div>
-    <h3 class="cover-section-title">📷 תמונות מתוך האלבום</h3><div class="cover-section-note">בחירה כאן משתמשת בתמונה שכבר קיימת באלבום ואינה יוצרת עותק.</div><div id="coverGrid" class="cover-photo-grid"></div>
-    <h3 class="cover-section-title">🖼️ תמונות מעטפת מספרייה חיצונית</h3><div class="cover-section-note">תמונות אלו נשמרות בנפרד ואינן מתווספות לתמונות האלבום.</div><div id="externalCoverGrid" class="cover-photo-grid"></div>
+  <div class="cover-dialog cover-dialog-simple">
+    <div class="cover-dialog-head">
+      <h2 id="coverAlbumTitle">בחירת תמונת מעטפת</h2>
+      <button type="button" onclick="closeCoverManager()" aria-label="סגור">×</button>
+    </div>
+
+    <div class="cover-simple-upload">
+      <h3>העלה תמונת מעטפת מהמחשב</h3>
+      <p class="cover-section-note">בחר קובץ אחד. לאחר ההעלאה הוא יוגדר מיד כתמונת המעטפת.</p>
+      <div class="cover-upload-line">
+        <input id="externalCoverFile" type="file" accept="image/*">
+        <button id="uploadCoverBtn" type="button" class="cover-btn primary" onclick="uploadAndSetCover()">העלה והגדר</button>
+      </div>
+      <div id="coverUploadStatus" class="cover-upload-status"></div>
+    </div>
+
+    <div class="cover-simple-divider"><span>או</span></div>
+
+    <h3 class="cover-section-title">בחר תמונה שכבר קיימת באלבום</h3>
+    <div id="coverGrid" class="cover-photo-grid"></div>
+
     <input type="hidden" id="coverAlbumId">
-    <div class="cover-actions"><button type="button" class="cover-btn primary" onclick="document.getElementById('externalCoverFiles').click()">📁 הוסף מעטפות מספרייה חיצונית</button><button type="button" class="cover-btn" onclick="clearCover()">הסר תמונת מעטפת</button><button type="button" class="cover-btn" onclick="closeCoverManager()">סגור</button></div><input id="externalCoverFiles" class="cover-file-input" type="file" accept="image/*" multiple><div id="coverUploadStatus" class="cover-upload-status"></div>
+    <div class="cover-actions cover-actions-simple">
+      <button type="button" class="cover-btn" onclick="clearCover()">הסר מעטפת</button>
+      <button type="button" class="cover-btn" onclick="closeCoverManager()">סגור</button>
+    </div>
   </div>
 </div>
-<script>coverModal?.addEventListener("click",e=>{if(e.target===coverModal)closeCoverManager()});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&coverModal?.classList.contains("open"))closeCoverManager()});document.getElementById("externalCoverFiles")?.addEventListener("change",uploadExternalCoverPhotos);</script>
+<script>
+coverModal?.addEventListener("click",e=>{if(e.target===coverModal)closeCoverManager()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&coverModal?.classList.contains("open"))closeCoverManager()});
+</script>
 <script id="password-toggle-eye-script">
 (function(){
   function eyeOpen(){

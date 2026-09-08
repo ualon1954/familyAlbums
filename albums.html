@@ -36,6 +36,169 @@
 .loading,.empty-state{padding:45px 20px;text-align:center;opacity:.72}
 .error{padding:20px;text-align:center;color:#b3261e}
 @media(max-width:600px){.albums-page{padding:22px 14px 50px}.album-list-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.album-card-body{padding:11px}.album-card-body h2{font-size:.95rem}.album-card-body p{font-size:.82rem}}
+
+/* R15ZO — admin-only album edit/delete controls */
+.album-card-wrap{position:relative;min-width:0}
+.album-card-wrap .album-card{height:100%;box-sizing:border-box}
+.album-admin-actions{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  direction:ltr;
+}
+.album-admin-actions button{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  min-height:38px;
+  padding:0;
+  margin:0;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  font:700 17px/1 Arial,sans-serif;
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+}
+.album-edit-btn{
+  background:#fff;
+  color:#2a2724;
+  border:1px solid rgba(42,39,36,.22);
+}
+.album-delete-btn{
+  background:#fff;
+  color:#b3261e;
+  border:1px solid rgba(179,38,30,.28);
+}
+.dark .album-edit-btn{
+  background:#211f1d !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.28) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.52) !important;
+}
+.dark .album-delete-btn{
+  background:#211f1d !important;
+  color:#ff8b83 !important;
+  border-color:rgba(255,139,131,.34) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.52) !important;
+}
+.dark .album-edit-btn:hover,.dark .album-edit-btn:focus-visible,
+.dark .album-delete-btn:hover,.dark .album-delete-btn:focus-visible{
+  background:#34302d !important;
+}
+@media (hover:hover) and (pointer:fine){
+  .album-admin-actions{
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-4px);
+    pointer-events:none;
+    transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+  }
+  .album-card-wrap:hover .album-admin-actions,
+  .album-card-wrap:focus-within .album-admin-actions{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+}
+@media (hover:none), (pointer:coarse){
+  .album-admin-actions{
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+    pointer-events:auto !important;
+  }
+}
+.album-edit-modal{
+  position:fixed;
+  inset:0;
+  z-index:2147483646;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.58);
+  backdrop-filter:blur(7px);
+}
+.album-edit-modal.open{display:flex}
+.album-edit-card{
+  width:min(460px,94vw);
+  background:#fff;
+  color:#2a2724;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 20px 65px rgba(0,0,0,.35);
+}
+.dark .album-edit-card{background:#24211f;color:#f4efe9}
+.album-edit-card h2{margin:0 0 18px}
+.album-edit-card label{display:grid;gap:7px;margin:12px 0;font-weight:800}
+.album-edit-card input,.album-edit-card textarea{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid rgba(42,39,36,.18);
+  border-radius:12px;
+  padding:11px 12px;
+  background:#fff;
+  color:#2a2724;
+  font:inherit;
+}
+.album-edit-card textarea{min-height:100px;resize:vertical}
+.dark .album-edit-card input,.dark .album-edit-card textarea{
+  background:#302c29 !important;
+  color:#f4efe9 !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+.album-edit-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.album-edit-actions button{
+  border:0;border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer
+}
+.album-edit-save{background:#a16e48;color:#fff}
+.album-edit-cancel{background:#ece7e2;color:#2a2724}
+.dark .album-edit-cancel{background:#3a3532;color:#f4efe9}
+.album-delete-confirm .album-edit-card{width:min(420px,94vw)}
+.album-delete-confirm p{line-height:1.55;margin:0 0 10px}
+.album-delete-confirm strong{color:#b3261e}
+.dark .album-delete-confirm strong{color:#ff8b83}
+.album-delete-confirm-btn{background:#b3261e;color:#fff}
+.album-message{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  z-index:2147483647;
+  padding:11px 16px;
+  border-radius:999px;
+  background:#2a2724;
+  color:#fff;
+  box-shadow:0 8px 28px rgba(0,0,0,.28);
+  font-weight:800;
+}
+.album-message.error{background:#b3261e;color:#fff}
+@media(max-width:600px){
+  .album-admin-actions{top:8px;left:8px;gap:5px}
+  .album-admin-actions button{width:34px;height:34px;min-width:34px;min-height:34px}
+  .album-edit-card{padding:18px;border-radius:16px}
+}
+
+/* R15ZS — emphasize album delete */
+.album-delete-btn,.dark .album-delete-btn{background:#b3261e!important;color:#fff!important;border:1px solid #e35d54!important;box-shadow:0 4px 16px rgba(0,0,0,.38)!important}
+.album-delete-btn:hover,.album-delete-btn:focus-visible,.dark .album-delete-btn:hover,.dark .album-delete-btn:focus-visible{background:#d13a31!important;color:#fff!important;border-color:#ff8b83!important}
+.album-delete-confirm-btn{background:#b3261e!important;color:#fff!important}
+
+/* R15ZT — emphasize album edit */
+.album-edit-btn,.dark .album-edit-btn{
+  background:#188038!important;color:#fff!important;border:1px solid #45b966!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.38)!important;
+}
+.album-edit-btn:hover,.album-edit-btn:focus-visible,
+.dark .album-edit-btn:hover,.dark .album-edit-btn:focus-visible{
+  background:#24964a!important;color:#fff!important;border-color:#72d58d!important;
+}
 </style>
 </head>
 <body>
@@ -53,43 +216,190 @@
   </div>
   <div id="albums" class="album-list-grid"><div class="loading">טוען אלבומים...</div></div>
 </main>
+
+<div id="albumEditModal" class="album-edit-modal" aria-hidden="true">
+  <div class="album-edit-card" role="dialog" aria-modal="true" aria-labelledby="albumEditTitle">
+    <h2 id="albumEditTitle">עריכת אלבום</h2>
+    <label>שם אלבום
+      <input id="editAlbumName" type="text" required placeholder="נא להזין שם אלבום">
+    </label>
+    <label>תיאור
+      <textarea id="editAlbumDescription" placeholder="נא להזין תיאור (אופציונלי)"></textarea>
+    </label>
+    <div class="album-edit-actions">
+      <button id="cancelAlbumEdit" class="album-edit-cancel" type="button">ביטול</button>
+      <button id="saveAlbumEdit" class="album-edit-save" type="button">שמור</button>
+    </div>
+  </div>
+</div>
+
+<div id="albumDeleteModal" class="album-edit-modal album-delete-confirm" aria-hidden="true">
+  <div class="album-edit-card" role="dialog" aria-modal="true" aria-labelledby="albumDeleteTitle">
+    <h2 id="albumDeleteTitle">מחיקת אלבום</h2>
+    <p>האם למחוק את האלבום <strong id="deleteAlbumName"></strong>?</p>
+    <p>האלבום יוסר מרשימת האלבומים.</p>
+    <div class="album-edit-actions">
+      <button id="cancelAlbumDelete" class="album-edit-cancel" type="button">לא</button>
+      <button id="confirmAlbumDelete" class="album-delete-confirm-btn" type="button">כן, מחק</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/layout.js"></script>
 <script>
 mountLayout("albums");
 const session=getSession();
+const isAdmin=String(session?.user?.role||"").toUpperCase()==="ADMIN";
 const root=document.getElementById("albums");
+let albumItems=[];
+let editAlbumId="";
+let deleteAlbumId="";
+
+const albumEditModal=document.getElementById("albumEditModal");
+const albumDeleteModal=document.getElementById("albumDeleteModal");
+const editAlbumName=document.getElementById("editAlbumName");
+const editAlbumDescription=document.getElementById("editAlbumDescription");
+const deleteAlbumName=document.getElementById("deleteAlbumName");
+
 function safeUrl(v){return typeof v==="string"?v:""}
+function showAlbumMessage(text,type=""){
+  document.querySelector(".album-message")?.remove();
+  const el=document.createElement("div");
+  el.className="album-message"+(type==="error"?" error":"");
+  el.textContent=text;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2600);
+}
 function renderAlbums(items){
-  const list=(Array.isArray(items)?items:[]).filter(a=>a && !a.isVirtual && a.id!=="__ALL__");
-  if(!list.length){root.innerHTML='<div class="empty-state">אין אלבומים להצגה.</div>';return;}
-  root.innerHTML=list.map(a=>{
+  albumItems=(Array.isArray(items)?items:[]).filter(a=>a && !a.isVirtual && a.id!=="__ALL__");
+  if(!albumItems.length){root.innerHTML='<div class="empty-state">אין אלבומים להצגה.</div>';return;}
+  root.innerHTML=albumItems.map(a=>{
     const title=esc(a.title||"אלבום");
     const desc=esc(a.description||"");
     const href="album.html?id="+encodeURIComponent(a.id);
     const cover=safeUrl(a.coverUrl);
-    return `<a class="album-card" href="${href}">
-      <div class="album-cover-wrap">${cover?`<img class="album-cover" src="${esc(cover)}" alt="${title}" loading="lazy">`:`<div class="album-cover empty" aria-label="${title}">📷</div>`}<span class="album-photo-count" aria-label="${Number(a.photoCount)||0} תמונות">📷 ${Number(a.photoCount)||0}</span></div>
-      <div class="album-card-body"><h2>${title}</h2><p>${desc}</p></div>
-    </a>`;
+    const adminActions=isAdmin?`<div class="album-admin-actions">
+      <button class="album-edit-btn" type="button" aria-label="עריכת אלבום" title="עריכת אלבום" data-edit-album="${esc(a.id)}">✎</button>
+      <button class="album-delete-btn" type="button" aria-label="מחיקת אלבום" title="מחיקת אלבום" data-delete-album="${esc(a.id)}">🗑️</button>
+    </div>`:"";
+    return `<div class="album-card-wrap">
+      <a class="album-card" href="${href}">
+        <div class="album-cover-wrap">${cover?`<img class="album-cover" src="${esc(cover)}" alt="${title}" loading="lazy">`:`<div class="album-cover empty" aria-label="${title}">📷</div>`}<span class="album-photo-count" aria-label="${Number(a.photoCount)||0} תמונות">📷 ${Number(a.photoCount)||0}</span></div>
+        <div class="album-card-body"><h2>${title}</h2><p>${desc}</p></div>
+      </a>
+      ${adminActions}
+    </div>`;
   }).join("");
   wireAlbumPrefetch();
+}
+function findAlbum_(albumId){
+  return albumItems.find(a=>String(a.id)===String(albumId))||null;
+}
+function openAlbumEdit(albumId){
+  if(!isAdmin)return;
+  const a=findAlbum_(albumId);if(!a)return;
+  editAlbumId=String(a.id);
+  editAlbumName.value=String(a.title||"");
+  editAlbumDescription.value=String(a.description||"");
+  albumEditModal.classList.add("open");
+  albumEditModal.setAttribute("aria-hidden","false");
+  setTimeout(()=>editAlbumName.focus(),0);
+}
+function closeAlbumEdit(){
+  albumEditModal.classList.remove("open");
+  albumEditModal.setAttribute("aria-hidden","true");
+  editAlbumId="";
+}
+async function saveAlbumEdit(){
+  if(!isAdmin||!editAlbumId)return;
+  const title=String(editAlbumName.value||"").trim().replace(/\s+/g," ");
+  const description=String(editAlbumDescription.value||"").trim();
+  if(!title){showAlbumMessage("נא להזין שם אלבום","error");editAlbumName.focus();return;}
+  const btn=document.getElementById("saveAlbumEdit");
+  btn.disabled=true;
+  try{
+    const r=await API.call("updateAlbum",{token:session.token,id:editAlbumId,title,description});
+    if(!r?.ok)throw new Error(r?.message||"לא ניתן לעדכן את האלבום");
+    const item=findAlbum_(editAlbumId);
+    if(item){item.title=title;item.description=description;}
+    API.cacheRemove("albums","list");
+    API.cacheRemove("albumView",editAlbumId);
+    API.cacheRemove("dashboard","main");
+    closeAlbumEdit();
+    renderAlbums(albumItems);
+    showAlbumMessage("האלבום עודכן");
+  }catch(e){
+    showAlbumMessage(e.message||"לא ניתן לעדכן את האלבום","error");
+  }finally{
+    btn.disabled=false;
+  }
+}
+function openAlbumDelete(albumId){
+  if(!isAdmin)return;
+  const a=findAlbum_(albumId);if(!a)return;
+  deleteAlbumId=String(a.id);
+  deleteAlbumName.textContent=String(a.title||"אלבום");
+  albumDeleteModal.classList.add("open");
+  albumDeleteModal.setAttribute("aria-hidden","false");
+}
+function closeAlbumDelete(){
+  albumDeleteModal.classList.remove("open");
+  albumDeleteModal.setAttribute("aria-hidden","true");
+  deleteAlbumId="";
+}
+async function confirmAlbumDelete(){
+  if(!isAdmin||!deleteAlbumId)return;
+  const idToDelete=deleteAlbumId;
+  const btn=document.getElementById("confirmAlbumDelete");
+  btn.disabled=true;
+  try{
+    const r=await API.call("deleteAlbum",{token:session.token,id:idToDelete});
+    if(!r?.ok)throw new Error(r?.message||"לא ניתן למחוק את האלבום");
+    albumItems=albumItems.filter(a=>String(a.id)!==String(idToDelete));
+    API.cacheRemove("albums","list");
+    API.cacheRemove("albumView",idToDelete);
+    API.cacheRemove("dashboard","main");
+    closeAlbumDelete();
+    renderAlbums(albumItems);
+    showAlbumMessage("האלבום נמחק");
+  }catch(e){
+    showAlbumMessage(e.message||"לא ניתן למחוק את האלבום","error");
+  }finally{
+    btn.disabled=false;
+  }
 }
 function wireAlbumPrefetch(){
   if(root.dataset.prefetchReady==='1')return;
   root.dataset.prefetchReady='1';
   const run=e=>{
-    const a=e.target?.closest?.('a.album-card[href*="album.html?id="]');
-    if(!a||!root.contains(a))return;
-    try{const u=new URL(a.href,location.href);API.prefetchAlbumView(u.searchParams.get('id'));}catch(_){}
+    const card=e.target?.closest?.('a.album-card[href*="album.html?id="]');
+    if(!card||!root.contains(card))return;
+    try{const u=new URL(card.href,location.href);API.prefetchAlbumView(u.searchParams.get('id'));}catch(_){}
   };
   root.addEventListener('pointerover',run,{passive:true});
   root.addEventListener('focusin',run);
   root.addEventListener('touchstart',run,{passive:true});
 }
+root.addEventListener("click",e=>{
+  const editBtn=e.target.closest("[data-edit-album]");
+  if(editBtn){e.preventDefault();e.stopPropagation();openAlbumEdit(editBtn.dataset.editAlbum);return;}
+  const deleteBtn=e.target.closest("[data-delete-album]");
+  if(deleteBtn){e.preventDefault();e.stopPropagation();openAlbumDelete(deleteBtn.dataset.deleteAlbum);}
+});
+document.getElementById("cancelAlbumEdit").onclick=closeAlbumEdit;
+document.getElementById("saveAlbumEdit").onclick=saveAlbumEdit;
+document.getElementById("cancelAlbumDelete").onclick=closeAlbumDelete;
+document.getElementById("confirmAlbumDelete").onclick=confirmAlbumDelete;
+albumEditModal.addEventListener("click",e=>{if(e.target===albumEditModal)closeAlbumEdit();});
+albumDeleteModal.addEventListener("click",e=>{if(e.target===albumDeleteModal)closeAlbumDelete();});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape")return;
+  if(albumEditModal.classList.contains("open"))closeAlbumEdit();
+  if(albumDeleteModal.classList.contains("open"))closeAlbumDelete();
+});
 (async()=>{
   try{
-    // R6: show a recent list instantly, then refresh it in the background.
     const cached=API.cacheGet("albums","list",60000);
     if(cached)renderAlbums(cached);
     const r=await API.call("albums",{token:session.token},"GET");

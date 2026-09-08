@@ -1494,3 +1494,31 @@ body.dark .about-role-note strong{
 @media(max-width:700px){
   .required-field-label{font-size:12px}
 }
+
+
+/* R15ZS — destructive actions are clearly red in every interface */
+.danger-btn,button.danger-btn,.delete-photo-btn,.album-delete-btn,.delete-user-btn,.user-manage-delete,.album-delete-confirm-btn{
+ background:#b3261e!important;color:#fff!important;border:1px solid #b3261e!important;box-shadow:0 4px 14px rgba(179,38,30,.28)!important}
+.danger-btn:hover,.danger-btn:focus-visible,.delete-photo-btn:hover,.delete-photo-btn:focus-visible,.album-delete-btn:hover,.album-delete-btn:focus-visible,.delete-user-btn:hover,.delete-user-btn:focus-visible,.user-manage-delete:hover,.user-manage-delete:focus-visible,.album-delete-confirm-btn:hover,.album-delete-confirm-btn:focus-visible{
+ background:#8f1f19!important;color:#fff!important;border-color:#8f1f19!important}
+.dark .danger-btn,.dark button.danger-btn,.dark .delete-photo-btn,.dark .album-delete-btn,.dark .delete-user-btn,.dark .user-manage-delete,.dark .album-delete-confirm-btn{
+ background:#b3261e!important;color:#fff!important;border-color:#e35d54!important;box-shadow:0 4px 16px rgba(0,0,0,.46),0 0 0 1px rgba(255,139,131,.12)!important}
+.dark .danger-btn:hover,.dark .danger-btn:focus-visible,.dark .delete-photo-btn:hover,.dark .delete-photo-btn:focus-visible,.dark .album-delete-btn:hover,.dark .album-delete-btn:focus-visible,.dark .delete-user-btn:hover,.dark .delete-user-btn:focus-visible,.dark .user-manage-delete:hover,.dark .user-manage-delete:focus-visible,.dark .album-delete-confirm-btn:hover,.dark .album-delete-confirm-btn:focus-visible{
+ background:#d13a31!important;color:#fff!important;border-color:#ff8b83!important}
+
+
+/* R15ZT — edit actions are clearly green in every interface */
+.edit-btn,.edit-photo-btn,.album-edit-btn,button.edit-btn{
+  background:#188038!important;color:#fff!important;border:1px solid #188038!important;
+  box-shadow:0 4px 14px rgba(24,128,56,.28)!important;
+}
+.edit-btn:hover,.edit-btn:focus-visible,.edit-photo-btn:hover,.edit-photo-btn:focus-visible,.album-edit-btn:hover,.album-edit-btn:focus-visible{
+  background:#146c32!important;color:#fff!important;border-color:#146c32!important;
+}
+.dark .edit-btn,.dark .edit-photo-btn,.dark .album-edit-btn{
+  background:#188038!important;color:#fff!important;border-color:#45b966!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.46),0 0 0 1px rgba(69,185,102,.12)!important;
+}
+.dark .edit-btn:hover,.dark .edit-btn:focus-visible,.dark .edit-photo-btn:hover,.dark .edit-photo-btn:focus-visible,.dark .album-edit-btn:hover,.dark .album-edit-btn:focus-visible{
+  background:#24964a!important;color:#fff!important;border-color:#72d58d!important;
+}

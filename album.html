@@ -84,7 +84,405 @@
   .viewer #x .viewer-close-text{display:block!important;font-size:40px!important;line-height:1!important}
   .viewer-arrow-icon{width:24px;height:24px}
 }
-</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>אלבומים</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">אלבום</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="משנה" aria-label="חיפוש משנה"><input id="searchYearTo" type="number" min="1800" max="2200" placeholder="עד שנה" aria-label="חיפוש עד שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="x" type="button" aria-label="סגור" title="סגור"><span class="viewer-close-text" aria-hidden="true">×</span></button><button id="r" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
+
+/* R15ZF — always-visible close X in full-screen viewer and slideshow */
+.viewer.open #x{
+  position:fixed !important;
+  top:calc(16px + env(safe-area-inset-top,0px)) !important;
+  right:calc(16px + env(safe-area-inset-right,0px)) !important;
+  left:auto !important;
+  bottom:auto !important;
+  width:50px !important;
+  height:50px !important;
+  min-width:50px !important;
+  min-height:50px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:grid !important;
+  place-items:center !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  overflow:visible !important;
+  z-index:2147483647 !important;
+  border-radius:50% !important;
+  border:1px solid rgba(42,39,36,.24) !important;
+  background:rgba(255,255,255,.96) !important;
+  color:#201d1b !important;
+  box-shadow:0 6px 22px rgba(0,0,0,.28) !important;
+  font:400 40px/1 Arial,sans-serif !important;
+  text-align:center !important;
+  transform:none !important;
+}
+.dark .viewer.open #x{
+  background:rgba(24,22,21,.97) !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.28) !important;
+}
+@media(max-width:700px){
+  .viewer.open #x{
+    top:calc(10px + env(safe-area-inset-top,0px)) !important;
+    right:calc(10px + env(safe-area-inset-right,0px)) !important;
+    width:46px !important;
+    height:46px !important;
+    min-width:46px !important;
+    min-height:46px !important;
+    font-size:38px !important;
+  }
+}
+
+/* R15ZG — structural full-screen/slideshow close button */
+.viewer .viewer-close-fixed,
+.viewer.open .viewer-close-fixed{
+  position:fixed !important;
+  inset:auto !important;
+  top:16px !important;
+  right:16px !important;
+  left:auto !important;
+  bottom:auto !important;
+  width:52px !important;
+  height:52px !important;
+  min-width:52px !important;
+  min-height:52px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:grid !important;
+  place-items:center !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  z-index:2147483647 !important;
+  border-radius:999px !important;
+  border:2px solid rgba(42,39,36,.28) !important;
+  background:#fff !important;
+  color:#171514 !important;
+  box-shadow:0 8px 28px rgba(0,0,0,.34) !important;
+  transform:none !important;
+  cursor:pointer !important;
+}
+.viewer .viewer-close-fixed span{
+  display:block !important;
+  width:auto !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  color:inherit !important;
+  font:400 42px/42px Arial,sans-serif !important;
+  transform:translateY(-1px) !important;
+}
+.dark .viewer .viewer-close-fixed,
+.dark .viewer.open .viewer-close-fixed{
+  background:#1b1918 !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.35) !important;
+}
+@media(max-width:700px){
+  .viewer .viewer-close-fixed,
+  .viewer.open .viewer-close-fixed{
+    top:calc(10px + env(safe-area-inset-top,0px)) !important;
+    right:calc(10px + env(safe-area-inset-right,0px)) !important;
+    width:48px !important;
+    height:48px !important;
+    min-width:48px !important;
+    min-height:48px !important;
+  }
+  .viewer .viewer-close-fixed span{
+    font-size:40px !important;
+    line-height:40px !important;
+  }
+}
+
+/* R15ZH — global close control OUTSIDE viewer stacking context */
+#viewerClose.viewer-close-global{
+  position:fixed !important;
+  top:16px !important;
+  right:16px !important;
+  left:auto !important;
+  bottom:auto !important;
+  width:54px !important;
+  height:54px !important;
+  min-width:54px !important;
+  min-height:54px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  z-index:2147483647 !important;
+  border-radius:50% !important;
+  border:2px solid rgba(42,39,36,.32) !important;
+  background:#ffffff !important;
+  color:#171514 !important;
+  box-shadow:0 8px 30px rgba(0,0,0,.38) !important;
+  font:400 42px/1 Arial,sans-serif !important;
+  line-height:1 !important;
+  text-align:center !important;
+  cursor:pointer !important;
+  transform:none !important;
+}
+#viewerClose.viewer-close-global.is-visible{
+  display:flex !important;
+}
+.dark #viewerClose.viewer-close-global{
+  background:#1b1918 !important;
+  color:#ffffff !important;
+  border-color:rgba(255,255,255,.38) !important;
+}
+@media(max-width:700px){
+  #viewerClose.viewer-close-global{
+    top:calc(10px + env(safe-area-inset-top,0px)) !important;
+    right:calc(10px + env(safe-area-inset-right,0px)) !important;
+    width:50px !important;
+    height:50px !important;
+    min-width:50px !important;
+    min-height:50px !important;
+    font-size:40px !important;
+  }
+}
+
+/* R15ZI — responsive compact X for full-screen viewer/slideshow */
+#viewerClose.viewer-close-global{
+  width:clamp(34px,3.2vw,44px) !important;
+  height:clamp(34px,3.2vw,44px) !important;
+  min-width:clamp(34px,3.2vw,44px) !important;
+  min-height:clamp(34px,3.2vw,44px) !important;
+  top:clamp(8px,1.4vw,16px) !important;
+  right:clamp(8px,1.4vw,16px) !important;
+  font-size:clamp(28px,2.6vw,36px) !important;
+  border-width:1px !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.28) !important;
+}
+@media(max-width:700px){
+  #viewerClose.viewer-close-global{
+    width:38px !important;
+    height:38px !important;
+    min-width:38px !important;
+    min-height:38px !important;
+    top:calc(8px + env(safe-area-inset-top,0px)) !important;
+    right:calc(8px + env(safe-area-inset-right,0px)) !important;
+    font-size:31px !important;
+  }
+}
+@media(max-width:420px){
+  #viewerClose.viewer-close-global{
+    width:34px !important;
+    height:34px !important;
+    min-width:34px !important;
+    min-height:34px !important;
+    top:calc(6px + env(safe-area-inset-top,0px)) !important;
+    right:calc(6px + env(safe-area-inset-right,0px)) !important;
+    font-size:28px !important;
+  }
+}
+
+/* R15ZJ — prevent close X from overlapping the responsive header/logo */
+body.viewer-open .top{
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+/* R15ZK — photo metadata editing */
+.edit-photo-btn{position:absolute;top:10px;left:10px;z-index:3;width:38px;height:38px;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.92);color:#2a2724;box-shadow:0 4px 14px rgba(0,0,0,.18);cursor:pointer;font-size:17px}
+.dark .edit-photo-btn{background:rgba(30,27,25,.94);color:#fff}
+.photo-edit-modal{position:fixed;inset:0;z-index:2147483646;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(7px)}
+.photo-edit-modal.open{display:flex}
+.photo-edit-card{width:min(440px,94vw);background:#fff;color:#2a2724;border-radius:20px;padding:22px;box-shadow:0 20px 65px rgba(0,0,0,.35)}
+.dark .photo-edit-card{background:#24211f;color:#f4efe9}
+.photo-edit-card h2{margin:0 0 18px}
+.photo-edit-card label{display:grid;gap:7px;margin:12px 0;font-weight:800}
+.photo-edit-card input{width:100%;box-sizing:border-box;border:1px solid rgba(42,39,36,.18);border-radius:12px;padding:11px 12px;background:#fff;color:#2a2724;font:inherit}
+.dark .photo-edit-card input{background:#302c29;color:#f4efe9;border-color:rgba(255,255,255,.16)}
+.photo-edit-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.photo-edit-actions button{border:0;border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer}
+.photo-edit-save{background:#a16e48;color:#fff}
+.photo-edit-cancel{background:#ece7e2;color:#2a2724}
+.dark .photo-edit-cancel{background:#3a3532;color:#f4efe9}
+@media(max-width:600px){.edit-photo-btn{width:34px;height:34px;top:8px;left:8px}.photo-edit-card{padding:18px;border-radius:16px}}
+
+/* R15ZL — keep edit and delete controls separately visible */
+.photo-admin-actions{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  direction:ltr;
+}
+.photo-admin-actions .edit-photo-btn,
+.photo-admin-actions .delete-photo-btn{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  min-width:38px;
+  min-height:38px;
+  margin:0;
+}
+.photo-admin-actions .edit-photo-btn{
+  display:grid;
+  place-items:center;
+}
+@media(max-width:600px){
+  .photo-admin-actions{
+    top:8px;
+    left:8px;
+    gap:5px;
+  }
+  .photo-admin-actions .edit-photo-btn,
+  .photo-admin-actions .delete-photo-btn{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    min-height:34px;
+  }
+}
+
+/* R15ZM — photo edit album selector + dark-mode edit control */
+.photo-edit-card select{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid rgba(42,39,36,.18);
+  border-radius:12px;
+  padding:11px 38px 11px 12px;
+  background:#fff;
+  color:#2a2724;
+  font:inherit;
+}
+.dark .photo-edit-card select{
+  background:#302c29 !important;
+  color:#f4efe9 !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.dark .photo-admin-actions .edit-photo-btn{
+  background:#302c29 !important;
+  color:#ffffff !important;
+  border:1px solid rgba(255,255,255,.24) !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.42) !important;
+}
+.dark .photo-admin-actions .edit-photo-btn:hover,
+.dark .photo-admin-actions .edit-photo-btn:focus-visible{
+  background:#403a36 !important;
+  color:#ffffff !important;
+}
+
+/* R15ZN — cleaner photo actions + reliable Dark Mode edit button */
+
+/* Desktop / mouse: keep photo clean; reveal actions only on hover or keyboard focus */
+@media (hover:hover) and (pointer:fine){
+  .photo-admin-actions{
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-4px);
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease, visibility .18s ease;
+  }
+  .photo-card:hover .photo-admin-actions,
+  .photo-card:focus-within .photo-admin-actions{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+}
+
+/* Touch/mobile: no hover exists, so keep the actions visible */
+@media (hover:none), (pointer:coarse){
+  .photo-admin-actions{
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+    pointer-events:auto !important;
+  }
+}
+
+/* Explicit edit-button appearance in Light Mode */
+.photo-card .photo-admin-actions .edit-photo-btn{
+  background:#ffffff !important;
+  color:#2a2724 !important;
+  border:1px solid rgba(42,39,36,.22) !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.18) !important;
+}
+
+/* Explicit edit-button appearance in Dark Mode */
+html.dark .photo-card .photo-admin-actions .edit-photo-btn,
+body.dark .photo-card .photo-admin-actions .edit-photo-btn,
+.dark .photo-card .photo-admin-actions .edit-photo-btn{
+  background:#211f1d !important;
+  color:#ffffff !important;
+  border:1px solid rgba(255,255,255,.28) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.52) !important;
+}
+
+html.dark .photo-card .photo-admin-actions .edit-photo-btn:hover,
+html.dark .photo-card .photo-admin-actions .edit-photo-btn:focus-visible,
+body.dark .photo-card .photo-admin-actions .edit-photo-btn:hover,
+body.dark .photo-card .photo-admin-actions .edit-photo-btn:focus-visible,
+.dark .photo-card .photo-admin-actions .edit-photo-btn:hover,
+.dark .photo-card .photo-admin-actions .edit-photo-btn:focus-visible{
+  background:#34302d !important;
+  color:#ffffff !important;
+  border-color:rgba(255,255,255,.42) !important;
+}
+
+
+/* R15ZR — reliable Dark Mode delete-photo button */
+.photo-card .photo-admin-actions .delete-photo-btn{
+  background:#ffffff !important;
+  color:#b3261e !important;
+  border:1px solid rgba(179,38,30,.28) !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.18) !important;
+}
+
+html.dark .photo-card .photo-admin-actions .delete-photo-btn,
+body.dark .photo-card .photo-admin-actions .delete-photo-btn,
+.dark .photo-card .photo-admin-actions .delete-photo-btn{
+  background:#211f1d !important;
+  color:#ff8b83 !important;
+  border:1px solid rgba(255,139,131,.34) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.52) !important;
+}
+
+html.dark .photo-card .photo-admin-actions .delete-photo-btn:hover,
+html.dark .photo-card .photo-admin-actions .delete-photo-btn:focus-visible,
+body.dark .photo-card .photo-admin-actions .delete-photo-btn:hover,
+body.dark .photo-card .photo-admin-actions .delete-photo-btn:focus-visible,
+.dark .photo-card .photo-admin-actions .delete-photo-btn:hover,
+.dark .photo-card .photo-admin-actions .delete-photo-btn:focus-visible{
+  background:#34302d !important;
+  color:#ff9b94 !important;
+  border-color:rgba(255,155,148,.50) !important;
+}
+
+/* R15ZS — emphasize photo delete */
+.photo-card .photo-admin-actions .delete-photo-btn,html.dark .photo-card .photo-admin-actions .delete-photo-btn,body.dark .photo-card .photo-admin-actions .delete-photo-btn,.dark .photo-card .photo-admin-actions .delete-photo-btn{
+ background:#b3261e!important;color:#fff!important;border:1px solid #e35d54!important;box-shadow:0 4px 16px rgba(0,0,0,.38)!important}
+.photo-card .photo-admin-actions .delete-photo-btn:hover,.photo-card .photo-admin-actions .delete-photo-btn:focus-visible,.dark .photo-card .photo-admin-actions .delete-photo-btn:hover,.dark .photo-card .photo-admin-actions .delete-photo-btn:focus-visible{
+ background:#d13a31!important;color:#fff!important;border-color:#ff8b83!important}
+
+/* R15ZT — emphasize photo edit */
+.photo-card .photo-admin-actions .edit-photo-btn,
+html.dark .photo-card .photo-admin-actions .edit-photo-btn,
+body.dark .photo-card .photo-admin-actions .edit-photo-btn,
+.dark .photo-card .photo-admin-actions .edit-photo-btn{
+  background:#188038!important;color:#fff!important;border:1px solid #45b966!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.38)!important;
+}
+.photo-card .photo-admin-actions .edit-photo-btn:hover,
+.photo-card .photo-admin-actions .edit-photo-btn:focus-visible,
+.dark .photo-card .photo-admin-actions .edit-photo-btn:hover,
+.dark .photo-card .photo-admin-actions .edit-photo-btn:focus-visible{
+  background:#24964a!important;color:#fff!important;border-color:#72d58d!important;
+}
+</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>אלבומים</b> ♥</a><nav id="nav"></nav><div class="actions"><button type="button" onclick="toggleTheme()">◐</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">אלבום</span><h1 id="title">טוען...</h1><p id="description"></p></div><button id="start" class="btn" type="button">◀ מצגת</button></div><button id="toggleSearch" class="mobile-search-toggle" type="button" aria-expanded="false" aria-controls="photoTools" aria-label="הצג סינון"><svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>הצג סינון</span></button><div id="photoTools" class="photo-tools mobile-search-hidden"><input id="searchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..." aria-label="חיפוש לפי כותרת"><input id="searchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..." aria-label="חיפוש לפי שם אלבום"><input id="searchYear" type="number" min="1800" max="2200" placeholder="משנה" aria-label="חיפוש משנה"><input id="searchYearTo" type="number" min="1800" max="2200" placeholder="עד שנה" aria-label="חיפוש עד שנה"><select id="sortYear" aria-label="מיון לפי שנה"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="clearFilters" class="pill" type="button">נקה</button><span id="photoCount" class="hint"></span></div><div id="gallery" class="gallery"></div></main><div id="viewer" class="viewer" aria-hidden="true"><button id="r" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="big" alt=""><button id="l" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="caption"></div><div id="viewerDots" class="viewer-dots" aria-label="ניווט בין התמונות"></div></div><button id="viewerClose" class="viewer-close-global" type="button" aria-label="סגור" title="סגור" hidden>×</button><div id="photoEditModal" class="photo-edit-modal" aria-hidden="true"><div class="photo-edit-card" role="dialog" aria-modal="true" aria-labelledby="photoEditTitle"><h2 id="photoEditTitle">עריכת תמונה</h2><label>כותרת <input id="editPhotoTitle" type="text" required></label><label>שנה <input id="editPhotoYear" type="number" min="1800" max="2200" step="1" required></label><label>אלבום <select id="editPhotoAlbum" required><option value="">טוען אלבומים...</option></select></label><div class="photo-edit-actions"><button id="cancelPhotoEdit" class="photo-edit-cancel" type="button">ביטול</button><button id="savePhotoEdit" class="photo-edit-save" type="button">שמור</button></div></div></div><script src="js/api.js"></script><script src="js/layout.js"></script><script>
 'use strict';
 mountLayout('albums');
 const params=new URLSearchParams(location.search);
@@ -152,14 +550,14 @@ function renderGallery(){
   photoCount.textContent=`${filteredPhotos.length} מתוך ${photos.length} תמונות`;
   const cards=visible.map((p,n)=>{
     const title=esc(photoTitle(p)),cap=photoCaption(p),url=esc(p.thumbnailUrl||p.imageUrl||'');
-    return `<figure class="photo-card"><div class="photo-wrap"><img src="${url}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" alt="${title}" onerror="this.closest('figure').classList.add('img-error');this.alt='לא ניתן להציג את התמונה';" onclick="openPhoto(${n})"><button class="favorite-btn ${p.isFavorite?'active':''}" type="button" aria-label="${p.isFavorite?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${n},this)">${p.isFavorite?'♥':'♡'}</button>${p.canDelete?`<button class="delete-photo-btn" type="button" aria-label="מחיקת תמונה" onclick="event.preventDefault();event.stopPropagation();deletePhoto(${n})">🗑️</button>`:''}</div><figcaption><strong>${title}</strong>${cap?`<small>📁 ${esc(cap)}</small>`:''}</figcaption></figure>`;
+    return `<figure class="photo-card"><div class="photo-wrap"><img src="${url}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" alt="${title}" onerror="this.closest('figure').classList.add('img-error');this.alt='לא ניתן להציג את התמונה';" onclick="openPhoto(${n})"><button class="favorite-btn ${p.isFavorite?'active':''}" type="button" aria-label="${p.isFavorite?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${n},this)">${p.isFavorite?'♥':'♡'}</button>${p.canDelete?`<div class="photo-admin-actions"><button class="edit-photo-btn" type="button" aria-label="עריכת תמונה" title="עריכת תמונה" onclick="event.preventDefault();event.stopPropagation();openPhotoEdit(${n})">✎</button><button class="delete-photo-btn" type="button" aria-label="מחיקת תמונה" title="מחיקת תמונה" onclick="event.preventDefault();event.stopPropagation();deletePhoto(${n})">🗑️</button></div>`:''}</div><figcaption><strong>${title}</strong>${cap?`<small>📁 ${esc(cap)}</small>`:''}</figcaption></figure>`;
   }).join('');
   const more=renderLimit<filteredPhotos.length?`<div class="gallery-more"><button id="loadMorePhotos" class="pill" type="button">טען עוד ${Math.min(RENDER_STEP,filteredPhotos.length-renderLimit)} תמונות</button></div>`:'';
   gallery.innerHTML=cards+more||'<p>לא נמצאו תמונות התואמות לחיפוש.</p>';
   const moreBtn=document.getElementById('loadMorePhotos');if(moreBtn)moreBtn.onclick=()=>{renderLimit+=RENDER_STEP;renderGallery();};
 }
 function renderViewerDots(){if(!viewerDots)return;viewerDots.innerHTML=filteredPhotos.map((_,n)=>`<button class="viewer-dot ${n===i?'active':''}" type="button" aria-label="תמונה ${n+1} מתוך ${filteredPhotos.length}" aria-current="${n===i?'true':'false'}" onclick="openPhoto(${n})"></button>`).join('');const active=viewerDots.querySelector('.viewer-dot.active');if(active)active.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
-function openPhoto(n){if(!filteredPhotos.length)return;i=n;const p=filteredPhotos[i];big.src=p.imageUrl||'';big.alt=photoTitle(p);caption.innerHTML=`<strong>${esc(photoTitle(p))}</strong><small>📁 ${esc(photoCaption(p))}</small>`;viewer.classList.add('open');viewer.setAttribute('aria-hidden','false');renderViewerDots();}
+function openPhoto(n){if(!filteredPhotos.length)return;i=n;const p=filteredPhotos[i];big.src=p.imageUrl||'';big.alt=photoTitle(p);caption.innerHTML=`<strong>${esc(photoTitle(p))}</strong><small>📁 ${esc(photoCaption(p))}</small>`;viewer.classList.add('open');viewer.setAttribute('aria-hidden','false');document.body.classList.add('viewer-open');const closeBtn=document.getElementById('viewerClose');if(closeBtn){closeBtn.hidden=false;closeBtn.classList.add('is-visible');}renderViewerDots();}
 async function toggleFav(n,btn){
   const p=filteredPhotos[n],s=getSession();
   if(!s){location.replace('index.html?autoLogin=1&loginRequired=1');return;}
@@ -203,15 +601,114 @@ async function toggleFav(n,btn){
     if(btn)delete btn.dataset.pending;
   }
 }
+let editPhotoIndex=-1;
+const photoEditModal=document.getElementById('photoEditModal');
+const editPhotoTitle=document.getElementById('editPhotoTitle');
+const editPhotoYear=document.getElementById('editPhotoYear');
+const editPhotoAlbum=document.getElementById('editPhotoAlbum');
+const editAlbumOptionsCache=new Map();
+
+async function loadPhotoEditAlbums_(p){
+  const sourceAlbumId=String(p?.albumId||id||'').trim();
+  editPhotoAlbum.disabled=true;
+  editPhotoAlbum.innerHTML='<option value="">טוען אלבומים...</option>';
+  try{
+    let items=editAlbumOptionsCache.get(sourceAlbumId);
+    if(!items){
+      const s=getSession();if(!s)throw new Error('Session not found');
+      const r=await API.call('photoEditAlbums',{token:s.token,sourceAlbumId});
+      if(!r.ok)throw new Error(r.message||'לא ניתן לטעון את האלבומים');
+      items=Array.isArray(r.data)?r.data:[];
+      editAlbumOptionsCache.set(sourceAlbumId,items);
+    }
+    const currentExists=items.some(x=>String(x.id)===sourceAlbumId);
+    if(!currentExists&&sourceAlbumId){
+      items=[{id:sourceAlbumId,title:albumTitle(p)||titleEl.textContent||'אלבום נוכחי'},...items];
+    }
+    editPhotoAlbum.innerHTML=items.map(x=>`<option value="${esc(x.id)}">${esc(x.title||'ללא שם')}</option>`).join('');
+    editPhotoAlbum.value=sourceAlbumId;
+    editPhotoAlbum.disabled=false;
+  }catch(e){
+    editPhotoAlbum.innerHTML=`<option value="${esc(sourceAlbumId)}">${esc(albumTitle(p)||titleEl.textContent||'אלבום נוכחי')}</option>`;
+    editPhotoAlbum.value=sourceAlbumId;
+    editPhotoAlbum.disabled=false;
+    toast(e.message||'לא ניתן לטעון את רשימת האלבומים','error');
+  }
+}
+
+async function openPhotoEdit(n){
+  const p=filteredPhotos[n];
+  if(!p?.canDelete)return;
+  editPhotoIndex=n;
+  editPhotoTitle.value=photoTitle(p);
+  editPhotoYear.value=String(p.photoDate||'').match(/\d{4}/)?.[0]||'';
+  photoEditModal.classList.add('open');
+  photoEditModal.setAttribute('aria-hidden','false');
+  await loadPhotoEditAlbums_(p);
+  setTimeout(()=>editPhotoTitle.focus(),0);
+}
+function closePhotoEdit(){
+  photoEditModal.classList.remove('open');
+  photoEditModal.setAttribute('aria-hidden','true');
+  editPhotoIndex=-1;
+}
+async function savePhotoEdit(){
+  const p=filteredPhotos[editPhotoIndex];
+  if(!p?.canDelete)return closePhotoEdit();
+  const title=String(editPhotoTitle.value||'').trim();
+  const year=String(editPhotoYear.value||'').trim();
+  const targetAlbumId=String(editPhotoAlbum.value||'').trim();
+  if(!title){toast('נא להזין כותרת לתמונה','error');editPhotoTitle.focus();return;}
+  if(!/^\d{4}$/.test(year)||Number(year)<1800||Number(year)>2200){toast('נא להזין שנה תקינה','error');editPhotoYear.focus();return;}
+  if(!targetAlbumId){toast('נא לבחור אלבום','error');editPhotoAlbum.focus();return;}
+  const s=getSession();if(!s)return;
+  const sourceAlbumId=String(p.albumId||'');
+  const targetAlbumTitle=String(editPhotoAlbum.options[editPhotoAlbum.selectedIndex]?.text||'').trim();
+  const moved=targetAlbumId!==sourceAlbumId;
+  const saveBtn=document.getElementById('savePhotoEdit');
+  saveBtn.disabled=true;
+  try{
+    const r=await API.call('updatePhoto',{token:s.token,id:p.id,photoTitle:title,photoDate:year,albumId:targetAlbumId});
+    if(!r.ok)throw new Error(r.message||'שגיאה');
+
+    if(moved && id!=='__ALL__'){
+      photos=photos.filter(x=>String(x.id)!==String(p.id));
+      filteredPhotos=filteredPhotos.filter(x=>String(x.id)!==String(p.id));
+    }else{
+      const apply=x=>{
+        if(String(x.id)===String(p.id)){
+          x.photoTitle=title;x.photoDate=year;x.albumId=targetAlbumId;
+          if(targetAlbumTitle)x.albumTitle=targetAlbumTitle;
+        }
+      };
+      photos.forEach(apply);filteredPhotos.forEach(apply);
+    }
+
+    API.cacheRemove('albumView',sourceAlbumId);
+    API.cacheRemove('albumView',targetAlbumId);
+    API.cacheRemove('albumView',id);
+    API.cacheRemove('dashboard','main');
+    API.cacheRemove('favorites','list');
+    API.cacheRemove('albums','list');
+
+    closePhotoEdit();
+    if(moved && id!=='__ALL__')applyFilters();else renderGallery();
+    toast(moved?'התמונה עודכנה והועברה לאלבום שנבחר':'פרטי התמונה עודכנו','success');
+  }catch(e){toast(e.message||'לא ניתן לעדכן את התמונה','error');}
+  finally{saveBtn.disabled=false;}
+}
+document.getElementById('cancelPhotoEdit').onclick=closePhotoEdit;
+document.getElementById('savePhotoEdit').onclick=savePhotoEdit;
+photoEditModal.addEventListener('click',e=>{if(e.target===photoEditModal)closePhotoEdit();});
 async function deletePhoto(n){const p=filteredPhotos[n];if(!p?.canDelete)return;if(!confirm('למחוק את התמונה? התמונה תוסר מהאלבום וגם מהמועדפים.'))return;const s=getSession();if(!s)return;try{const r=await API.call('deletePhoto',{token:s.token,id:p.id});if(!r.ok)throw new Error(r.message||'שגיאה');API.cacheRemove('albumView',id);API.cacheRemove('dashboard','main');API.cacheRemove('albums','list');photos=photos.filter(x=>String(x.id)!==String(p.id));filteredPhotos=filteredPhotos.filter(x=>String(x.id)!==String(p.id));renderGallery();toast('התמונה נמחקה','info');}catch(e){toast(e.message||'לא ניתן למחוק את התמונה','error');}}
 function move(n){if(!filteredPhotos.length)return;i=(i+n+filteredPhotos.length)%filteredPhotos.length;openPhoto(i);}
-function closeViewer(){viewer.classList.remove('open');viewer.setAttribute('aria-hidden','true');if(viewerDots)viewerDots.innerHTML='';if(slideTimer){clearInterval(slideTimer);slideTimer=null;}}
+function closeViewer(){viewer.classList.remove('open');viewer.setAttribute('aria-hidden','true');document.body.classList.remove('viewer-open');const closeBtn=document.getElementById('viewerClose');if(closeBtn){closeBtn.classList.remove('is-visible');closeBtn.hidden=true;}if(viewerDots)viewerDots.innerHTML='';if(slideTimer){clearInterval(slideTimer);slideTimer=null;}}
 const toggleSearch=document.getElementById('toggleSearch'),photoTools=document.getElementById('photoTools');
 function filterToggleMarkup(visible){return '<svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/><circle cx="8" cy="6" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg><span>'+(visible?'הסתר סינון':'הצג סינון')+'</span>';}
 function setSearchVisible(visible){photoTools.classList.toggle('mobile-search-hidden',!visible);toggleSearch.setAttribute('aria-expanded',String(visible));toggleSearch.setAttribute('aria-label',visible?'הסתר סינון':'הצג סינון');toggleSearch.innerHTML=filterToggleMarkup(visible);} 
 toggleSearch.onclick=()=>setSearchVisible(photoTools.classList.contains('mobile-search-hidden'));
-document.getElementById('x').onclick=closeViewer;document.getElementById('r').onclick=()=>move(1);document.getElementById('l').onclick=()=>move(-1);
-document.addEventListener('keydown',e=>{if(!viewer.classList.contains('open'))return;if(e.key==='Escape')closeViewer();else if(e.key==='ArrowRight')move(1);else if(e.key==='ArrowLeft')move(-1);});
+document.getElementById('viewerClose').onclick=closeViewer;document.getElementById('r').onclick=()=>move(-1);document.getElementById('l').onclick=()=>move(1);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&photoEditModal?.classList.contains('open')){closePhotoEdit();return;}if(!viewer.classList.contains('open'))return;if(e.key==='Escape')closeViewer();else if(e.key==='ArrowRight')move(-1);else if(e.key==='ArrowLeft')move(1);});
 let viewerTouchX=null;viewer.addEventListener('touchstart',e=>{viewerTouchX=e.changedTouches?.[0]?.clientX??null;},{passive:true});viewer.addEventListener('touchend',e=>{if(viewerTouchX===null)return;const x=e.changedTouches?.[0]?.clientX??viewerTouchX,dx=x-viewerTouchX;viewerTouchX=null;if(Math.abs(dx)>45)move(dx<0?1:-1);},{passive:true});
 document.getElementById('start').onclick=()=>{if(!filteredPhotos.length)return;openPhoto(0);if(slideTimer)clearInterval(slideTimer);slideTimer=setInterval(()=>{if(!viewer.classList.contains('open')){clearInterval(slideTimer);slideTimer=null;}else move(1);},2800);};
 [searchTitle,searchAlbum,searchYear,searchYearTo].forEach(el=>el.addEventListener('input',applyFilters));sortYear.addEventListener('change',applyFilters);document.getElementById('clearFilters').onclick=()=>{searchTitle.value='';searchAlbum.value='';searchYear.value='';searchYearTo.value='';sortYear.value='newest';applyFilters();};
