@@ -91,19 +91,43 @@
     <span>במערכת הנוכחית ההבדל בין FAMILY ל־GUEST הוא בעיקר סוג המשתמש. ההרשאות בפועל נקבעות על ידי המנהל לכל משתמש ולכל אלבום: צפייה, העלאה ועריכה/מחיקה.</span>
   </div>
 </section>
+
+<section id="aboutUserRulesSection" class="section about-user-rules-section" aria-labelledby="aboutUserRulesTitle" hidden>
+  <div class="about-user-rules-card">
+    <div class="about-user-rules-head">
+      <div class="about-user-rules-icon" aria-hidden="true">🛡️</div>
+      <div>
+        <span class="eyebrow">למנהלים בלבד</span>
+        <h2 id="aboutUserRulesTitle">כללי עריכה ומחיקה של משתמש קיים</h2>
+        <p>כדי לשמור על תקינות המערכת ועל גישת הניהול, פעולות על משתמשים קיימים כפופות לכללים הבאים.</p>
+      </div>
+    </div>
+    <div class="about-user-rules-grid">
+      <article><span class="rule-no">01</span><div><h3>עריכת משתמש</h3><p>מנהל יכול לערוך את פרטי המשתמש ואת תפקידו. כתובת דוא״ל חייבת להישאר ייחודית ולא ניתן לשמור כתובת שכבר משויכת למשתמש אחר.</p></div></article>
+      <article><span class="rule-no">02</span><div><h3>הגנה על המנהל המחובר</h3><p>מנהל אינו יכול להוריד את התפקיד של עצמו מ־ADMIN. כך נמנעת איבוד גישת הניהול במהלך עבודה במערכת.</p></div></article>
+      <article><span class="rule-no">03</span><div><h3>המנהל האחרון</h3><p>לא ניתן למחוק או להוריד מתפקיד ADMIN את המנהל האחרון במערכת. תמיד חייב להישאר לפחות מנהל פעיל אחד.</p></div></article>
+      <article><span class="rule-no">04</span><div><h3>מחיקת משתמש</h3><p>מנהל יכול למחוק משתמש אחר, אך אינו יכול למחוק את המשתמש שבו הוא מחובר כעת. המחיקה היא מחיקה לוגית (Soft Delete) ולא מחיקה פיזית מיידית של הרשומה.</p></div></article>
+      <article><span class="rule-no">05</span><div><h3>הרשאות לאלבומים</h3><p>תפקיד FAMILY או GUEST אינו קובע לבדו את הגישה. הרשאות צפייה, העלאה ועריכה/מחיקה נקבעות על ידי המנהל לכל משתמש ולכל אלבום.</p></div></article>
+      <article><span class="rule-no">06</span><div><h3>תיעוד פעולות</h3><p>פעולות ניהול משמעותיות על משתמשים מתועדות ביומן הפעילות לצורך מעקב ובקרה.</p></div></article>
+    </div>
+    <div class="about-user-rules-warning"><strong>כלל בטיחות:</strong><span> לפני שינוי תפקיד או מחיקת משתמש, מומלץ לוודא שזה המשתמש הנכון ושיישאר ADMIN פעיל נוסף כאשר הפעולה נוגעת למנהל.</span></div>
+  </div>
+</section>
 </main><footer class="about-footer">
   <span>© 2026 אלבום משפחתי</span>
   <span class="footer-version">גרסה: 3.5.10</span>
 </footer><script src="js/layout.js"></script><script>mountLayout("about");</script><script src="js/session-manager.js"></script><script>
 (function(){
   const section=document.getElementById("aboutRolesSection");
-  if(!section) return;
+  const userRulesSection=document.getElementById("aboutUserRulesSection");
+  if(!section && !userRulesSection) return;
   let session=null;
   try{
     if(window.SessionManager?.getSession) session=SessionManager.getSession();
     else if(typeof getSession==="function") session=getSession();
   }catch(_){}
   const isAdmin=String(session?.user?.role||"").toUpperCase()==="ADMIN";
-  section.hidden=!isAdmin;
+  if(section) section.hidden=!isAdmin;
+  if(userRulesSection) userRulesSection.hidden=!isAdmin;
 })();
 </script></body></html>

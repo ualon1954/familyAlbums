@@ -71,8 +71,58 @@ body.modal-open{overflow:hidden}
 .password-field input{padding-left:68px}
 .password-toggle{position:absolute;left:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#a16e48;font-weight:800;padding:7px 8px;border-radius:8px}
 .password-toggle:hover{background:#a16e4812}
-.login-submit{width:100%;margin-top:10px}
-.login-submit:disabled{opacity:.6;cursor:wait}
+.login-submit{
+  width:100%;
+  min-height:52px;
+  margin-top:14px;
+  border:0 !important;
+  border-radius:14px !important;
+  background:linear-gradient(135deg,#9a6742 0%,#b47a50 52%,#8d5d3d 100%) !important;
+  color:#fff !important;
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:.15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  box-shadow:0 8px 22px rgba(104,65,39,.25),inset 0 1px 0 rgba(255,255,255,.22);
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.login-submit::before{
+  content:"";
+  width:19px;
+  height:19px;
+  flex:0 0 19px;
+  background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 17l5-5-5-5'/%3E%3Cpath d='M15 12H3'/%3E%3Cpath d='M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4'/%3E%3C/svg%3E");
+}
+.login-submit:hover:not(:disabled){
+  transform:translateY(-2px);
+  filter:brightness(1.06);
+  box-shadow:0 11px 28px rgba(104,65,39,.32),inset 0 1px 0 rgba(255,255,255,.25);
+}
+.login-submit:active:not(:disabled){
+  transform:translateY(0);
+  box-shadow:0 5px 14px rgba(104,65,39,.24),inset 0 1px 0 rgba(0,0,0,.06);
+}
+.login-submit:focus-visible{
+  outline:3px solid rgba(180,122,80,.28) !important;
+  outline-offset:3px;
+}
+.login-submit:disabled{
+  opacity:.65;
+  cursor:wait;
+  transform:none;
+  filter:saturate(.7);
+}
+.dark .login-submit{
+  background:linear-gradient(135deg,#b67b50 0%,#c58a5d 52%,#a86d47 100%) !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.2);
+}
+@media(max-width:520px){
+  .login-submit{min-height:50px;font-size:16px;border-radius:13px !important}
+}
 .login-close{position:absolute;top:12px;right:14px;width:40px;height:40px;border:0;border-radius:50%;background:transparent;font-size:30px;line-height:1;color:#777}
 .login-close:hover{background:#0000000a;color:inherit}
 .login-theme-toggle{position:absolute;top:14px;left:14px;width:40px;height:40px;border:1px solid #0002;border-radius:50%;background:#fff;color:#333;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;z-index:2;transition:.18s}
@@ -1522,3 +1572,22 @@ body.dark .about-role-note strong{
 .dark .edit-btn:hover,.dark .edit-btn:focus-visible,.dark .edit-photo-btn:hover,.dark .edit-photo-btn:focus-visible,.dark .album-edit-btn:hover,.dark .album-edit-btn:focus-visible{
   background:#24964a!important;color:#fff!important;border-color:#72d58d!important;
 }
+
+/* R16H — Admin-only user edit/delete rules on About */
+.about-user-rules-section{margin-top:28px}
+.about-user-rules-card{position:relative;overflow:hidden;border:1px solid rgba(161,110,72,.22);border-radius:22px;padding:26px;background:linear-gradient(145deg,rgba(161,110,72,.08),rgba(255,255,255,.72));box-shadow:0 12px 34px rgba(70,45,28,.08)}
+.about-user-rules-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#8f6040,#c28a61,#8f6040)}
+.about-user-rules-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
+.about-user-rules-icon{width:52px;height:52px;flex:0 0 52px;border-radius:16px;display:grid;place-items:center;font-size:25px;background:rgba(161,110,72,.13);border:1px solid rgba(161,110,72,.18)}
+.about-user-rules-head h2{margin:4px 0 7px}
+.about-user-rules-head p{margin:0;opacity:.8;max-width:760px}
+.about-user-rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.about-user-rules-grid article{display:flex;gap:13px;padding:16px;border:1px solid rgba(161,110,72,.15);border-radius:15px;background:rgba(255,255,255,.56)}
+.about-user-rules-grid h3{margin:0 0 5px;font-size:16px}
+.about-user-rules-grid p{margin:0;font-size:14px;line-height:1.65;opacity:.82}
+.rule-no{font-size:12px;font-weight:900;color:#9a6742;background:rgba(161,110,72,.12);border-radius:9px;padding:5px 7px;height:max-content}
+.about-user-rules-warning{margin-top:16px;padding:13px 15px;border-radius:13px;background:rgba(161,110,72,.1);border-right:4px solid #a16e48;line-height:1.65}
+.dark .about-user-rules-card{background:linear-gradient(145deg,rgba(161,110,72,.13),rgba(36,33,31,.92));border-color:rgba(255,255,255,.1);box-shadow:0 12px 34px rgba(0,0,0,.22)}
+.dark .about-user-rules-grid article{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
+.dark .about-user-rules-icon,.dark .rule-no{background:rgba(194,138,97,.14)}
+@media(max-width:760px){.about-user-rules-card{padding:20px 16px}.about-user-rules-grid{grid-template-columns:1fr}.about-user-rules-head{gap:12px}.about-user-rules-icon{width:46px;height:46px;flex-basis:46px}}

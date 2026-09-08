@@ -1,4 +1,8 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>ניהול</title><link rel="stylesheet" href="css/main.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script><script>
+<!doctype html><html lang="he" dir="rtl"><head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>ניהול</title><link rel="stylesheet" href="css/main.css">
+<script src="js/config.js?v=R16I"></script><script src="js/version.js?v=R16I"></script><script src="js/utils.js?v=R16I"></script><script src="js/session-manager.js?v=R16I"></script><script src="js/theme.js?v=R16I"></script><script>
 (function(){
   const s=getSession();
   if(!s || !s.user || !s.token){
@@ -139,6 +143,31 @@
 }
 .dark .cover-simple-upload{border-color:#fff1;background:#fff1}
 .cover-simple-upload h3{margin:0 0 4px}
+.cover-modal-diagnostic{
+  margin-top:10px;
+  padding:9px 11px;
+  border:1px solid rgba(80,140,90,.45);
+  border-radius:10px;
+  background:rgba(80,140,90,.08);
+  font-size:12px;
+  line-height:1.55;
+  font-weight:600;
+}
+.dark .cover-modal-diagnostic{
+  background:rgba(100,190,120,.10);
+  border-color:rgba(130,220,150,.35);
+}
+.cover-diag-title{font-weight:800;margin-bottom:8px}
+.cover-diag-grid{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:7px;direction:rtl}
+.cover-diag-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border-radius:8px;background:rgba(127,127,127,.10);border:1px solid rgba(127,127,127,.16);white-space:nowrap}
+.cover-diag-item span{font-size:11px;opacity:.82}
+.cover-diag-item b{font-variant-numeric:tabular-nums}
+.cover-diag-live{font-variant-numeric:tabular-nums}
+.cover-diag-error{margin-top:8px;color:#b00020;font-weight:700}
+.dark .cover-diag-error{color:#ff8a96}
+@media(max-width:760px){.cover-diag-grid{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+@media(max-width:390px){.cover-diag-grid{grid-template-columns:1fr}}
+
 .cover-upload-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
 .cover-upload-line input[type="file"]{flex:1;min-width:220px}
 .cover-simple-divider{display:flex;align-items:center;gap:12px;margin:18px 0}
@@ -180,10 +209,26 @@
   border-color:#72d58d!important;
 }
 </style>
+
+<style id="r16i-user-edit-feedback">
+.user-edit-message{display:none;margin-top:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:700;line-height:1.5}
+.user-edit-message.show{display:block}
+.user-edit-message.error{background:#b3261e14;color:#a61f18;border:1px solid #b3261e45}
+.user-edit-message.info{background:#a16e4812;color:#815335;border:1px solid #a16e4840}
+.user-edit-message.success{background:#18803812;color:#146c31;border:1px solid #18803840}
+.dark .user-edit-message.error{background:#b3261e28;color:#ffaaa4;border-color:#e35d5470}
+.dark .user-edit-message.info{background:#c28a6120;color:#e6b995;border-color:#c28a6155}
+.dark .user-edit-message.success{background:#18803828;color:#8de4a6;border-color:#45b96665}
+.user-manage-save[disabled]{opacity:.68;cursor:wait}
+</style>
 </head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header><main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>מרכז ניהול</h1><p id="who"></p></div></div><section class="panel api-status-panel" id="apiStatusPanel">
 <h2>🔌 מצב חיבור API</h2>
 <p class="hint">בדיקה זו מאפשרת לוודא שהדפדפן מחובר לגרסת Google Apps Script שתומכת בתמונות מעטפת.</p>
+<div id="frontendBuildProof" style="margin:8px 0;padding:8px 10px;border:1px solid #45b966;border-radius:10px;font-weight:800">
+Frontend פעיל: R16I
+</div>
 <div id="apiStatus" class="cover-status">טרם בוצעה בדיקה.</div>
+<div id="coverBackgroundStatus" class="cover-status" hidden style="margin-top:8px"></div>
 <button type="button" class="btn" onclick="checkApiStatus()">בדוק חיבור וגרסה</button>
 </section>
 <div class="admin-grid"><section class="panel"><h2>➕ אלבום</h2><label class="required-field"><span class="required-field-label">שם אלבום <span class="required-star">*</span></span><input id="at" required aria-required="true" placeholder="נא להזין שם אלבום"></label><textarea id="ad" placeholder="נא להזין תיאור (אופציונלי)"></textarea><button class="btn" onclick="newAlbum()">צור</button><p id="am"></p></section><section class="panel"><h2>📤 תמונות</h2><select id="as"></select><input id="files" type="file" accept="image/*" multiple><p class="hint">בחר תמונות — חובה להזין כותרת ושנה לכל תמונה:</p><div id="photoMeta"></div><button class="btn" onclick="upload()">העלה</button><p id="um"></p></section><section class="panel"><h2>👤 משתמש</h2><label class="required-field"><span class="required-field-label">שם <span class="required-star">*</span></span><input id="un" required aria-required="true" placeholder="נא להזין שם משתמש"></label><label class="required-field"><span class="required-field-label">אימייל <span class="required-star">*</span></span><input id="ue" required aria-required="true" type="email" placeholder="name@example.com"></label><label class="required-field"><span class="required-field-label">סיסמה <span class="required-star">*</span></span><div class="password-field-wrap"><input id="up" required aria-required="true" type="password" placeholder="נא להזין סיסמה">
@@ -218,6 +263,7 @@
     <label>סיסמה חדשה
       <input id="editUserPassword" type="password" placeholder="השאר ריק כדי לא לשנות">
     </label>
+    <div id="editUserMessage" class="user-edit-message" role="alert" aria-live="polite"></div>
     <div class="user-manage-actions">
       <button id="cancelUserEdit" class="user-manage-cancel" type="button">ביטול</button>
       <button id="saveUserEdit" class="user-manage-save" type="button">שמור</button>
@@ -248,7 +294,7 @@
     </div>
   </div>
 </div>
-<script src="js/api.js"></script><script src="js/layout.js"></script><script>
+<script src="js/api.js?v=R16I"></script><script src="js/layout.js?v=R16I"></script><script>
 const S=requireLogin("ADMIN");
 let adminAlbums=[];
 // R15B: audit-log flushing is scheduled by Apps Script in the background.
@@ -257,7 +303,8 @@ if(S){mountLayout("admin");who.textContent="מחובר: "+S.user.name;initAdminP
 async function checkApiStatus(){
   const el=document.getElementById("apiStatus");
   if(!el)return;
-  el.textContent="בודק...";
+  const checkStarted=new Date();
+  el.textContent="בודק API מחדש...";
   try{
     const r=await API.health();
     if(!r || !r.ok){
@@ -283,7 +330,8 @@ async function checkApiStatus(){
     const missingActions=REQUIRED_ACTIONS.filter(a=>!actions.includes(a));
     const compatible=compatibleVersion && missingActions.length===0;
 
-    let html=`<b>✓ API מחובר</b>`;
+    let html=`<b>✓ API מחובר — בדיקה חדשה</b>`;
+    html+=`<br>זמן בדיקה בדפדפן: <b>${esc(checkStarted.toLocaleTimeString("he-IL"))}</b>`;
     html+=`<br>גרסת API: <b>${esc(version||"לא ידועה")}</b>`;
     html+=`<br>Server Build: <b>${esc(build||"שרת ישן ללא Build ID")}</b>`;
     html+=`<br><br><b>גרסת האתר</b>`;
@@ -324,6 +372,7 @@ async function prepareSelectedAlbum_(){
 // R15C: selecting/browsing albums must not trigger a Drive request. Preparation
 // starts only when files are actually chosen (and upload() has a safe fallback).
 as.addEventListener("change",()=>{uploadPreparedAlbumId="";uploadPreparePromise=null;});
+
 async function initAdminPage_(){
   // R15C: one initial request for album cards + users + permission album list + permissions.
   // This removes the cold-start race between loadAdmin() and loadPermissions().
@@ -515,6 +564,12 @@ function openUserEdit(id){
   editUserEmail.value=String(u.email||"");
   editUserRole.value=String(u.role||"FAMILY").toUpperCase();
   editUserPassword.value="";
+  const editMsg=document.getElementById("editUserMessage");
+  if(editMsg){editMsg.className="user-edit-message";editMsg.textContent="";}
+  const isSelf=String(u.id)===String(S.user.id);
+  editUserRole.dataset.originalRole=String(u.role||"FAMILY").toUpperCase();
+  editUserRole.dataset.self=isSelf?"1":"0";
+  editUserRole.title=isSelf?"לא ניתן לשנות את תפקיד המנהל המחובר":"";
   userEditModal.classList.add("open");
   userEditModal.setAttribute("aria-hidden","false");
   setTimeout(()=>editUserName.focus(),0);
@@ -522,30 +577,64 @@ function openUserEdit(id){
 function closeUserEdit(){
   userEditModal.classList.remove("open");
   userEditModal.setAttribute("aria-hidden","true");
+  const editMsg=document.getElementById("editUserMessage");
+  if(editMsg){editMsg.className="user-edit-message";editMsg.textContent="";}
   editUserId="";
 }
 async function saveUserEdit(){
-  const u=findManagedUser_(editUserId);if(!u)return closeUserEdit();
+  const u=findManagedUser_(editUserId);
+  if(!u){closeUserEdit();return;}
+
   const name=String(editUserName.value||"").trim();
   const email=String(editUserEmail.value||"").trim();
-  const role=String(editUserRole.value||"").trim();
+  const role=String(editUserRole.value||"").trim().toUpperCase();
   const password=String(editUserPassword.value||"");
-  if(!name){toast("שם משתמש חובה","error");editUserName.focus();return;}
-  if(!email){toast("אימייל חובה","error");editUserEmail.focus();return;}
-  if(!role){toast("יש לבחור תפקיד","error");editUserRole.focus();return;}
-  const btn=document.getElementById("saveUserEdit");btn.disabled=true;
+  const editMsg=document.getElementById("editUserMessage");
+  const btn=document.getElementById("saveUserEdit");
+
+  const showEditMessage=(text,type="error")=>{
+    if(editMsg){
+      editMsg.textContent=text;
+      editMsg.className="user-edit-message show "+type;
+    }
+  };
+
+  if(!name){showEditMessage("שם משתמש חובה");editUserName.focus();return;}
+  if(!email){showEditMessage("אימייל חובה");editUserEmail.focus();return;}
+  if(!role){showEditMessage("יש לבחור תפקיד");editUserRole.focus();return;}
+
+  if(String(u.id)===String(S.user.id) && role!=="ADMIN"){
+    editUserRole.value="ADMIN";
+    showEditMessage("לא ניתן לשנות את תפקיד המנהל המחובר מ־ADMIN. כדי לשנות תפקיד, התחבר כמנהל אחר.","info");
+    return;
+  }
+
+  btn.disabled=true;
+  const oldText=btn.textContent;
+  btn.textContent="שומר...";
+  showEditMessage("שומר את השינויים...","info");
+
   try{
     const r=await API.call("updateUser",{token:S.token,id:editUserId,name,email,role,password});
     if(!r?.ok)throw new Error(r?.message||"לא ניתן לעדכן משתמש");
+
     const updated=r.data||{id:editUserId,name,email,role,active:true};
     permUsers=permUsers.map(x=>String(x.id)===String(editUserId)?Object.assign({},x,updated):x);
     renderPermissionUsers_(editUserId);
     renderUserManageList_();
     updateAdminBootstrapCache_();
-    closeUserEdit();
+
+    showEditMessage("✓ המשתמש עודכן בהצלחה","success");
     toast("המשתמש עודכן","success");
-  }catch(e){toast(e.message||"לא ניתן לעדכן משתמש","error");}
-  finally{btn.disabled=false;}
+    setTimeout(()=>closeUserEdit(),450);
+  }catch(e){
+    const message=e?.message||"לא ניתן לעדכן משתמש";
+    showEditMessage("✕ "+message,"error");
+    toast(message,"error");
+  }finally{
+    btn.disabled=false;
+    btn.textContent=oldText;
+  }
 }
 function openUserDelete(id){
   const u=findManagedUser_(id);if(!u)return;
@@ -586,6 +675,21 @@ userManageList?.addEventListener("click",e=>{
 });
 document.getElementById("cancelUserEdit").onclick=closeUserEdit;
 document.getElementById("saveUserEdit").onclick=saveUserEdit;
+document.getElementById("editUserRole")?.addEventListener("change",()=>{
+  const roleEl=document.getElementById("editUserRole");
+  const editMsg=document.getElementById("editUserMessage");
+  if(roleEl?.dataset.self==="1" && String(roleEl.value).toUpperCase()!=="ADMIN"){
+    roleEl.value="ADMIN";
+    if(editMsg){
+      editMsg.textContent="לא ניתן לשנות את תפקיד המנהל המחובר מ־ADMIN. התחבר כמנהל אחר כדי לשנות את התפקיד.";
+      editMsg.className="user-edit-message show info";
+    }
+  }else if(editMsg){
+    editMsg.textContent="";
+    editMsg.className="user-edit-message";
+  }
+});
+
 document.getElementById("cancelUserDelete").onclick=closeUserDelete;
 document.getElementById("confirmUserDelete").onclick=confirmUserDelete;
 userEditModal.addEventListener("click",e=>{if(e.target===userEditModal)closeUserEdit();});
@@ -627,6 +731,37 @@ async function prepareUploadImage_(file){
   if(blob.size>=file.size*.97)return {blob:file,fileName:file.name,mimeType:file.type||outType,optimized:false,width:w,height:h};
   let fileName=file.name;if(outType==="image/jpeg"&&!/\.jpe?g$/i.test(fileName))fileName=fileName.replace(/\.[^.]+$/,"" )+".jpg";
   return {blob,fileName,mimeType:outType,optimized:true,width:tw,height:th,originalBytes:file.size,uploadBytes:blob.size};
+}
+
+async function prepareCoverUploadImage_(file){
+  if(!file||!file.type||!file.type.startsWith("image/"))throw new Error("יש לבחור קובץ תמונה");
+  let img=await readImageBitmap_(file);
+  const w=img.width||img.naturalWidth||0,h=img.height||img.naturalHeight||0;
+  if(!w||!h){if(img.close)img.close();return prepareUploadImage_(file)}
+
+  const maxDim=480;
+  const scale=Math.min(1,maxDim/Math.max(w,h));
+  const tw=Math.max(1,Math.round(w*scale)),th=Math.max(1,Math.round(h*scale));
+  const canvas=document.createElement("canvas");
+  canvas.width=tw;canvas.height=th;
+  const ctx=canvas.getContext("2d",{alpha:false});
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,tw,th);ctx.drawImage(img,0,0,tw,th);
+  if(img.close)img.close();
+
+  const make=q=>new Promise((ok,no)=>canvas.toBlob(
+    b=>b?ok(b):no(new Error("דחיסת תמונת המעטפת נכשלה")),"image/jpeg",q
+  ));
+  let blob=await make(.68);
+  if(blob.size>30*1024)blob=await make(.56);
+  if(blob.size>40*1024)blob=await make(.46);
+
+  return {
+    blob,
+    fileName:(file.name.replace(/\.[^.]+$/,"")||"album-cover")+"-cover.jpg",
+    mimeType:"image/jpeg",
+    optimized:true,width:tw,height:th,
+    originalBytes:file.size,uploadBytes:blob.size
+  };
 }
 function setUploadStatus_(idx,text,state){const el=document.querySelector(`[data-upload-status="${idx}"]`);if(el){el.textContent=text;el.className="upload-status "+state}}
 async function uploadOne_(item,albumId){
@@ -757,6 +892,18 @@ async function upload(){
   um.textContent=`✓ ${done} תמונות הועלו בהצלחה${skipped?` · ${skipped} דולגו כי כבר קיימות`:""}`;
   files.value="";photoMeta.innerHTML="";await loadAdmin();
 }
+let coverPrepareAlbumId="",coverPreparePromise=null;
+function prepareCoverAlbum_(albumId){
+  albumId=String(albumId||"");
+  if(!albumId)return Promise.resolve(null);
+  if(coverPrepareAlbumId===albumId&&coverPreparePromise)return coverPreparePromise;
+  coverPrepareAlbumId=albumId;
+  coverPreparePromise=API.call("prepareAlbumUpload",{token:S.token,albumId}).then(r=>{
+    if(r?.ok)console.info("[Cover folder prepared]",r.data);
+    return r;
+  }).catch(e=>{console.warn("Cover prepare failed",e);return null;});
+  return coverPreparePromise;
+}
 async function openCoverManager(albumId){
   const album=adminAlbums.find(a=>String(a.id)===String(albumId));
   if(!album)return;
@@ -764,8 +911,22 @@ async function openCoverManager(albumId){
   document.getElementById("coverAlbumId").value=String(albumId);
   document.getElementById("coverAlbumTitle").textContent=`תמונת מעטפת — ${album.title||"אלבום"}`;
   document.getElementById("coverUploadStatus").textContent="";
+  const modalDiag=document.getElementById("coverModalDiagnostic");
+  if(modalDiag){
+    try{
+      const last=JSON.parse(sessionStorage.getItem("FPA_LAST_COVER_UPLOAD_DIAGNOSTIC")||"null");
+      if(last)renderCoverDiagnosticTo_(modalDiag,last);
+      else modalDiag.innerHTML='<div class="cover-diag-title">זמני העלאת מעטפת</div><div class="cover-diag-live">ממתין להעלאה...</div>';
+    }catch(e){
+      modalDiag.innerHTML='<div class="cover-diag-title">זמני העלאת מעטפת</div><div class="cover-diag-live">ממתין להעלאה...</div>';
+    }
+  }
   modal.classList.add("open");
-  await refreshCoverGrid(albumId);
+
+  // R15ZX: warm Apps Script + resolve/cache the album Drive folder while the
+  // user is choosing a cover. This removes most setup work from the upload click.
+  void prepareCoverAlbum_(albumId);
+  void refreshCoverGrid(albumId);
 }
 async function refreshCoverGrid(albumId){
   const grid=document.getElementById("coverGrid");
@@ -791,15 +952,48 @@ async function chooseAlbumPhotoCover(photoId){
   try{
     const r=await API.call("setAlbumCover",{token:S.token,albumId,photoId});
     if(!r.ok)throw Error(r.message||"שמירת תמונת המעטפת נכשלה");
+    const album=adminAlbums.find(a=>String(a.id)===String(albumId));
+    if(album){
+      album.coverUrl=r.data?.coverUrl||album.coverUrl||"";
+      album.coverPhotoId=photoId;
+      album.coverSource="album";
+      album.coverExternalId="";
+      renderAdminAlbums_();
+    }
     toast("✓ תמונת המעטפת עודכנה");
     closeCoverManager();
-    await loadAdmin();
+    API.cacheRemove("albums","list");
+    API.cacheRemove("dashboard","main");
   }catch(e){
     toast(e.message||String(e));
   }finally{
     setCoverBusy(false);
   }
 }
+let coverPreparedFile=null,coverPreparedPromise=null,coverPreparedKey="";
+function coverFileKey_(f){return f?`${f.name}|${f.size}|${f.lastModified}`:"";}
+function prepareCoverFileEarly_(file){
+  const key=coverFileKey_(file);
+  if(!file||!key){coverPreparedFile=null;coverPreparedPromise=null;coverPreparedKey="";return Promise.resolve(null);}
+  if(coverPreparedKey===key&&coverPreparedPromise)return coverPreparedPromise;
+  coverPreparedKey=key;
+  coverPreparedFile=null;
+  const status=document.getElementById("coverUploadStatus");
+  if(status)status.textContent="מכין תמונת מעטפת ברקע...";
+  coverPreparedPromise=prepareCoverUploadImage_(file).then(p=>{
+    if(coverPreparedKey===key){
+      coverPreparedFile=p;
+      if(status)status.textContent="✓ התמונה מוכנה להעלאה";
+    }
+    return p;
+  }).catch(e=>{
+    if(coverPreparedKey===key&&status)status.textContent="✕ "+(e.message||String(e));
+    throw e;
+  });
+  return coverPreparedPromise;
+}
+
+
 async function uploadAndSetCover(){
   const input=document.getElementById("externalCoverFile");
   const status=document.getElementById("coverUploadStatus");
@@ -807,32 +1001,123 @@ async function uploadAndSetCover(){
   const f=input?.files?.[0];
   if(!albumId||!f)return;
   if(!f.type.startsWith("image/")){status.textContent="✕ יש לבחור קובץ תמונה";return}
-  status.textContent="מעלה ומגדיר תמונת מעטפת...";
+
   const uploadBtn=document.getElementById("uploadCoverBtn");
+  const totalStart=performance.now();
+  let previewUrl="";
+  let album=null,previous=null;
   if(uploadBtn)uploadBtn.disabled=true;
+  const bgStatus=document.getElementById("coverBackgroundStatus");
+
   try{
-    const base64=await new Promise((resolve,reject)=>{
-      const fr=new FileReader();
-      fr.onload=()=>resolve(String(fr.result).split(",")[1]);
-      fr.onerror=reject;
-      fr.readAsDataURL(f);
-    });
-    const up=await API.call("uploadCoverPhoto",{token:S.token,albumId,fileName:f.name,mimeType:f.type,base64});
-    if(!up.ok)throw Error(up.message||"העלאת תמונת המעטפת נכשלה");
-    const coverId=up.data?.id;
-    if(!coverId)throw Error("לא התקבל מזהה לתמונת המעטפת");
-    const set=await API.call("setAlbumExternalCover",{token:S.token,albumId,coverId});
-    if(!set.ok)throw Error(set.message||"הגדרת תמונת המעטפת נכשלה");
-    input.value="";
-    status.textContent="✓ תמונת המעטפת הועלתה והוגדרה";
-    toast("✓ תמונת המעטפת עודכנה");
+    const prepStart=performance.now();
+    const key=coverFileKey_(f);
+    const prepared=(coverPreparedKey===key&&coverPreparedFile)
+      ?coverPreparedFile
+      :await (coverPreparedKey===key&&coverPreparedPromise?coverPreparedPromise:prepareCoverFileEarly_(f));
+    const prepMs=Math.round(performance.now()-prepStart);
+
+    // Prewarm continues in parallel; do not block the visual response.
+    void prepareCoverAlbum_(albumId);
+
+    previewUrl=URL.createObjectURL(prepared.blob);
+    album=adminAlbums.find(a=>String(a.id)===String(albumId));
+    previous=album?{
+      coverUrl:album.coverUrl||"",
+      coverPhotoId:album.coverPhotoId||"",
+      coverSource:album.coverSource||"",
+      coverExternalId:album.coverExternalId||""
+    }:null;
+
+    // R16E: optimistic UI. Show the new cover immediately.
+    if(album){
+      album.coverUrl=previewUrl;
+      album.coverPhotoId="";
+      album.coverSource="external";
+      album.coverExternalId="";
+      renderAdminAlbums_();
+    }
+
+    // Close the modal immediately after the local preview is ready.
+    // Persistence continues asynchronously in this same page.
     closeCoverManager();
-    await loadAdmin();
+    if(bgStatus){
+      bgStatus.hidden=false;
+      bgStatus.textContent="⏳ שומר תמונת מעטפת ברקע...";
+    }
+    toast("✓ המעטפת הוצגה מיד — השמירה ממשיכה ברקע");
+
+    const base64Start=performance.now();
+    const base64=await readBlobBase64_(prepared.blob);
+    const base64Ms=Math.round(performance.now()-base64Start);
+
+    const apiStart=performance.now();
+    const up=await API.call("uploadAndSetAlbumCover",{
+      token:S.token,albumId,
+      fileName:prepared.fileName,mimeType:prepared.mimeType,base64,
+      clientOriginalBytes:f.size,clientUploadBytes:prepared.blob.size,
+      prepared:true
+    });
+    const apiMs=Math.round(performance.now()-apiStart);
+
+    if(!up.ok){
+      if(album&&previous){Object.assign(album,previous);renderAdminAlbums_();}
+      throw Error(up.message||"העלאת תמונת המעטפת נכשלה");
+    }
+
+    const coverUrl=up.data?.coverUrl||up.data?.imageUrl||"";
+    const coverId=up.data?.coverId||up.data?.id||"";
+    if(album){
+      album.coverUrl=coverUrl;
+      album.coverPhotoId="";
+      album.coverSource="external";
+      album.coverExternalId=coverId;
+      renderAdminAlbums_();
+    }
+
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl="";}
+    input.value="";
+    coverPreparedFile=null;coverPreparedPromise=null;coverPreparedKey="";
+    API.cacheRemove("albums","list");
+    API.cacheRemove("dashboard","main");
+
+    const finishedAt=performance.now();
+    const totalMs=Math.max(apiMs,Math.round(finishedAt-totalStart));
+    const serverMs=Number(up.meta?.serverMs)||0;
+    const diag={
+      originalBytes:f.size,uploadBytes:prepared.blob.size,
+      prepMs,base64Ms,apiMs,serverMs,
+      networkOverheadMs:Math.max(0,apiMs-serverMs),
+      totalMs,
+      serverTrace:up.meta?.trace||{}
+    };
+
+    if(bgStatus){
+      bgStatus.hidden=false;
+      bgStatus.textContent="✓ תמונת המעטפת נשמרה";
+      setTimeout(()=>{if(bgStatus)bgStatus.hidden=true;},5000);
+    }
+    toast("✓ תמונת המעטפת נשמרה");
   }catch(e){
-    status.textContent="✕ "+(e.message||String(e));
+    if(album&&previous){Object.assign(album,previous);renderAdminAlbums_();}
+    if(previewUrl)URL.revokeObjectURL(previewUrl);
+    if(bgStatus){
+      bgStatus.hidden=false;
+      bgStatus.textContent="✕ שמירת המעטפת נכשלה";
+    }
+    toast("✕ שמירת המעטפת נכשלה — התצוגה הוחזרה");
   }finally{
     if(uploadBtn)uploadBtn.disabled=false;
   }
+}
+
+const externalCoverFileInput=document.getElementById("externalCoverFile");
+if(externalCoverFileInput){
+  externalCoverFileInput.addEventListener("change",()=>{
+    const f=externalCoverFileInput.files?.[0];
+    if(f)void prepareCoverFileEarly_(f);
+    else{coverPreparedFile=null;coverPreparedPromise=null;coverPreparedKey="";}
+  });
 }
 function setCoverBusy(v){
   document.querySelectorAll('#coverGrid .cover-photo').forEach(b=>b.disabled=!!v);
@@ -979,6 +1264,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&coverModal?.classLi
     btn.setAttribute('title', show?'הסתר סיסמה':'הצג סיסמה');
   });
 })();
+
+
 </script>
 
 </body></html>
