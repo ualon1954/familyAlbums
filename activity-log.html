@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16V1"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16V1"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16V2"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16V2"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
 <style>
 .activity-shell{display:grid;gap:18px}
 .activity-filter-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--line,#ddd);border-radius:16px;background:var(--card,#fff);box-shadow:0 7px 24px rgba(0,0,0,.05)}
@@ -109,11 +109,7 @@
 }
 
 
-@media(max-width:560px){
-  .activity-filter-panel.open,.activity-filters,.activity-field,.activity-date-time{min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
-  .activity-date-time{display:grid!important;grid-template-columns:minmax(0,1fr)!important;overflow:hidden}
-  .activity-date-time input[type="date"],.activity-date-time input[type="time"]{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;margin:0!important}
-}
+
 
 .activity-user-input-wrap{width:100%;max-width:100%;overflow:visible}
 .activity-user-input-wrap input{box-sizing:border-box;display:block;max-width:100%;font-size:1rem}
@@ -123,44 +119,44 @@
 .activity-list-panel.is-refreshing{cursor:progress}
 .activity-list-panel.is-refreshing .activity-sort{pointer-events:none}.activity-list-panel.is-refreshing .activity-pager{pointer-events:none}
 
+
+
+
 @media(max-width:560px){
-  .activity-log-page .activity-filter-panel.open{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-    overflow-x:clip!important;
-  }
+  .activity-log-page .activity-filter-panel.open,
   .activity-log-page .activity-filters,
   .activity-log-page .activity-field{
-    width:100%!important;
-    max-width:100%!important;
     min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
+  }
+  .activity-log-page .activity-filters{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .activity-log-page .activity-field{
+    width:auto!important;
+    overflow:hidden!important;
   }
   .activity-log-page .activity-date-time{
-    display:flex!important;
-    flex-direction:column!important;
-    gap:8px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(82px,92px)!important;
+    gap:6px!important;
     width:100%!important;
-    max-width:100%!important;
     min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
-    overflow:visible!important;
+    overflow:hidden!important;
   }
-  .activity-log-page .activity-date-time > input[type="date"],
-  .activity-log-page .activity-date-time > input[type="time"]{
-    flex:0 1 auto!important;
+  .activity-log-page .activity-date-time input[type="date"],
+  .activity-log-page .activity-date-time input[type="time"]{
     display:block!important;
-    inline-size:100%!important;
     width:100%!important;
-    max-inline-size:100%!important;
-    max-width:100%!important;
-    min-inline-size:0!important;
     min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
     margin:0!important;
-    padding-inline:10px!important;
+    padding-inline:6px!important;
+    font-size:.92rem!important;
   }
 }
 
@@ -184,7 +180,7 @@
 <section class="panel activity-list-panel"><div class="activity-summary"><div class="activity-count" id="resultCount">טוען...</div><div class="activity-index-note" id="indexInfo"></div></div><div class="activity-table-wrap"><table class="activity-table"><thead><tr><th><button class="activity-sort" data-sort="createdAt">תאריך ושעה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="user">משתמש <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="action">פעולה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="entityType">סוג <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="details">פרטים <span class="sort-arrow">↕</span></button></th></tr></thead><tbody id="activityRows"></tbody></table></div><div class="activity-pager"><button class="btn activity-icon-btn" id="nextPage"><span class="activity-btn-icon" aria-hidden="true">→</span><span>הבא</span></button><span id="pageInfo"></span><button class="btn activity-icon-btn" id="prevPage"><span>הקודם</span><span class="activity-btn-icon" aria-hidden="true">←</span></button></div></section></div></main>
 <div id="userInfoModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>פרטי משתמש</h2><p><strong id="infoUserName"></strong></p><div class="activity-email" id="infoUserEmail"></div><div class="activity-modal-actions"><button class="btn activity-icon-btn" id="closeUserInfo"><span class="activity-btn-icon" aria-hidden="true">×</span><span>סגור</span></button></div></div></div>
 <div id="clearLogModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>ניקוי יומן פעילויות</h2><p id="clearLogText"></p><p class="hint">המחיקה אינה ניתנת לביטול. פעולת הניקוי עצמה תירשם מחדש ביומן.</p><div class="activity-modal-actions"><button class="btn secondary activity-icon-btn" id="cancelClear"><span class="activity-btn-icon" aria-hidden="true">×</span><span>ביטול</span></button><button class="btn activity-clear-btn activity-icon-btn" id="confirmClear"><span class="activity-btn-icon" aria-hidden="true">🗑</span><span>כן, מחק</span></button></div></div></div>
-<script src="js/api.js?v=R16V1"></script><script src="js/layout.js?v=R16V1"></script><script>
+<script src="js/api.js?v=R16V2"></script><script src="js/layout.js?v=R16V2"></script><script>
 const S=requireLogin('ADMIN');let bootstrap=null,currentPage=1,lastResult=null,sortBy='createdAt',sortDir='desc',loadSeq=0,userSearchTimer=0,activityClientRows=null,activityClientMode=false;const ACTIVITY_CLIENT_LIMIT=500;
 if(S){mountLayout('activityLog');initActivityLog();}
 const $=id=>document.getElementById(id);
