@@ -1,0 +1,142 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16O"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16O"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
+<style>
+.activity-shell{display:grid;gap:18px}
+.activity-filter-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--line,#ddd);border-radius:16px;background:var(--card,#fff);box-shadow:0 7px 24px rgba(0,0,0,.05)}
+.activity-filter-toolbar strong{display:flex;align-items:center;gap:8px}.activity-filter-toggle{min-width:138px}.activity-filter-toggle .toggle-arrow{display:inline-block;margin-inline-start:7px;transition:transform .2s}.activity-filter-toggle[aria-expanded="true"] .toggle-arrow{transform:rotate(180deg)}
+.activity-filter-panel{position:relative;overflow:hidden;display:none;padding:22px!important;border-radius:20px!important}.activity-filter-panel.open{display:block;animation:filterOpen .18s ease-out}.activity-filter-panel:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#8a5d3b,#c49a72,#8a5d3b)}
+@keyframes filterOpen{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.activity-filter-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.activity-filter-title h2{margin:0;font-size:1.12rem}.activity-filter-close{border:0;background:transparent;color:inherit;font-size:1.55rem;line-height:1;cursor:pointer;padding:4px 8px;border-radius:9px}.activity-filter-close:hover{background:rgba(127,127,127,.12)}
+.activity-filters{display:grid;grid-template-columns:repeat(3,minmax(170px,1fr));gap:15px}.activity-field{display:grid;gap:7px}.activity-field label{font-weight:850;font-size:.88rem}.activity-field input,.activity-field select{width:100%;min-width:0;min-height:48px;border-radius:12px!important}
+.activity-user-search{position:relative}.activity-user-search input{padding-inline-start:42px!important}.activity-user-search:before{content:"🔎";position:absolute;inset-inline-start:14px;top:39px;bottom:auto;font-size:.92rem;line-height:1;opacity:.58;pointer-events:none;z-index:2}.activity-date-time{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(105px,.75fr);gap:8px}.activity-date-time input{direction:ltr;text-align:center;color-scheme:light dark}.activity-date-time input[type="date"]::-webkit-calendar-picker-indicator,.activity-date-time input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.82}
+.activity-filter-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--line,#ddd)}.activity-filter-action-btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px!important;border-radius:13px!important;font-weight:850!important;box-shadow:0 3px 10px rgba(0,0,0,.08)}.activity-filter-action-btn .btn-icon{font-size:1rem;line-height:1}.activity-apply-btn{background:linear-gradient(180deg,#9b6a45,#7f5436)!important;color:#fff!important;border:1px solid #b9855f!important}.activity-apply-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.activity-reset-btn{background:rgba(127,127,127,.08)!important;border:1px solid rgba(127,127,127,.22)!important;color:inherit!important}.activity-reset-btn:hover{background:rgba(127,127,127,.14)!important}.activity-clear-btn{margin-inline-start:auto;background:#b3261e!important;color:#fff!important;border:1px solid #df5b52!important;box-shadow:0 5px 16px rgba(179,38,30,.22)!important}.activity-clear-btn:hover{background:#cf392f!important}.activity-clear-btn:disabled{opacity:.45;cursor:not-allowed}
+.activity-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.activity-count{font-weight:900}.activity-index-note{font-size:.82rem;opacity:.72}
+.activity-list-panel{overflow:hidden}.activity-table-wrap{overflow:auto;border:1px solid var(--line,#ddd);border-radius:15px;background:var(--card,#fff)}.activity-table{width:100%;border-collapse:separate;border-spacing:0;min-width:780px}.activity-table th,.activity-table td{padding:12px 11px;text-align:right;vertical-align:middle}.activity-table th{position:sticky;top:0;background:var(--card,#fff);z-index:1;white-space:nowrap;border-bottom:2px solid rgba(138,93,59,.28)}.activity-table tbody td{border-bottom:1px solid var(--line,#ddd)}.activity-table tbody tr:nth-child(odd) td{background:rgba(138,93,59,.035)}.activity-table tbody tr:nth-child(even) td{background:rgba(127,127,127,.055)}.activity-table tbody tr:hover td{background:#edf4fb!important;box-shadow:inset 0 1px rgba(62,102,137,.12),inset 0 -1px rgba(62,102,137,.12)}.activity-table tbody tr:last-child td{border-bottom:0}
+.activity-sort{border:0;background:transparent;color:inherit;font:inherit;font-weight:900;cursor:pointer;padding:5px 8px;border-radius:9px;display:inline-flex;align-items:center;gap:5px}.activity-sort:hover{background:rgba(127,127,127,.1)}.activity-sort .sort-arrow{opacity:.35;font-size:1rem;min-width:1em}.activity-sort.active{background:rgba(138,93,59,.16);color:#8a5d3b}.activity-sort.active .sort-arrow{opacity:1;font-weight:1000}.activity-table th.sorted{background:rgba(138,93,59,.16)!important;box-shadow:inset 0 -3px #a16e48}.activity-table th.sorted .activity-sort{color:#8a5d3b}.activity-table tbody td.sorted-col{background:rgba(138,93,59,.105)!important;box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)}.activity-table th[aria-sort="ascending"] .sort-arrow::after{content:""}.activity-table th[aria-sort="descending"] .sort-arrow::after{content:""}
+.activity-user-btn{border:0;background:transparent;color:inherit;font:inherit;font-weight:800;padding:2px 0;cursor:pointer;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-user-btn:hover{text-decoration:underline}.activity-details{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-badge{display:inline-flex;padding:2px 5px;border-radius:6px;background:transparent;border:1px solid rgba(127,127,127,.18);font-size:.78rem;font-weight:650;letter-spacing:.01em;color:inherit;opacity:.9}.activity-empty{padding:34px;text-align:center;opacity:.72}.activity-pager{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:15px}.activity-pager button:disabled{opacity:.4;cursor:not-allowed}
+.activity-modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:none;place-items:center;padding:18px;z-index:10020;backdrop-filter:blur(3px)}.activity-modal.open{display:grid}.activity-modal-card{width:min(430px,100%);background:var(--card,#fff);color:var(--text,#222);border:1px solid var(--line,#ddd);border-radius:18px;padding:20px;box-shadow:0 22px 60px rgba(0,0,0,.34)}.activity-modal-card h2{margin-top:0}.activity-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.activity-email{direction:ltr;text-align:left;overflow-wrap:anywhere;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.1)}
+.dark .activity-filter-toolbar,.dark .activity-filter-panel,.dark .activity-list-panel,.dark .activity-table-wrap,.dark .activity-modal-card{background:#24211f!important;border-color:rgba(255,255,255,.1)!important;color:#f4efe9}.dark .activity-field input,.dark .activity-field select{background:#302c29!important;color:#f4efe9!important;border:1px solid rgba(255,255,255,.16)!important;color-scheme:dark}.dark .activity-table th{background:#292522!important;border-bottom-color:rgba(196,154,114,.34)}.dark .activity-table tbody tr:nth-child(odd) td{background:#24211f}.dark .activity-table tbody tr:nth-child(even) td{background:#2c2825}.dark .activity-table tbody tr:hover td{background:#263640!important;box-shadow:inset 0 1px rgba(132,180,214,.14),inset 0 -1px rgba(132,180,214,.14)}.dark .activity-table tbody td{border-bottom-color:rgba(255,255,255,.08)}.dark .activity-sort.active{background:rgba(196,154,114,.18);color:#e3b88f}.dark .activity-table th.sorted{background:#332c27!important;box-shadow:inset 0 -3px #c49a72}.dark .activity-table tbody td.sorted-col{background:#38302a!important;box-shadow:inset 0 0 0 1px rgba(196,154,114,.08)}.dark .activity-badge{background:transparent;color:#e9e2dc;border-color:rgba(255,255,255,.14);opacity:.88}.dark .activity-apply-btn{background:linear-gradient(180deg,#9d6d49,#805537)!important;border-color:#bd8963!important;color:#fff!important}.dark .activity-reset-btn{background:#302c29!important;border-color:rgba(255,255,255,.14)!important;color:#f4efe9!important}.dark .activity-reset-btn:hover{background:#38332f!important}.dark .activity-index-note{color:#c9c0b8}
+@media(max-width:850px){.activity-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-table-wrap{overflow:visible;border:0;background:transparent!important}.activity-table{min-width:0;display:block}.activity-table thead{display:none}.activity-table tbody{display:grid;gap:12px}.activity-table tr{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;padding:14px;border:1px solid var(--line,#ddd);border-radius:15px;background:var(--card,#fff)}.activity-table tbody tr:nth-child(odd),.activity-table tbody tr:nth-child(even){background:var(--card,#fff)}.dark .activity-table tr:nth-child(odd){background:#24211f}.dark .activity-table tr:nth-child(even){background:#2c2825}.activity-table td,.dark .activity-table td{border:0!important;padding:0;background:transparent!important;min-width:0}.activity-table td:before{content:attr(data-label);display:block;font-size:.72rem;font-weight:850;opacity:.62;margin-bottom:2px}.activity-details{max-width:none}.activity-user-btn{max-width:100%}}
+@media(max-width:560px){.activity-filter-toolbar{padding:10px 12px}.activity-filter-toolbar .activity-filter-summary{display:none}.activity-filter-toggle{width:100%}.activity-filter-panel.open{position:relative;inset:auto;z-index:auto;border-radius:18px!important;overflow:visible;padding:16px 12px 18px!important;background:var(--card,#fff)!important}.dark .activity-filter-panel.open{background:#24211f!important}.activity-filter-title{position:static;margin:0 0 14px;padding:0 0 10px;background:transparent;border-bottom:1px solid var(--line,#ddd)}.activity-filters{grid-template-columns:1fr}.activity-date-time{grid-template-columns:minmax(0,1fr) 108px}.activity-filter-actions{position:static;background:transparent;margin:16px 0 0;padding:14px 0 0;border-top:1px solid var(--line,#ddd)}.activity-filter-actions>*{flex:1 1 42%}.activity-clear-btn{margin-inline-start:0;width:100%;flex-basis:100%}.activity-table tr{grid-template-columns:1fr 1fr}.activity-table td[data-wide="1"]{grid-column:1/-1}.activity-summary{align-items:flex-start}.activity-index-note{width:100%}}
+
+
+.activity-icon-btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:12px!important;font-weight:800!important;transition:transform .14s ease,box-shadow .14s ease,background .14s ease,border-color .14s ease}
+.activity-icon-btn .activity-btn-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;font-size:1rem;line-height:1;background:rgba(255,255,255,.16)}
+.activity-icon-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.activity-filter-toggle{background:#f7f3ef!important;color:#5b4332!important;border:1px solid #d8c7b9!important}
+.activity-filter-toggle:hover{background:#efe5dd!important}
+.activity-filter-close{width:42px;height:42px;display:inline-grid;place-items:center;border:1px solid rgba(127,127,127,.18)!important;background:rgba(127,127,127,.07)!important}
+.activity-filter-close:hover{background:#edf4fb!important;border-color:#a9c3d7!important}
+.activity-pager .activity-icon-btn{min-width:102px}
+.activity-modal-actions .activity-icon-btn{min-width:96px}
+.activity-clear-btn .activity-btn-icon{background:rgba(255,255,255,.18)}
+.dark .activity-filter-toggle{background:#302c29!important;color:#f4efe9!important;border-color:rgba(255,255,255,.15)!important}
+.dark .activity-filter-toggle:hover{background:#3a342f!important;border-color:rgba(255,255,255,.22)!important}
+.dark .activity-filter-close{background:#302c29!important;border-color:rgba(255,255,255,.14)!important;color:#f4efe9!important}
+.dark .activity-filter-close:hover{background:#263640!important;border-color:#54758d!important}
+.dark .activity-icon-btn .activity-btn-icon{background:rgba(255,255,255,.11)}
+.dark .activity-pager .activity-icon-btn{background:#302c29!important;color:#f4efe9!important;border:1px solid rgba(255,255,255,.14)!important}
+.dark .activity-pager .activity-icon-btn:hover:not(:disabled){background:#263640!important;border-color:#54758d!important}
+@media(max-width:560px){.activity-icon-btn{min-height:46px}.activity-pager .activity-icon-btn{min-width:0;flex:1 1 120px}}
+
+.activity-user-search-status{min-height:18px;font-size:.76rem;opacity:.7;margin-top:-2px}
+.activity-list-panel.is-refreshing .activity-table-wrap{opacity:.72;transition:opacity .12s}
+.activity-list-panel.is-refreshing{cursor:progress}
+.activity-list-panel.is-refreshing .activity-sort{pointer-events:none}
+</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header>
+<main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>📋 יומן פעילויות</h1><p>צפייה, סינון ומיון של פעולות שבוצעו במערכת.</p></div></div>
+<div class="activity-shell">
+<div class="activity-filter-toolbar"><strong><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></span> סינון יומן</strong><span class="activity-filter-summary" id="filterSummary">ללא סינון פעיל</span><button class="btn activity-filter-toggle activity-icon-btn" id="filterToggle" type="button" aria-expanded="false"><span class="activity-btn-icon" aria-hidden="true">⚲</span><span>הצג סינון</span><span class="toggle-arrow" aria-hidden="true">⌄</span></button></div>
+<section class="panel activity-filter-panel" id="filterPanel" aria-hidden="true"><div class="activity-filter-title"><h2><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></span> סינון</h2><button class="activity-filter-close" id="filterClose" type="button" aria-label="סגור סינון" title="סגור סינון">×</button></div><div class="activity-filters">
+<div class="activity-field"><label>מתאריך ושעה</label><div class="activity-date-time"><input id="fromDate" type="date" aria-label="מתאריך"><input id="fromTime" type="time" aria-label="משעה" step="60"></div></div>
+<div class="activity-field"><label>עד תאריך ושעה</label><div class="activity-date-time"><input id="toDate" type="date" aria-label="עד תאריך"><input id="toTime" type="time" aria-label="עד שעה" step="60"></div></div>
+<div class="activity-field activity-user-search"><label for="userFilter">משתמש</label><input id="userFilter" type="search" autocomplete="off" placeholder="הקלד שם משתמש..." aria-label="חיפוש משתמש לפי שם"><div id="userSearchStatus" class="activity-user-search-status" aria-live="polite"></div></div>
+<div class="activity-field"><label for="actionFilter">פעולה</label><select id="actionFilter"><option value="">כל הפעולות</option></select></div>
+<div class="activity-field"><label for="typeFilter">סוג</label><select id="typeFilter"><option value="">כל הסוגים</option></select></div>
+</div><div class="activity-filter-actions"><button class="btn activity-filter-action-btn activity-apply-btn activity-icon-btn" id="applyFilters"><span class="activity-btn-icon" aria-hidden="true">⚲</span><span>סנן</span></button><button class="btn secondary activity-filter-action-btn activity-reset-btn activity-icon-btn" id="resetFilters"><span class="activity-btn-icon" aria-hidden="true">↺</span><span>נקה סינון</span></button><button class="btn activity-clear-btn activity-icon-btn" id="clearLog"><span class="activity-btn-icon" aria-hidden="true">🗑</span><span>ניקוי יומן</span></button></div></section>
+<section class="panel activity-list-panel"><div class="activity-summary"><div class="activity-count" id="resultCount">טוען...</div><div class="activity-index-note" id="indexInfo"></div></div><div class="activity-table-wrap"><table class="activity-table"><thead><tr><th><button class="activity-sort" data-sort="createdAt">תאריך ושעה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="user">משתמש <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="action">פעולה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="entityType">סוג <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="details">פרטים <span class="sort-arrow">↕</span></button></th></tr></thead><tbody id="activityRows"></tbody></table></div><div class="activity-pager"><button class="btn activity-icon-btn" id="prevPage"><span class="activity-btn-icon" aria-hidden="true">›</span><span>הקודם</span></button><span id="pageInfo"></span><button class="btn activity-icon-btn" id="nextPage"><span>הבא</span><span class="activity-btn-icon" aria-hidden="true">‹</span></button></div></section></div></main>
+<div id="userInfoModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>פרטי משתמש</h2><p><strong id="infoUserName"></strong></p><div class="activity-email" id="infoUserEmail"></div><div class="activity-modal-actions"><button class="btn activity-icon-btn" id="closeUserInfo"><span class="activity-btn-icon" aria-hidden="true">×</span><span>סגור</span></button></div></div></div>
+<div id="clearLogModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>ניקוי יומן פעילויות</h2><p id="clearLogText"></p><p class="hint">המחיקה אינה ניתנת לביטול. פעולת הניקוי עצמה תירשם מחדש ביומן.</p><div class="activity-modal-actions"><button class="btn secondary activity-icon-btn" id="cancelClear"><span class="activity-btn-icon" aria-hidden="true">×</span><span>ביטול</span></button><button class="btn activity-clear-btn activity-icon-btn" id="confirmClear"><span class="activity-btn-icon" aria-hidden="true">🗑</span><span>כן, מחק</span></button></div></div></div>
+<script src="js/api.js?v=R16O"></script><script src="js/layout.js?v=R16O"></script><script>
+const S=requireLogin('ADMIN');let bootstrap=null,currentPage=1,lastResult=null,sortBy='createdAt',sortDir='desc',loadSeq=0,userSearchTimer=0;
+if(S){mountLayout('activityLog');initActivityLog();}
+const $=id=>document.getElementById(id);
+function opt(value,label){const o=document.createElement('option');o.value=value;o.textContent=label;return o;}
+function fillSelect(id,items,valueKey,labelKey){const el=$(id);items.forEach(x=>el.appendChild(opt(typeof x==='string'?x:x[valueKey],typeof x==='string'?x:x[labelKey])));}
+async function initActivityLog(){try{const r=await API.call('activityLogBootstrap',{token:S.token});if(!r?.ok)throw Error(r?.message||'לא ניתן לטעון את היומן');bootstrap=r.data||{};fillSelect('actionFilter',bootstrap.actions||[]);fillSelect('typeFilter',bootstrap.types||[]);$('indexInfo').textContent=`אינדקסים פעילים: משתמש, פעולה, סוג ותאריך · ${bootstrap.total||0} רשומות`;await loadActivityLog();}catch(e){$('resultCount').textContent=e.message;toast(e.message,'error');}}
+function dateTimeISO(dateId,timeId,isEnd=false){const d=$(dateId).value;if(!d)return '';const t=$(timeId).value||(isEnd?'23:59':'00:00');const x=new Date(`${d}T${t}`);return isNaN(x)?'':x.toISOString();}
+function filters(){return {token:S.token,from:dateTimeISO('fromDate','fromTime'),to:dateTimeISO('toDate','toTime',true),userQuery:String($('userFilter').value||'').trim(),logAction:$('actionFilter').value,entityType:$('typeFilter').value,sortBy,sortDir,page:currentPage,pageSize:50};}
+function formatDT(v){if(!v)return '';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleString('he-IL',{dateStyle:'short',timeStyle:'short'});}
+function setFilterOpen(open){const panel=$('filterPanel'),btn=$('filterToggle');panel.classList.toggle('open',!!open);panel.setAttribute('aria-hidden',open?'false':'true');btn.setAttribute('aria-expanded',open?'true':'false');btn.childNodes[0].nodeValue=open?'הסתר סינון ':'הצג סינון ';document.body.style.overflow=(open&&matchMedia('(max-width:560px)').matches)?'hidden':'';}
+function updateSortUI(){
+  const key=String(sortBy||'createdAt'),dir=sortDir==='asc'?'asc':'desc';
+  document.querySelectorAll('.activity-table thead th').forEach(th=>{th.classList.remove('sorted');th.removeAttribute('aria-sort');});
+  document.querySelectorAll('.activity-sort').forEach(b=>{b.classList.remove('active');const a=b.querySelector('.sort-arrow');if(a)a.textContent='↕';});
+  document.querySelectorAll('.activity-table tbody td.sorted-col').forEach(td=>td.classList.remove('sorted-col'));
+  const activeBtn=Array.from(document.querySelectorAll('.activity-sort')).find(b=>String(b.dataset.sort)===key);
+  if(!activeBtn)return;
+  activeBtn.classList.add('active');
+  const th=activeBtn.closest('th');
+  if(th){th.classList.add('sorted');th.setAttribute('aria-sort',dir==='asc'?'ascending':'descending');}
+  const arrow=activeBtn.querySelector('.sort-arrow');if(arrow)arrow.textContent=dir==='asc'?'↑':'↓';
+  const columnMap={createdAt:1,user:2,action:3,entityType:4,details:5};
+  const col=columnMap[key];
+  if(col&&matchMedia('(min-width:851px)').matches)document.querySelectorAll(`.activity-table tbody tr td:nth-child(${col})`).forEach(td=>td.classList.add('sorted-col'));
+}
+function updateFilterSummary(){const parts=[];if($('fromDate').value)parts.push('מתאריך');if($('toDate').value)parts.push('עד תאריך');if($('userFilter').value)parts.push('משתמש');if($('actionFilter').value)parts.push('פעולה');if($('typeFilter').value)parts.push('סוג');$('filterSummary').textContent=parts.length?`סינון פעיל: ${parts.join(' · ')}`:'ללא סינון פעיל';updateSortUI();}
+function showUser(name,email){$('infoUserName').textContent=name||'משתמש';$('infoUserEmail').textContent=email||'אין כתובת אימייל';$('userInfoModal').classList.add('open');$('userInfoModal').setAttribute('aria-hidden','false');}
+function closeModal(id){$(id).classList.remove('open');$(id).setAttribute('aria-hidden','true');}
+async function loadActivityLog(options={}){
+  const tbody=$('activityRows'),panel=document.querySelector('.activity-list-panel');
+  const preserve=!!options.preserve && !!lastResult;
+  const seq=++loadSeq;
+  if(preserve){
+    panel?.classList.add('is-refreshing');
+  }else{
+    tbody.innerHTML='<tr><td colspan="5" class="activity-empty">טוען...</td></tr>';
+  }
+  try{
+    const r=await API.call('activityLogQuery',filters());
+    if(seq!==loadSeq)return;
+    if(!r?.ok)throw Error(r?.message||'שגיאה בטעינת היומן');
+    lastResult=r.data||{items:[],total:0,page:1,pages:1};
+    $('resultCount').textContent=`נמצאו ${lastResult.total} רשומות`;
+    $('pageInfo').textContent=`עמוד ${lastResult.page} מתוך ${lastResult.pages}`;
+    $('prevPage').disabled=lastResult.page<=1;
+    $('nextPage').disabled=lastResult.page>=lastResult.pages;
+    $('clearLog').disabled=!lastResult.total;
+    tbody.innerHTML=(lastResult.items||[]).map(x=>`<tr><td data-label="תאריך ושעה">${esc(formatDT(x.createdAt))}</td><td data-label="משתמש"><button class="activity-user-btn" data-user-name="${esc(x.userDisplayName)}" data-user-email="${esc(x.userEmail)}" title="${esc(x.userEmail||x.userDisplayName)}">${esc(x.userDisplayName)}</button></td><td data-label="פעולה"><span class="activity-badge">${esc(x.action||'—')}</span></td><td data-label="סוג">${esc(x.entityType||'—')}</td><td data-label="פרטים" data-wide="1" class="activity-details" title="${esc(x.details||'')}">${esc(x.details||'—')}</td></tr>`).join('')||'<tr><td colspan="5" class="activity-empty">לא נמצאו פעילויות התואמות לסינון.</td></tr>';
+    updateSortUI();
+  }catch(e){
+    if(seq!==loadSeq)return;
+    if(!preserve)tbody.innerHTML=`<tr><td colspan="5" class="activity-empty">${esc(e.message)}</td></tr>`;
+    toast(e.message,'error');
+  }finally{
+    if(seq===loadSeq)panel?.classList.remove('is-refreshing');
+  }
+}
+$('userFilter').addEventListener('input',()=>{
+  clearTimeout(userSearchTimer);
+  const q=String($('userFilter').value||'').trim();
+  $('userSearchStatus').textContent=q?'מחפש אוטומטית...':'';
+  userSearchTimer=setTimeout(async()=>{
+    currentPage=1;
+    updateFilterSummary();
+    await loadActivityLog({preserve:true});
+    $('userSearchStatus').textContent=q?`תוצאות עבור "${q}"`:'';
+  },120);
+});
+
+function bindDefaultTime(dateId,timeId,defaultTime){
+  $(dateId).addEventListener('change',()=>{
+    if($(dateId).value && !$(timeId).value)$(timeId).value=defaultTime;
+  });
+}
+bindDefaultTime('fromDate','fromTime','00:00');
+bindDefaultTime('toDate','toTime','23:59');
+$('filterToggle').onclick=()=>setFilterOpen(!$('filterPanel').classList.contains('open'));$('filterClose').onclick=()=>setFilterOpen(false);
+$('applyFilters').onclick=()=>{currentPage=1;updateFilterSummary();setFilterOpen(false);loadActivityLog();};$('resetFilters').onclick=()=>{clearTimeout(userSearchTimer);['fromDate','fromTime','toDate','toTime','userFilter','actionFilter','typeFilter'].forEach(id=>$(id).value='');$('userSearchStatus').textContent='';currentPage=1;updateFilterSummary();loadActivityLog();};$('prevPage').onclick=()=>{if(currentPage>1){currentPage--;loadActivityLog();}};$('nextPage').onclick=()=>{if(lastResult&&currentPage<lastResult.pages){currentPage++;loadActivityLog();}};
+document.querySelectorAll('.activity-sort').forEach(b=>b.onclick=()=>{const key=b.dataset.sort;if(sortBy===key)sortDir=sortDir==='asc'?'desc':'asc';else{sortBy=key;sortDir='asc';}currentPage=1;updateSortUI();loadActivityLog({preserve:true});});
+$('activityRows').addEventListener('click',e=>{const b=e.target.closest('.activity-user-btn');if(b)showUser(b.dataset.userName,b.dataset.userEmail);});$('closeUserInfo').onclick=()=>closeModal('userInfoModal');$('userInfoModal').onclick=e=>{if(e.target===$('userInfoModal'))closeModal('userInfoModal');};
+$('clearLog').onclick=()=>{if(!lastResult?.total)return;$('clearLogText').textContent=`יימחקו ${lastResult.total} הרשומות התואמות לסינון הנוכחי.`;$('clearLogModal').classList.add('open');$('clearLogModal').setAttribute('aria-hidden','false');};$('cancelClear').onclick=()=>closeModal('clearLogModal');$('clearLogModal').onclick=e=>{if(e.target===$('clearLogModal'))closeModal('clearLogModal');};$('confirmClear').onclick=async()=>{const b=$('confirmClear');b.disabled=true;const old=b.textContent;b.textContent='מוחק...';try{const payload=filters();delete payload.page;delete payload.pageSize;delete payload.sortBy;delete payload.sortDir;const r=await API.call('clearActivityLogFiltered',payload);if(!r?.ok)throw Error(r?.message||'לא ניתן לנקות את היומן');closeModal('clearLogModal');toast(`${r.data?.deleted||0} רשומות נמחקו`,'success');currentPage=1;await initAfterClear();}catch(e){toast(e.message,'error');}finally{b.disabled=false;b.textContent=old;}};
+async function initAfterClear(){const r=await API.call('activityLogBootstrap',{token:S.token});if(r?.ok){bootstrap=r.data||bootstrap;$('indexInfo').textContent=`אינדקסים פעילים: משתמש, פעולה, סוג ותאריך · ${bootstrap.total||0} רשומות`;}await loadActivityLog();}
+</script></body></html>

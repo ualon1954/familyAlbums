@@ -28,6 +28,7 @@ function mountLayout(active=""){
   ];
   if(isAdmin){
     navItems.push(["trash.html","סל מחזור","trash"]);
+    navItems.push(["activity-log.html","יומן פעילויות","activityLog"]);
     navItems.push(["admin.html","ניהול","admin"]);
   }
   nav.innerHTML=navItems.map(x=>`<a class="${active===x[2]?"active":""}" href="${x[0]}">${x[1]}</a>`).join("");
@@ -110,6 +111,7 @@ function mountLayout(active=""){
     favorites:"מועדפים",
     about:"אודות",
     trash:"סל מחזור",
+    activityLog:"יומן פעילויות",
     admin:"ניהול"
   };
   let mobilePageName=top.querySelector(".mobile-page-name");
