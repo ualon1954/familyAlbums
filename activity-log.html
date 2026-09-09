@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16V4"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16V4"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16V5"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16V5"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
 <style>
 .activity-shell{display:grid;gap:18px}
 .activity-filter-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--line,#ddd);border-radius:16px;background:var(--card,#fff);box-shadow:0 7px 24px rgba(0,0,0,.05)}
@@ -169,13 +169,41 @@
   }
 }
 
+
+.activity-date-control{position:relative;min-width:0;width:100%;max-width:100%}
+.activity-date-display{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;direction:ltr;text-align:center;cursor:pointer}
+.activity-date-native{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important;z-index:2!important}
+@media(max-width:560px){
+  .activity-log-page .activity-filter-panel.open{
+    overflow-x:hidden!important;
+  }
+  .activity-log-page .activity-date-time{
+    grid-template-columns:minmax(0,calc(100% - 96px)) 90px!important;
+    gap:6px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+  }
+  .activity-log-page .activity-date-control,
+  .activity-log-page .activity-date-time input[type="time"]{
+    min-width:0!important;
+    max-width:100%!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+  .activity-log-page .activity-date-time input[type="time"]{
+    padding-inline:2px!important;
+    font-size:.88rem!important;
+  }
+}
+
 </style></head><body class="activity-log-page"><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><button class="pill" onclick="logout()">יציאה</button></div></header>
 <main class="section"><div class="heading"><div><span class="eyebrow">ADMIN</span><h1>📋 יומן פעילויות</h1><p>צפייה, סינון ומיון של פעולות שבוצעו במערכת.</p></div></div>
 <div class="activity-shell">
 <div class="activity-filter-toolbar"><strong><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></span> סינון יומן</strong><span class="activity-filter-summary" id="filterSummary">ללא סינון פעיל</span><button class="btn activity-filter-toggle activity-icon-btn" id="filterToggle" type="button" aria-expanded="false"><span class="activity-btn-icon" aria-hidden="true">⚲</span><span>הצג סינון</span><span class="toggle-arrow" aria-hidden="true">⌄</span></button></div>
 <section class="panel activity-filter-panel" id="filterPanel" aria-hidden="true"><div class="activity-filter-title"><h2><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></span> סינון</h2><button class="activity-filter-close" id="filterClose" type="button" aria-label="סגור סינון" title="סגור סינון">×</button></div><div class="activity-filters">
-<div class="activity-field"><label>מתאריך ושעה</label><div class="activity-date-time"><input id="fromDate" type="date" aria-label="מתאריך"><input id="fromTime" type="time" aria-label="משעה" step="60"></div></div>
-<div class="activity-field"><label>עד תאריך ושעה</label><div class="activity-date-time"><input id="toDate" type="date" aria-label="עד תאריך"><input id="toTime" type="time" aria-label="עד שעה" step="60"></div></div>
+<div class="activity-field"><label>מתאריך ושעה</label><div class="activity-date-time"><div class="activity-date-control"><input id="fromDateDisplay" class="activity-date-display" type="text" inputmode="none" readonly placeholder="dd/mm/yyyy" aria-label="מתאריך"><input id="fromDate" class="activity-date-native" type="date" aria-label="בחר מתאריך"></div><input id="fromTime" type="time" aria-label="משעה" step="60"></div></div>
+<div class="activity-field"><label>עד תאריך ושעה</label><div class="activity-date-time"><div class="activity-date-control"><input id="toDateDisplay" class="activity-date-display" type="text" inputmode="none" readonly placeholder="dd/mm/yyyy" aria-label="עד תאריך"><input id="toDate" class="activity-date-native" type="date" aria-label="בחר עד תאריך"></div><input id="toTime" type="time" aria-label="עד שעה" step="60"></div></div>
 <div class="activity-field activity-user-search"><label for="userFilter">משתמש</label><div class="activity-user-input-wrap"><span class="activity-user-search-icon" aria-hidden="true">⌕</span><input id="userFilter" type="search" autocomplete="off" placeholder="הקלד שם משתמש..." aria-label="חיפוש משתמש לפי שם"></div></div>
 <div class="activity-field"><label for="actionFilter">פעולה</label><select id="actionFilter"><option value="">כל הפעולות</option></select></div>
 <div class="activity-field"><label for="typeFilter">סוג</label><select id="typeFilter"><option value="">כל הסוגים</option></select></div>
@@ -189,7 +217,7 @@
 <section class="panel activity-list-panel"><div class="activity-summary"><div class="activity-count" id="resultCount">טוען...</div><div class="activity-index-note" id="indexInfo"></div></div><div class="activity-table-wrap"><table class="activity-table"><thead><tr><th><button class="activity-sort" data-sort="createdAt">תאריך ושעה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="user">משתמש <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="action">פעולה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="entityType">סוג <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="details">פרטים <span class="sort-arrow">↕</span></button></th></tr></thead><tbody id="activityRows"></tbody></table></div><div class="activity-pager"><button class="btn activity-icon-btn" id="nextPage"><span class="activity-btn-icon" aria-hidden="true">→</span><span>הבא</span></button><span id="pageInfo"></span><button class="btn activity-icon-btn" id="prevPage"><span>הקודם</span><span class="activity-btn-icon" aria-hidden="true">←</span></button></div></section></div></main>
 <div id="userInfoModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>פרטי משתמש</h2><p><strong id="infoUserName"></strong></p><div class="activity-email" id="infoUserEmail"></div><div class="activity-modal-actions"><button class="btn activity-icon-btn" id="closeUserInfo"><span class="activity-btn-icon" aria-hidden="true">×</span><span>סגור</span></button></div></div></div>
 <div id="clearLogModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>ניקוי יומן פעילויות</h2><p id="clearLogText"></p><p class="hint">המחיקה אינה ניתנת לביטול. פעולת הניקוי עצמה תירשם מחדש ביומן.</p><div class="activity-modal-actions"><button class="btn secondary activity-icon-btn" id="cancelClear"><span class="activity-btn-icon" aria-hidden="true">×</span><span>ביטול</span></button><button class="btn activity-clear-btn activity-icon-btn" id="confirmClear"><span class="activity-btn-icon" aria-hidden="true">🗑</span><span>כן, מחק</span></button></div></div></div>
-<script src="js/api.js?v=R16V4"></script><script src="js/layout.js?v=R16V4"></script><script>
+<script src="js/api.js?v=R16V5"></script><script src="js/layout.js?v=R16V5"></script><script>
 const S=requireLogin('ADMIN');let bootstrap=null,currentPage=1,lastResult=null,sortBy='createdAt',sortDir='desc',loadSeq=0,userSearchTimer=0,activityClientRows=null,activityClientMode=false;const ACTIVITY_CLIENT_LIMIT=500;
 if(S){mountLayout('activityLog');initActivityLog();}
 const $=id=>document.getElementById(id);
@@ -335,6 +363,29 @@ async function loadActivityLog(options={}){
     if(seq===loadSeq)panel?.classList.remove('is-refreshing');
   }
 }
+function formatDateDMY(value){
+  const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m?`${m[3]}/${m[2]}/${m[1]}`:'';
+}
+function syncDateDisplay(nativeId,displayId){
+  const nativeEl=$(nativeId),displayEl=$(displayId);
+  if(!nativeEl||!displayEl)return;
+  displayEl.value=formatDateDMY(nativeEl.value);
+}
+function bindDateDisplay(nativeId,displayId){
+  const nativeEl=$(nativeId),displayEl=$(displayId);
+  if(!nativeEl||!displayEl)return;
+  const sync=()=>syncDateDisplay(nativeId,displayId);
+  nativeEl.addEventListener('change',sync);
+  nativeEl.addEventListener('input',sync);
+  displayEl.addEventListener('click',()=>{
+    if(typeof nativeEl.showPicker==='function'){
+      try{nativeEl.showPicker()}catch(_){}
+    }else nativeEl.click();
+  });
+  sync();
+}
+
 function runInteractiveUserSearch(){
   clearTimeout(userSearchTimer);
   currentPage=1;
@@ -342,6 +393,8 @@ function runInteractiveUserSearch(){
   if(activityClientMode){renderClientActivityLog();return;}
   userSearchTimer=setTimeout(async()=>{await loadActivityLog({preserve:true});},150);
 }
+bindDateDisplay('fromDate','fromDateDisplay');
+bindDateDisplay('toDate','toDateDisplay');
 const userFilterEl=$('userFilter');
 userFilterEl.addEventListener('input',runInteractiveUserSearch);
 userFilterEl.addEventListener('search',runInteractiveUserSearch);
