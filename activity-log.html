@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16U"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16U"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=R16U3"><title>יומן פעילויות</title><link rel="stylesheet" href="css/main.css?v=R16U3"><link rel="stylesheet" href="css/session-manager.css"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/session-manager.js"></script><script src="js/theme.js"></script>
 <style>
 .activity-shell{display:grid;gap:18px}
 .activity-filter-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--line,#ddd);border-radius:16px;background:var(--card,#fff);box-shadow:0 7px 24px rgba(0,0,0,.05)}
@@ -12,7 +12,7 @@
 .activity-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.activity-count{font-weight:900}.activity-index-note{font-size:.82rem;opacity:.72}
 .activity-list-panel{overflow:hidden}.activity-table-wrap{overflow:auto;border:1px solid var(--line,#ddd);border-radius:15px;background:var(--card,#fff)}.activity-table{width:100%;border-collapse:separate;border-spacing:0;min-width:780px}.activity-table th,.activity-table td{padding:12px 11px;text-align:right;vertical-align:middle}.activity-table th{position:sticky;top:0;background:var(--card,#fff);z-index:1;white-space:nowrap;border-bottom:2px solid rgba(138,93,59,.28)}.activity-table tbody td{border-bottom:1px solid var(--line,#ddd)}.activity-table tbody tr:nth-child(odd) td{background:rgba(138,93,59,.035)}.activity-table tbody tr:nth-child(even) td{background:rgba(127,127,127,.055)}.activity-table tbody tr:hover td{background:#edf4fb!important;box-shadow:inset 0 1px rgba(62,102,137,.12),inset 0 -1px rgba(62,102,137,.12)}.activity-table tbody tr:last-child td{border-bottom:0}
 .activity-sort{border:0;background:transparent;color:inherit;font:inherit;font-weight:900;cursor:pointer;padding:5px 8px;border-radius:9px;display:inline-flex;align-items:center;gap:5px}.activity-sort:hover{background:rgba(127,127,127,.1)}.activity-sort .sort-arrow{opacity:.35;font-size:1rem;min-width:1em}.activity-sort.active{background:rgba(138,93,59,.16);color:#8a5d3b}.activity-sort.active .sort-arrow{opacity:1;font-weight:1000}.activity-table th.sorted{background:rgba(138,93,59,.16)!important;box-shadow:inset 0 -3px #a16e48}.activity-table th.sorted .activity-sort{color:#8a5d3b}.activity-table tbody td.sorted-col{background:rgba(138,93,59,.105)!important;box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)}.activity-table th[aria-sort="ascending"] .sort-arrow::after{content:""}.activity-table th[aria-sort="descending"] .sort-arrow::after{content:""}
-.activity-user-btn{border:0;background:transparent;color:inherit;font:inherit;font-weight:800;padding:2px 0;cursor:pointer;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-user-btn:hover{text-decoration:underline}.activity-details{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-badge{display:inline-flex;padding:2px 5px;border-radius:6px;background:transparent;border:1px solid rgba(127,127,127,.18);font-size:.78rem;font-weight:650;letter-spacing:.01em;color:inherit;opacity:.9}.activity-empty{padding:34px;text-align:center;opacity:.72}.activity-pager{display:flex;direction:rtl;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:15px}.activity-pager button:disabled{opacity:.4;cursor:not-allowed}
+.activity-user-btn{border:0;background:transparent;color:inherit;font:inherit;font-weight:800;padding:2px 0;cursor:pointer;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-user-btn:hover{text-decoration:underline}.activity-details{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-badge{display:inline-flex;padding:2px 5px;border-radius:6px;background:transparent;border:1px solid rgba(127,127,127,.18);font-size:.78rem;font-weight:650;letter-spacing:.01em;color:inherit;opacity:.9}.activity-empty{padding:34px;text-align:center;opacity:.72}.activity-pager{display:flex;direction:rtl;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:15px}.activity-pager[hidden]{display:none!important}.activity-pager button:disabled{opacity:.4;cursor:not-allowed}
 .activity-modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:none;place-items:center;padding:18px;z-index:10020;backdrop-filter:blur(3px)}.activity-modal.open{display:grid}.activity-modal-card{width:min(430px,100%);background:var(--card,#fff);color:var(--text,#222);border:1px solid var(--line,#ddd);border-radius:18px;padding:20px;box-shadow:0 22px 60px rgba(0,0,0,.34)}.activity-modal-card h2{margin-top:0}.activity-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.activity-email{direction:ltr;text-align:left;overflow-wrap:anywhere;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.1)}
 .dark .activity-filter-toolbar,.dark .activity-filter-panel,.dark .activity-list-panel,.dark .activity-table-wrap,.dark .activity-modal-card{background:#24211f!important;border-color:rgba(255,255,255,.1)!important;color:#f4efe9}.dark .activity-field input,.dark .activity-field select{background:#302c29!important;color:#f4efe9!important;border:1px solid rgba(255,255,255,.16)!important;color-scheme:dark}.dark .activity-table th{background:#292522!important;border-bottom-color:rgba(196,154,114,.34)}.dark .activity-table tbody tr:nth-child(odd) td{background:#24211f}.dark .activity-table tbody tr:nth-child(even) td{background:#2c2825}.dark .activity-table tbody tr:hover td{background:#263640!important;box-shadow:inset 0 1px rgba(132,180,214,.14),inset 0 -1px rgba(132,180,214,.14)}.dark .activity-table tbody td{border-bottom-color:rgba(255,255,255,.08)}.dark .activity-sort.active{background:rgba(196,154,114,.18);color:#e3b88f}.dark .activity-table th.sorted{background:#332c27!important;box-shadow:inset 0 -3px #c49a72}.dark .activity-table tbody td.sorted-col{background:#38302a!important;box-shadow:inset 0 0 0 1px rgba(196,154,114,.08)}.dark .activity-badge{background:transparent;color:#e9e2dc;border-color:rgba(255,255,255,.14);opacity:.88}.dark .activity-apply-btn{background:linear-gradient(180deg,#9d6d49,#805537)!important;border-color:#bd8963!important;color:#fff!important}.dark .activity-reset-btn{background:#302c29!important;border-color:rgba(255,255,255,.14)!important;color:#f4efe9!important}.dark .activity-reset-btn:hover{background:#38332f!important}.dark .activity-index-note{color:#c9c0b8}
 @media(max-width:850px){.activity-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-table-wrap{overflow:visible;border:0;background:transparent!important}.activity-table{min-width:0;display:block}.activity-table thead{display:none}.activity-table tbody{display:grid;gap:12px}.activity-table tr{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;padding:14px;border:1px solid var(--line,#ddd);border-radius:15px;background:var(--card,#fff)}.activity-table tbody tr:nth-child(odd),.activity-table tbody tr:nth-child(even){background:var(--card,#fff)}.dark .activity-table tr:nth-child(odd){background:#24211f}.dark .activity-table tr:nth-child(even){background:#2c2825}.activity-table td,.dark .activity-table td{border:0!important;padding:0;background:transparent!important;min-width:0}.activity-table td:before{content:attr(data-label);display:block;font-size:.72rem;font-weight:850;opacity:.62;margin-bottom:2px}.activity-details{max-width:none}.activity-user-btn{max-width:100%}}
@@ -85,28 +85,19 @@
     border:1px solid rgba(138,93,59,.16)!important;
     box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)!important;
     border-radius:10px;
-    padding:8px 76px 8px 10px!important;
+    padding:8px 10px!important;
   }
   .activity-table tbody td.sorted-col::before{
     color:#8a5d3b!important;
     font-weight:900!important;
     opacity:1!important;
   }
-  .activity-table tbody td.sorted-col::after{
-    position:absolute;
-    inset-inline-end:8px;
-    top:50%;
-    transform:translateY(-50%);
-    padding:3px 7px;
-    border-radius:999px;
-    background:rgba(138,93,59,.14);
-    color:#8a5d3b;
-    font-size:.7rem;
-    font-weight:900;
-    white-space:nowrap;
+  .activity-table tbody td.sorted-col[data-sort-dir="asc"]::before{
+    content:attr(data-label) " ↑";
   }
-  .activity-table tbody td.sorted-col[data-sort-dir="asc"]::after{content:"↑ עולה"}
-  .activity-table tbody td.sorted-col[data-sort-dir="desc"]::after{content:"↓ יורד"}
+  .activity-table tbody td.sorted-col[data-sort-dir="desc"]::before{
+    content:attr(data-label) " ↓";
+  }
   .dark .activity-table tbody td.sorted-col{
     background:#38302a!important;
     border-color:rgba(196,154,114,.16)!important;
@@ -114,10 +105,6 @@
   }
   .dark .activity-table tbody td.sorted-col::before{
     color:#e3b88f!important;
-  }
-  .dark .activity-table tbody td.sorted-col::after{
-    background:rgba(196,154,114,.18);
-    color:#e3b88f;
   }
 }
 
@@ -148,7 +135,7 @@
 <section class="panel activity-list-panel"><div class="activity-summary"><div class="activity-count" id="resultCount">טוען...</div><div class="activity-index-note" id="indexInfo"></div></div><div class="activity-table-wrap"><table class="activity-table"><thead><tr><th><button class="activity-sort" data-sort="createdAt">תאריך ושעה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="user">משתמש <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="action">פעולה <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="entityType">סוג <span class="sort-arrow">↕</span></button></th><th><button class="activity-sort" data-sort="details">פרטים <span class="sort-arrow">↕</span></button></th></tr></thead><tbody id="activityRows"></tbody></table></div><div class="activity-pager"><button class="btn activity-icon-btn" id="nextPage"><span class="activity-btn-icon" aria-hidden="true">→</span><span>הבא</span></button><span id="pageInfo"></span><button class="btn activity-icon-btn" id="prevPage"><span>הקודם</span><span class="activity-btn-icon" aria-hidden="true">←</span></button></div></section></div></main>
 <div id="userInfoModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>פרטי משתמש</h2><p><strong id="infoUserName"></strong></p><div class="activity-email" id="infoUserEmail"></div><div class="activity-modal-actions"><button class="btn activity-icon-btn" id="closeUserInfo"><span class="activity-btn-icon" aria-hidden="true">×</span><span>סגור</span></button></div></div></div>
 <div id="clearLogModal" class="activity-modal" aria-hidden="true"><div class="activity-modal-card" role="dialog" aria-modal="true"><h2>ניקוי יומן פעילויות</h2><p id="clearLogText"></p><p class="hint">המחיקה אינה ניתנת לביטול. פעולת הניקוי עצמה תירשם מחדש ביומן.</p><div class="activity-modal-actions"><button class="btn secondary activity-icon-btn" id="cancelClear"><span class="activity-btn-icon" aria-hidden="true">×</span><span>ביטול</span></button><button class="btn activity-clear-btn activity-icon-btn" id="confirmClear"><span class="activity-btn-icon" aria-hidden="true">🗑</span><span>כן, מחק</span></button></div></div></div>
-<script src="js/api.js?v=R16U"></script><script src="js/layout.js?v=R16U"></script><script>
+<script src="js/api.js?v=R16U3"></script><script src="js/layout.js?v=R16U3"></script><script>
 const S=requireLogin('ADMIN');let bootstrap=null,currentPage=1,lastResult=null,sortBy='createdAt',sortDir='desc',loadSeq=0,userSearchTimer=0,activityClientRows=null,activityClientMode=false;const ACTIVITY_CLIENT_LIMIT=500;
 if(S){mountLayout('activityLog');initActivityLog();}
 const $=id=>document.getElementById(id);
@@ -208,7 +195,10 @@ function updateSortUI(){
 }
 function updatePagerVisibility(){
   const pager=document.querySelector('.activity-pager');
-  if(pager)pager.hidden=!!activityClientMode;
+  if(!pager)return;
+  const hide=!!activityClientMode;
+  pager.hidden=hide;
+  pager.style.display=hide?'none':'';
 }
 function updateFilterSummary(){const parts=[];if($('fromDate').value)parts.push('מתאריך');if($('toDate').value)parts.push('עד תאריך');if($('userFilter').value)parts.push('משתמש');if($('actionFilter').value)parts.push('פעולה');if($('typeFilter').value)parts.push('סוג');$('filterSummary').textContent=parts.length?`סינון פעיל: ${parts.join(' · ')}`:'ללא סינון פעיל';updateSortUI();}
 function showUser(name,email){$('infoUserName').textContent=name||'משתמש';$('infoUserEmail').textContent=email||'אין כתובת אימייל';$('userInfoModal').classList.add('open');$('userInfoModal').setAttribute('aria-hidden','false');}
