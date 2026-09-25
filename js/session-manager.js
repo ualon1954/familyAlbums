@@ -29,6 +29,7 @@
     const s={user:user, token:token, remember:!!remember, createdAt:Date.now(), lastActivityAt:Date.now(), expiresAt:Date.now()+ttl};
     write(s);
     schedule();
+    try{ window.dispatchEvent(new CustomEvent("fpa:sessionchange",{detail:{type:"login",session:s}})); }catch(e){}
     return s;
   }
 
@@ -51,8 +52,9 @@
     if(timer) clearTimeout(timer);
     if(warningTimer) clearTimeout(warningTimer);
     timer=warningTimer=null;
+    try{ window.dispatchEvent(new CustomEvent("fpa:sessionchange",{detail:{type:"logout",session:null}})); }catch(e){}
     // Always return to the same mandatory login experience used on first entry.
-    if(!/^(index|login)\\.html$/i.test(location.pathname.split("/").pop() || "")){
+    if(!/^(index|login)\.html$/i.test(location.pathname.split("/").pop() || "")){
       location.replace("index.html?autoLogin=1&loginRequired=1");
     }
   }
@@ -72,7 +74,7 @@
     if(document.getElementById("session-expiry-warning")) return;
     const box=document.createElement("div");
     box.id="session-expiry-warning";
-    box.innerHTML='<div class="sem-card"><div class="sem-title">החיבור עומד לפוג</div><div class="sem-text">החיבור שלך יסתיים בעוד <strong id="sem-countdown">05:00</strong>.</div><div class="sem-actions"><button id="sem-continue">המשך לעבוד</button><button id="sem-logout">יציאה</button></div></div>';
+    box.innerHTML='<div class="sem-card"><div class="sem-title">החיבור עומד לפוג</div><div class="sem-text">החיבור שלך יסתיים בעוד <strong id="sem-countdown">'+fmt(remaining())+'</strong>.</div><div class="sem-actions"><button id="sem-continue">המשך לעבוד</button><button id="sem-logout">יציאה</button></div></div>';
     document.body.appendChild(box);
     const update=()=>{
       const r=remaining();
@@ -82,9 +84,14 @@
       if(r>WARNING_MINUTES*60000){ box.remove(); return; }
       setTimeout(update,1000);
     };
+    // R17P2J1: bind controls before update(). In SPA mode, recent activity may
+    // extend the session and make update() remove the warning immediately.
+    // Binding after that removal caused getElementById(...) to return null.
+    const continueBtn=box.querySelector("#sem-continue");
+    const logoutBtn=box.querySelector("#sem-logout");
+    if(continueBtn) continueBtn.onclick=()=>{ touch(); if(box.isConnected) box.remove(); };
+    if(logoutBtn) logoutBtn.onclick=()=>{ logout(); location.href="index.html"; };
     update();
-    document.getElementById("sem-continue").onclick=()=>{ touch(); box.remove(); };
-    document.getElementById("sem-logout").onclick=()=>{ logout(); location.href="index.html"; };
   }
 
   function schedule(){
@@ -94,9 +101,11 @@
     if(!s) return;
     const r=s.expiresAt-Date.now();
     if(r<=0){ logout(); return; }
-    warningTimer=setTimeout(showWarning, Math.max(0,r-WARNING_MINUTES*60000));
+    if(WARNING_MINUTES>0) warningTimer=setTimeout(showWarning, Math.max(0,r-WARNING_MINUTES*60000));
     timer=setTimeout(()=>{
-      if(getSession()){ logout(); location.href="index.html?sessionExpired=1"; }
+      // R17K6: expiry must dispatch the same logout lifecycle even though
+      // getSession() itself clears an expired record.
+      logout();
     }, r+50);
   }
 

@@ -1591,3 +1591,385 @@ body.dark .about-role-note strong{
 .dark .about-user-rules-grid article{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
 .dark .about-user-rules-icon,.dark .rule-no{background:rgba(194,138,97,.14)}
 @media(max-width:760px){.about-user-rules-card{padding:20px 16px}.about-user-rules-grid{grid-template-columns:1fr}.about-user-rules-head{gap:12px}.about-user-rules-icon{width:46px;height:46px;flex-basis:46px}}
+
+
+/* R16W — full responsive header/navigation.
+   Switch to the compact menu before desktop labels have any chance to wrap. */
+.top nav a{white-space:nowrap}
+
+@media(max-width:1180px){
+  .top{
+    position:sticky;top:0;z-index:500;
+    min-height:68px;height:68px;
+    padding:7px 12px;gap:8px;flex-wrap:nowrap;
+  }
+  .menu-toggle{
+    display:inline-flex!important;
+    order:0;flex:0 0 46px;width:46px;height:46px;
+  }
+  .brand{
+    order:1;flex:0 0 48px;width:48px;height:48px;
+    margin:0;display:flex;align-items:center;justify-content:center;
+  }
+  .brand .brand-name{display:none!important}
+  .mobile-page-name{
+    display:block!important;order:2;flex:1 1 auto;min-width:0;max-width:none;
+    margin:0 5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .header-user{order:3;flex:0 1 auto;max-width:104px}
+  .top .actions{order:4;gap:5px;flex:0 0 auto}
+  .top nav{
+    display:none!important;position:absolute;top:100%;right:12px;left:12px;z-index:600;
+    flex-direction:column;gap:0;padding:8px;background:#fff;
+    border:1px solid #0002;border-radius:16px;box-shadow:0 18px 45px #0003;
+  }
+  .top nav.mobile-open{display:flex!important}
+  .top nav a{
+    width:100%;padding:13px 16px;border-bottom:1px solid #0001;
+    white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;
+  }
+  .top nav a:last-child{border-bottom:0}
+  .dark .top nav{background:#24211f;border-color:#fff2}
+  .dark .top nav a{border-color:#fff1}
+}
+
+@media(max-width:700px){
+  .header-user{max-width:88px}
+  .top .actions button{min-width:38px;min-height:38px;padding:7px 9px}
+  .top .actions .header-logout{padding:7px 9px;font-size:12px}
+}
+@media(max-width:460px){
+  .top{padding-inline:7px;gap:5px}
+  .menu-toggle{flex-basis:42px;width:42px;height:42px}
+  .brand{flex-basis:44px;width:44px;height:44px}
+  .mobile-page-name{font-size:14px;margin-inline:2px}
+  .header-user{max-width:70px;padding:4px 5px}
+  .header-user-avatar{display:none}
+  .header-user-copy strong{max-width:58px;font-size:11px}
+}
+@media(max-width:380px){
+  .header-user{display:none!important}
+  .top .actions .header-logout{font-size:11px;padding-inline:7px}
+}
+
+
+/* R16Z5E — compact shared dialog for confirmations/alerts */
+.ui-dialog-overlay{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:20px;background:rgba(17,15,14,.48);backdrop-filter:blur(5px);opacity:0;transition:opacity .14s ease}
+.ui-dialog-overlay.open{opacity:1}
+.ui-dialog-card{width:min(390px,92vw);background:#fff;color:#2a2724;border:1px solid #0001;border-radius:20px;padding:22px;box-shadow:0 28px 80px rgba(0,0,0,.28);text-align:center;transform:translateY(8px) scale(.98);transition:transform .14s ease}
+.ui-dialog-overlay.open .ui-dialog-card{transform:none}
+.ui-dialog-icon{width:46px;height:46px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:#f4ece5;color:#a16e48;font-size:23px;font-weight:900}
+.ui-dialog-card h2{margin:0 0 9px;font-size:22px}.ui-dialog-card p{margin:0;color:#666;line-height:1.55;white-space:pre-line}
+.ui-dialog-actions{display:flex;justify-content:center;gap:10px;margin-top:20px}.ui-dialog-btn{min-width:105px;border:0;border-radius:13px;padding:10px 16px;font-weight:800;cursor:pointer}
+.ui-dialog-cancel{background:#eee9e4;color:#2a2724}.ui-dialog-primary{background:#2a2724;color:#fff}.ui-dialog-danger{background:#b42318;color:#fff}
+.dark .ui-dialog-card{background:#24211f;color:#f5f0eb;border-color:#fff2}.dark .ui-dialog-card p{color:#c9c0b8}.dark .ui-dialog-icon{background:#332b26;color:#d7a57f}.dark .ui-dialog-cancel{background:#383330;color:#fff}.dark .ui-dialog-primary{background:#f3eee9;color:#1e1b19}.dark .ui-dialog-danger{background:#cf3b31;color:#fff}
+@media(max-width:560px){.ui-dialog-card{width:min(350px,94vw);padding:19px;border-radius:17px}.ui-dialog-actions{gap:8px}.ui-dialog-btn{flex:1;min-width:0}}
+
+/* R16Z5P — compact API transport/retry status */
+.api-status-line{margin:0 0 14px;padding:10px 12px;border:1px solid rgba(180,95,80,.3);border-radius:12px;background:rgba(180,95,80,.08);display:flex;align-items:center;justify-content:space-between;gap:10px}.api-status-line .pill{flex:0 0 auto}.dark .api-status-line{background:rgba(255,140,120,.08);border-color:rgba(255,140,120,.24)}
+/* R17B SPA dashboard: same visual language as the stable dashboard. */
+#spaOutlet .dashboard-load-status{margin:0 0 14px;padding:10px 13px;border-radius:12px;background:rgba(127,127,127,.09);font-size:.9rem;opacity:.82}
+#spaOutlet .dashboard-load-status:empty,#spaOutlet .dashboard-load-status.ok{display:none}
+#spaOutlet .dashboard-load-status.error{display:block;color:#b3261e;background:rgba(179,38,30,.08)}
+.dark #spaOutlet .dashboard-load-status.error{color:#ff9a93;background:rgba(255,154,147,.08)}
+
+/* R17C — SPA Albums */
+.spa-albums-page{max-width:1200px;margin:auto;padding:34px 20px 70px}.spa-albums-page .albums-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}.spa-albums-page .albums-head h1{margin:0}.spa-albums-page .albums-head p{margin:6px 0 0;opacity:.72}.spa-albums-page .album-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}.spa-albums-page .album-card-wrap{position:relative;min-width:0}.spa-albums-page .album-card{display:block;height:100%;box-sizing:border-box;text-decoration:none;color:inherit;border:1px solid rgba(127,127,127,.18);border-radius:20px;overflow:hidden;background:var(--card,#fff);box-shadow:0 8px 28px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s}.spa-albums-page .album-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.13)}.spa-albums-page .album-cover-wrap{position:relative;aspect-ratio:1/1;overflow:hidden;background:linear-gradient(135deg,#ddd,#aaa)}.spa-albums-page .album-cover{width:100%;height:100%;object-fit:cover;display:block}.spa-albums-page .album-cover.empty{display:grid;place-items:center;font-size:42px;color:#777}.spa-albums-page .album-photo-count{position:absolute;left:12px;bottom:12px;padding:7px 10px;border-radius:999px;background:rgba(18,18,18,.72);color:#fff;font-size:.82rem;font-weight:800;backdrop-filter:blur(8px)}.spa-albums-page .album-card-body{padding:15px}.spa-albums-page .album-card-body h2{font-size:1.05rem;margin:0 0 5px}.spa-albums-page .album-card-body p{margin:0;opacity:.7;font-size:.9rem;min-height:1.4em}.spa-albums-page .album-create-main{display:inline-block;text-decoration:none;border:0;border-radius:999px;padding:11px 18px;background:#188038;color:#fff;font-weight:800;white-space:nowrap}.spa-albums-page .album-admin-actions{position:absolute;top:10px;left:10px;z-index:4;display:flex;gap:6px}.spa-albums-page .album-admin-actions a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;text-decoration:none;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.35)}.spa-albums-page .album-upload-btn{background:#a16e48}.spa-albums-page .album-cover-btn{background:#7b4fb3}.spa-albums-page .album-edit-btn{background:#188038}.spa-albums-page .album-delete-btn{background:#b3261e}.dark .spa-albums-page .album-card{background:#24211f;color:#f3eee9;border-color:#ffffff1a}.spa-albums-page .albums-load-status.ok{display:none}.spa-albums-page .albums-load-status.error{color:#b3261e}.spa-albums-page .albums-load-status{margin:0 0 14px}.spa-albums-page .album-admin-actions{opacity:0;pointer-events:none;transition:opacity .18s}.spa-albums-page .album-card-wrap:hover .album-admin-actions,.spa-albums-page .album-card-wrap:focus-within .album-admin-actions{opacity:1;pointer-events:auto}@media(max-width:700px){.spa-albums-page{padding:22px 14px 50px}.spa-albums-page .albums-head{align-items:flex-start;flex-direction:column}.spa-albums-page .album-create-main{width:100%;box-sizing:border-box;text-align:center}.spa-albums-page .album-list-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.spa-albums-page .album-admin-actions{opacity:1;pointer-events:auto;top:8px;left:8px}.spa-albums-page .album-admin-actions a{width:34px;height:34px}}
+
+/* R17D — SPA album/photos */
+.spa-photo-heading-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.spa-slide-btn{border:1px solid rgba(42,39,36,.18)}
+.spa-photo-manage{position:absolute;top:10px;left:10px;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 4px 14px rgba(0,0,0,.18);font-weight:900}
+.viewer-dots{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:8px;max-width:min(76vw,760px);padding:9px 12px;overflow-x:auto;z-index:4;border-radius:999px;background:rgba(255,255,255,.18)}
+.viewer .viewer-dot{position:relative;inset:auto;width:9px;height:9px;min-width:9px;min-height:9px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.45);box-shadow:none}.viewer .viewer-dot.active{width:28px;min-width:28px;border-radius:999px;background:#fff}
+.spa-viewer #spaPrev{right:25px}.spa-viewer #spaNext{left:25px}.spa-viewer #spaCaption{position:absolute;bottom:64px;color:#fff;display:flex;flex-direction:column;gap:5px;text-align:center}.spa-close.viewer-close-global{display:none!important}.spa-close.viewer-close-global.is-visible{display:flex!important}
+@media(max-width:600px){.spa-photo-heading-actions{width:100%}.spa-photo-heading-actions>*{flex:1}.viewer-dots{bottom:10px;max-width:82vw}.spa-viewer #spaCaption{bottom:52px;max-width:70vw}.spa-viewer #spaPrev,.spa-viewer #spaNext{top:auto;bottom:57px}}
+.spa-close.viewer-close-global{position:fixed;top:16px;right:16px;width:52px;height:52px;align-items:center;justify-content:center;z-index:2147483647;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(25,23,22,.94);color:#fff;font:400 40px/1 Arial,sans-serif;box-shadow:0 6px 22px rgba(0,0,0,.3)}
+body.viewer-open{overflow:hidden}
+
+/* R17E — SPA photo management */
+.spa-photo-actions{position:absolute;top:10px;left:10px;z-index:5;display:flex;gap:6px;opacity:0;pointer-events:none;transition:opacity .16s}.photo-card:hover .spa-photo-actions,.photo-card:focus-within .spa-photo-actions{opacity:1;pointer-events:auto}.spa-photo-actions button{width:38px;height:38px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:16px}.spa-photo-actions [data-edit]{background:#188038}.spa-photo-actions [data-del]{background:#b3261e}.spa-photo-actions [data-del]:disabled{width:auto;padding:0 12px;border-radius:999px}.photo-upload-modal,.photo-edit-modal{position:fixed;inset:0;z-index:2147483646;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(7px)}.photo-upload-modal.open,.photo-edit-modal.open{display:flex}.photo-upload-card,.photo-edit-card{width:min(720px,96vw);max-height:90vh;overflow:auto;background:#fff;color:#2a2724;border-radius:20px;padding:22px;box-shadow:0 20px 65px rgba(0,0,0,.35)}.photo-edit-card{width:min(520px,96vw)}.dark .photo-upload-card,.dark .photo-edit-card{background:#24211f;color:#f4efe9}.photo-upload-card h2,.photo-edit-card h2{margin:0 0 10px}.upload-hint{opacity:.75}.photo-upload-file{width:100%;box-sizing:border-box;margin:8px 0 14px}.photo-upload-meta{display:grid;gap:10px}.photo-upload-row{display:grid;grid-template-columns:minmax(140px,1.2fr) minmax(120px,1fr) 110px minmax(110px,.9fr);gap:8px;align-items:center;padding:10px;border:1px solid rgba(127,127,127,.2);border-radius:12px}.photo-upload-row input,.photo-edit-card input,.photo-edit-card select{width:100%;box-sizing:border-box;border:1px solid rgba(42,39,36,.18);border-radius:10px;padding:9px 10px;background:#fff;color:#2a2724;font:inherit}.dark .photo-upload-row input,.dark .photo-edit-card input,.dark .photo-edit-card select{background:#302c29;color:#f4efe9;border-color:rgba(255,255,255,.16)}.photo-upload-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}.photo-upload-status{font-size:.82rem;font-weight:700;min-height:1.2em}.photo-upload-status.uploading{color:#b26a00}.photo-upload-status.done{color:#188038}.photo-upload-status.error,.photo-edit-message{color:#b00020}.photo-edit-card label{display:grid;gap:6px;margin:12px 0}.photo-edit-message{min-height:1.4em;font-weight:700}.photo-upload-actions,.photo-edit-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}.photo-upload-actions button,.photo-edit-actions button{border:0;border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer}.photo-upload-cancel,.photo-edit-cancel{background:#ece7e2;color:#2a2724}.photo-upload-submit,.photo-edit-save{background:#a16e48;color:#fff}.dark .photo-upload-cancel,.dark .photo-edit-cancel{background:#3a3532;color:#f4efe9}.photo-upload-summary{margin-top:10px;font-weight:700}@media(max-width:700px){.spa-photo-actions{opacity:1;pointer-events:auto;top:8px;left:8px}.spa-photo-actions button{width:34px;height:34px}.photo-upload-row{grid-template-columns:1fr}.photo-upload-actions,.photo-edit-actions{flex-direction:column-reverse}.photo-upload-actions button,.photo-edit-actions button{width:100%}}
+
+/* R17F — SPA album management */
+.spa-albums-page .album-admin-actions button{border:0;cursor:pointer;font:inherit}
+.album-edit-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.62);backdrop-filter:blur(4px)}
+.album-edit-modal.open{display:flex}.album-edit-card{width:min(520px,96vw);max-height:90vh;overflow:auto;border-radius:18px;padding:22px;background:var(--card,#fff);color:var(--text,#202124);box-shadow:0 18px 60px rgba(0,0,0,.35)}
+.dark .album-edit-card{background:#202124;color:#f1f3f4}.album-edit-card h2{margin-top:0}.album-edit-card label{display:grid;gap:7px;margin:14px 0;font-weight:700}.album-edit-card input,.album-edit-card textarea{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid rgba(127,127,127,.4);border-radius:10px;background:transparent;color:inherit;font:inherit}.album-edit-card textarea{min-height:90px;resize:vertical}.album-edit-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.album-edit-actions button{border:0;border-radius:10px;padding:10px 16px;font-weight:800;cursor:pointer}.album-edit-save{background:#188038;color:#fff}.album-edit-cancel{background:rgba(127,127,127,.18);color:inherit}.album-delete-confirm-btn{background:#c5221f;color:#fff}.required-star{color:#d93025}.owner-permission-note{padding:10px 12px;border-radius:12px;background:rgba(24,128,56,.1)}.album-create-status,.owner-cover-status,.spa-albums-message{min-height:22px;font-weight:700}.album-create-status.error,.spa-albums-message.error{color:#d93025}.album-create-status.success,.spa-albums-message.success{color:#188038}.album-cover-card{width:min(760px,96vw)}.owner-cover-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-height:48vh;overflow:auto}.owner-cover-photo{padding:0;border:2px solid transparent;border-radius:14px;overflow:hidden;background:transparent;color:inherit;cursor:pointer;text-align:right}.owner-cover-photo:hover{border-color:#a16e48}.owner-cover-photo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}.owner-cover-photo b,.owner-cover-photo span{display:block;padding:7px;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.owner-cover-divider{display:flex;align-items:center;gap:10px;margin:16px 0}.owner-cover-divider:before,.owner-cover-divider:after{content:"";height:1px;flex:1;background:rgba(127,127,127,.25)}.owner-cover-upload{display:grid!important;gap:8px}.owner-cover-actions{flex-wrap:wrap}@media(max-width:700px){.owner-cover-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* R17G SPA Favorites */
+#spaFavCaption{position:absolute;bottom:64px;color:#fff;display:flex;flex-direction:column;gap:5px;text-align:center;max-width:min(82vw,900px)}
+#spaFavCaption small{opacity:.82}.spa-viewer #spaFavPrev{right:25px}.spa-viewer #spaFavNext{left:25px}
+@media(max-width:600px){#spaFavCaption{bottom:52px;max-width:70vw;font-size:13px}.spa-viewer #spaFavPrev,.spa-viewer #spaFavNext{top:auto;bottom:57px}}
+
+/* R17I SPA Admin */
+.spa-admin-grid{align-items:start}.spa-admin .panel label{display:grid;gap:6px;margin:10px 0;font-weight:800}.spa-admin .panel input,.spa-admin .panel select{width:100%;box-sizing:border-box}.spa-admin-links{display:flex;gap:10px;flex-wrap:wrap}.spa-admin-modal[hidden]{display:none!important}.spa-admin-modal{position:fixed;inset:0;z-index:8000;display:grid;place-items:center;background:#0009;padding:18px;backdrop-filter:blur(5px)}.spa-admin-modal-card{width:min(470px,94vw);max-height:90vh;overflow:auto;background:#fff;color:#2a2724;border-radius:20px;padding:22px;box-shadow:0 20px 65px #0008}.dark .spa-admin-modal-card{background:#24211f;color:#f4efe9}.spa-admin-modal-card label{display:grid;gap:6px;margin:12px 0;font-weight:800}.spa-admin-modal-card input,.spa-admin-modal-card select{width:100%;box-sizing:border-box}.spa-admin-modal-actions{display:flex;gap:10px;margin-top:18px}.spa-admin-modal-actions button{padding:10px 18px;border-radius:999px}.spa-admin .user-manage-buttons button:disabled{opacity:.35;cursor:not-allowed}
+
+/* R17K14 — Unified SPA page spacing
+   One shared content start below the sticky navbar. Individual views keep
+   their internal spacing, but may not add a second large top gap. */
+:root{--spa-page-top-gap:32px;--spa-page-side-gap:22px}
+#spaOutlet>section.section,
+#spaOutlet>section.spa-albums-page,
+#spaOutlet>section.hero,
+#spaOutlet>section.about-hero{
+  padding-top:var(--spa-page-top-gap)!important;
+}
+/* The home/about hero sections keep their design, but begin on the same
+   vertical rhythm as the application views. */
+#spaOutlet>.home-hero,
+#spaOutlet>.about-hero-redesign{margin-top:0!important}
+/* Activity is already inside the SPA page shell; do not add a second gap
+   inside its embedded document. */
+#spaOutlet>.spa-activity-host{padding-top:var(--spa-page-top-gap)!important}
+@media(max-width:700px){
+  :root{--spa-page-top-gap:22px;--spa-page-side-gap:14px}
+}
+
+/* R17L1B — restore legacy Admin inside SPA + complete theme parity */
+.spa-admin-legacy-host{padding-top:var(--spa-page-top-gap)!important}
+.spa-admin-legacy-frame{display:none;width:100%;min-height:720px;border:0;background:transparent}
+
+/* Trash is a native SPA view: make every visible surface follow the current theme. */
+#spaTrashGrid .photo-card{border:1px solid rgba(42,39,36,.10);border-radius:18px;padding:10px;background:#fff;color:#2a2724;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+#spaTrashGrid .photo-card figcaption{color:#2a2724}
+#spaTrashGrid .photo-card figcaption small{color:#6f6862;opacity:1}
+#spaTrashCountStatus{color:#2a2724;background:rgba(161,110,72,.08);border-color:rgba(161,110,72,.24)}
+.dark #spaTrashGrid .photo-card{background:#24211f;color:#f3eee9;border-color:rgba(255,255,255,.10);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.dark #spaTrashGrid .photo-card figcaption{color:#f3eee9}
+.dark #spaTrashGrid .photo-card figcaption small{color:#c8beb6}
+.dark #spaTrashCountStatus{color:#f3eee9;background:rgba(196,154,114,.10);border-color:rgba(196,154,114,.24)}
+.dark #spaTrashGrid .trash-actions .btn{background:#302c29;color:#f3eee9;border:1px solid rgba(255,255,255,.14)}
+
+/* R17L5D — unmistakable create-album progress indicator */
+.spa-create-album-busy{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0;padding:12px;border-radius:12px;background:rgba(26,115,232,.12);font-weight:800}
+.spa-create-album-busy[hidden]{display:none!important}
+.spa-create-spinner{width:18px;height:18px;border:3px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:spaCreateSpin .75s linear infinite}
+@keyframes spaCreateSpin{to{transform:rotate(360deg)}}
+
+/* R17L5G10 — Viewer & Slideshow Theme Parity */
+.viewer.spa-viewer{
+  background:rgba(246,243,239,.97);
+  color:#2a2724;
+}
+.viewer.spa-viewer button:not(.viewer-dot){
+  background:rgba(255,255,255,.92);
+  color:#2a2724;
+  border:1px solid rgba(42,39,36,.18);
+  box-shadow:0 6px 22px rgba(0,0,0,.14);
+}
+.viewer.spa-viewer .viewer-arrow-icon{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.viewer.spa-viewer #spaCaption,.viewer.spa-viewer #spaFavCaption{color:#2a2724}
+.viewer.spa-viewer .viewer-dots{background:rgba(42,39,36,.10)}
+.viewer.spa-viewer .viewer-dot{background:rgba(42,39,36,.34)}
+.viewer.spa-viewer .viewer-dot.active{background:#2a2724}
+.spa-close.viewer-close-global{background:rgba(255,255,255,.94);color:#2a2724;border-color:rgba(42,39,36,.18)}
+.dark .viewer.spa-viewer{
+  background:rgba(23,21,20,.98);
+  color:#f3eee9;
+}
+.dark .viewer.spa-viewer button:not(.viewer-dot){
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  border-color:rgba(255,255,255,.22);
+  box-shadow:0 6px 22px rgba(0,0,0,.34);
+}
+.dark .viewer.spa-viewer #spaCaption,.dark .viewer.spa-viewer #spaFavCaption{color:#fff}
+.dark .viewer.spa-viewer .viewer-dots{background:rgba(255,255,255,.18)}
+.dark .viewer.spa-viewer .viewer-dot{background:rgba(255,255,255,.45)}
+.dark .viewer.spa-viewer .viewer-dot.active{background:#fff}
+.dark .spa-close.viewer-close-global{background:rgba(25,23,22,.94);color:#fff;border-color:rgba(255,255,255,.25)}
+
+/* R17P1 — one global Application Session Bootstrap loader */
+.spa-global-bootstrap{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;background:rgba(246,243,239,.96);backdrop-filter:blur(8px);padding:20px}
+.spa-global-bootstrap[hidden]{display:none!important}
+.spa-global-bootstrap-card{width:min(460px,92vw);display:grid;justify-items:center;gap:14px;padding:28px;border-radius:22px;background:#fff;color:#2a2724;box-shadow:0 18px 60px rgba(0,0,0,.18)}
+.spa-global-bootstrap-card .spa-create-spinner{width:30px;height:30px;border-width:4px}
+.spa-global-bootstrap-card h2{margin:0;font-size:1.25rem}
+.spa-global-progress{width:100%;height:12px;overflow:hidden;border-radius:999px;background:rgba(42,39,36,.12)}
+.spa-global-progress-fill{width:0;height:100%;border-radius:inherit;background:currentColor;transition:width .18s ease}
+.spa-global-bootstrap-card strong{font-variant-numeric:tabular-nums}
+.dark .spa-global-bootstrap{background:rgba(23,21,20,.96)}
+.dark .spa-global-bootstrap-card{background:#24211f;color:#f3eee9;box-shadow:0 18px 60px rgba(0,0,0,.42)}
+.dark .spa-global-progress{background:rgba(255,255,255,.15)}
+
+/* R17P1A — centered compact global bootstrap over blurred current screen */
+.spa-global-bootstrap{position:fixed!important;inset:0!important;z-index:12000!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(20,18,17,.28)!important;backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important;padding:18px!important}
+.spa-global-bootstrap[hidden]{display:none!important}
+.spa-global-bootstrap-card{box-sizing:border-box;width:min(390px,calc(100vw - 36px))!important;min-height:190px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 26px!important;border-radius:24px!important;background:rgba(255,255,255,.94)!important;color:#2a2724!important;border:1px solid rgba(255,255,255,.55);box-shadow:0 22px 70px rgba(0,0,0,.30)!important;text-align:center}
+.spa-global-progress{width:100%;height:12px;border-radius:999px;overflow:hidden;background:rgba(42,39,36,.13)}
+.spa-global-progress-fill{height:100%;width:0;border-radius:inherit;background:currentColor;transition:width .22s ease}
+.dark .spa-global-bootstrap{background:rgba(0,0,0,.38)!important}
+.dark .spa-global-bootstrap-card{background:rgba(36,33,31,.96)!important;color:#f3eee9!important;border-color:rgba(255,255,255,.12)}
+.dark .spa-global-progress{background:rgba(255,255,255,.16)}
+
+/* R17P1C — force global bootstrap overlay to own the viewport while active */
+.spa-global-bootstrap.is-visible{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:all!important}
+body.spa-bootstrap-active{overflow:hidden!important}
+
+
+/* R17P2A — one spinner language for every ongoing action/status ending with ... */
+.fpa-busy-ellipsis{display:inline-flex!important;align-items:center;gap:8px}
+.fpa-busy-ellipsis::before{content:"";display:inline-block;flex:0 0 auto;width:15px;height:15px;border:2.5px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:spaCreateSpin .75s linear infinite}
+button.fpa-busy-ellipsis{justify-content:center}
+
+/* R17P2E2 — transactional dialog busy/error state */
+.ui-dialog-btn:disabled{cursor:wait;opacity:.78}.ui-dialog-error{margin:12px 0 0!important;color:#b42318!important;font-weight:700}.dark .ui-dialog-error{color:#ff8d85!important}
+
+/* R17P2K — unified busy/action spinner */
+.is-action-busy::before {
+  content: "";
+  display: inline-block;
+  width: .9em;
+  height: .9em;
+  margin-inline-end: .45em;
+  vertical-align: -.08em;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: 50%;
+  animation: actionBusySpin .75s linear infinite;
+}
+button.is-action-busy { cursor: wait; }
+@keyframes actionBusySpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .is-action-busy::before { animation-duration: 1.5s; }
+}
+
+
+/* R17P2O — photo record status parity + single-spinner ownership */
+.spa-photo-record-status{display:flex;font-weight:700;margin-block:10px 14px}
+.spa-global-bootstrap-card .fpa-busy-ellipsis::before,.spa-global-bootstrap-card .is-action-busy::before{display:none!important}
+
+/* R17P2O3 — explicit single view-loader ownership; passive status text never spins. */
+.spa-view-loading{display:flex!important;align-items:center;justify-content:center;gap:9px}
+.spa-view-loading::before{content:"";display:inline-block;flex:0 0 auto;width:16px;height:16px;border:2.5px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:actionBusySpin .75s linear infinite}
+tr .spa-view-loading,td.spa-view-loading{display:table-cell!important;text-align:center}
+td.spa-view-loading::before{vertical-align:middle;margin-inline-end:9px}
+
+
+/* R17P2O4 — Activity Log spinner containment.
+   Only the explicit table view-loader may animate inside Activity Log. */
+.spa-activity-native .fpa-busy-ellipsis::before,
+.spa-activity-native .is-action-busy::before{display:none!important;content:none!important;animation:none!important}
+.spa-activity-native .spa-view-loading::before{display:inline-block!important;content:""!important;animation:actionBusySpin .75s linear infinite!important}
+.spa-activity-native:not(:has(.spa-view-loading))::before,
+.spa-activity-native:not(:has(.spa-view-loading))::after{animation:none!important}
+
+/* R17P2O6 — final admin spinner guard: enabled/stale buttons never animate. */
+button.is-action-busy:not(:disabled):not([aria-busy="true"])::before{display:none!important;content:none!important;animation:none!important}
+
+/* R17P2O13 — inline spinner for real Trash fetches only. */
+#spaTrashStatus.loading{display:flex;align-items:center;gap:8px}
+.spa-inline-spinner{width:16px;height:16px;border:2px solid currentColor;border-inline-start-color:transparent;border-radius:50%;display:inline-block;flex:0 0 auto;animation:spaInlineSpin .75s linear infinite}
+@keyframes spaInlineSpin{to{transform:rotate(360deg)}}
+
+/* R17P2O16 regression fix pack */
+.required-star{color:#d92d20;font-weight:900;margin-inline:2px}.photo-filter-error{display:block;color:#d92d20;font-weight:700;flex-basis:100%;min-height:1.2em}.photo-upload-remove{border:0;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:20px;line-height:1}.login-message.is-loading{display:flex;align-items:center;justify-content:center;gap:8px}.login-inline-spinner{width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .75s linear infinite}.viewer-slide-toggle{position:fixed;z-index:10003;bottom:18px;left:50%;transform:translateX(-50%);width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;font-size:20px}.viewer-slide-toggle[hidden]{display:none!important}body.viewer-open>.top{display:none!important}
+body:not(.dark) .spa-photo-heading-actions .btn{background:#fff;color:#24211f;border-color:rgba(42,39,36,.18)}body.dark .spa-photo-heading-actions .btn{color:inherit}
+.spa-slide-btn::first-letter{transform:none}.spa-slide-launch-icon{display:inline-block;transform:rotate(180deg);line-height:1}
+
+
+/* R17P2O17 — verified regression follow-up */
+@keyframes loginInlineSpin{to{transform:rotate(360deg)}}
+.login-inline-spinner{display:inline-block!important;flex:0 0 16px;width:16px!important;height:16px!important;border:2px solid currentColor!important;border-top-color:transparent!important;border-radius:50%!important;animation:loginInlineSpin .75s linear infinite!important}
+/* Validation/error messages are consistently red; success states keep their own styling. */
+.photo-filter-error,.photo-upload-summary,.photo-edit-message,.login-message.error,[role="alert"]:not(.success){color:#b42318}
+.photo-upload-status.error{color:#b42318!important}
+/* Light mode heading actions: explicit specificity against the global dark button skin. */
+html:not(.dark) body:not(.dark) .spa-photo-page .spa-photo-heading-actions .btn{background:#fff!important;color:#2a2724!important;border:1px solid rgba(42,39,36,.22)!important;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+/* Rotate only the slideshow launcher glyph, never the viewer navigation arrows. */
+.spa-slide-btn{display:inline-flex;align-items:center;gap:7px}
+.spa-slide-btn::first-letter{transform:none}.spa-slide-launch-icon{display:inline-block;transform:rotate(180deg);line-height:1}
+/* Viewer owns the whole screen. Hide every application header, including dynamically mounted shells. */
+body.viewer-open .top,body.viewer-open header.top,body.viewer-open .app-header,body.viewer-open header[role="banner"]{display:none!important;visibility:hidden!important}
+/* Keep slideshow transport below the photo instead of covering it. */
+.viewer.open{padding-bottom:118px}
+.viewer.open img{max-height:calc(100vh - 210px)}
+.viewer-slide-toggle{bottom:58px!important;left:50%!important;transform:translateX(-50%)!important;background:rgba(255,255,255,.16)!important;color:#fff!important;border:1px solid rgba(255,255,255,.32)!important;backdrop-filter:blur(8px)}
+.viewer #spaCaption{bottom:18px!important}
+.photo-upload-album{display:grid;gap:6px;margin:6px 0 12px;font-weight:800}.photo-upload-album[hidden]{display:none!important}.photo-upload-album select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(42,39,36,.18);background:#fff;color:#2a2724}.dark .photo-upload-album select{background:#302c29;color:#f4efe9;border-color:rgba(255,255,255,.16)}
+
+
+/* R17P2O18 — focused O17 regression corrections */
+/* Login progress is a neutral status, not validation. Reuse the proven SPA spinner keyframes. */
+.login-message.is-loading{color:inherit!important}
+.login-message.is-loading .login-inline-spinner{display:inline-block!important;width:16px!important;height:16px!important;flex:0 0 16px;border:2px solid currentColor!important;border-inline-start-color:transparent!important;border-top-color:currentColor!important;border-radius:50%!important;animation:spaInlineSpin .7s linear infinite!important}
+/* Theme-aware All Photos/Album heading controls. */
+html:not(.dark) body:not(.dark) .spa-photo-page .spa-photo-heading-actions .btn{background:#fff!important;color:#2a2724!important;border:1px solid rgba(42,39,36,.22)!important}
+html.dark body.dark .spa-photo-page .spa-photo-heading-actions .btn,body.dark .spa-photo-page .spa-photo-heading-actions .btn{background:#2a2724!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:none}
+/* Compact slideshow transport: outside photo, without colliding with dots/caption. */
+.viewer.open{padding-bottom:104px}
+.viewer.open img{max-height:calc(100vh - 196px)}
+.viewer-slide-toggle{bottom:66px!important;width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;padding:0!important;font-size:14px!important;line-height:32px!important;display:grid!important;place-items:center!important}
+.viewer-slide-toggle[hidden]{display:none!important}
+.viewer #spaCaption{bottom:14px!important}
+.viewer-dots{bottom:48px!important}
+/* Required marker belongs to a real label, never to placeholder text. */
+.upload-required-field{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px;min-width:0}
+.upload-required-field .required-star{grid-column:1;grid-row:1;color:#d92d20!important}
+.upload-required-field input{grid-column:2;grid-row:1;min-width:0}
+.photo-upload-summary{color:#b42318}
+
+
+/* R17P2O19 — two focused regression corrections */
+/* Slideshow transport is completely outside the dots/caption layout flow. */
+.viewer-slide-toggle{
+  position:fixed!important;
+  inset:auto 18px 18px auto!important;
+  left:auto!important;right:18px!important;bottom:18px!important;
+  transform:none!important;
+  width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
+  padding:0!important;margin:0!important;font-size:13px!important;line-height:30px!important;
+  display:grid!important;place-items:center!important;z-index:10004!important;
+}
+.viewer-slide-toggle[hidden]{display:none!important}
+/* Restore the normal caption/dots geometry; the transport no longer reserves or consumes a row. */
+.viewer.open{padding-bottom:0!important}
+.viewer.open img{max-height:82%!important}
+.viewer #spaCaption{bottom:64px!important}
+.viewer-dots{bottom:22px!important}
+.photo-upload-album select.is-invalid{border-color:#b42318!important;outline:2px solid rgba(180,35,24,.18)!important}
+@media(max-width:600px){
+  .viewer-slide-toggle{right:12px!important;bottom:12px!important}
+  .viewer-dots{bottom:10px!important}
+  .spa-viewer #spaCaption{bottom:52px!important}
+}
+
+
+/* R17P2O20 — hard upload gate + slideshow transport beside album name */
+.photo-upload-file-gate{position:relative}
+.photo-upload-file-gate:has(.photo-upload-file:disabled){cursor:not-allowed}
+.photo-upload-file:disabled{pointer-events:none;opacity:.72}
+.viewer #spaCaption .viewer-album-line{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:30px}
+.viewer #spaCaption .viewer-album-line .viewer-slide-toggle{
+  position:static!important;inset:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+  transform:none!important;width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;
+  padding:0!important;margin:0!important;font-size:12px!important;line-height:28px!important;display:inline-grid!important;place-items:center!important;
+}
+.viewer #spaCaption .viewer-album-line .viewer-slide-toggle[hidden]{display:none!important}
+
+/* R17P2O22: favorites button only; no changes to page or other actions. */
+.photo-wrap .favorite-btn{background:#080808;color:#fff;border:2px solid #080808;display:flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;}
+.photo-wrap .favorite-btn.active{background:transparent;color:#e32636;border:2px solid #e32636;}
+
+/* R17P2O22C: white face and white heart with BLACK heart outline and circular border. */
+.photo-wrap .favorite-btn:not(.active){background:#fff!important;color:transparent!important;border:2px solid #080808!important;font-size:0!important;display:flex;align-items:center;justify-content:center;box-sizing:border-box;}
+.photo-wrap .favorite-btn:not(.active)::before{content:"";display:block;width:23px;height:23px;flex:none;background:#080808;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;}
+.photo-wrap .favorite-btn.active{background:transparent!important;color:#e32636!important;border:2px solid #e32636!important;}
+
+/* R17P2O22M — softer neutral outline for unselected favorites in both themes. */
+.photo-wrap .favorite-btn:not(.active){border-color:#a3a3a3!important;}
+.photo-wrap .favorite-btn:not(.active)::before{background:#a3a3a3!important;}
+
+/* R17P2O22E — responsive gallery across album, all photos, favorites and trash. */
+@media (min-width: 1250px) {
+  .section:has(> .gallery), .section:has(> #spaTrashGrid),
+  .spa-albums-page {max-width: min(1680px, calc(100% - 32px));}
+  .section .gallery {grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));}
+  .spa-albums-page .album-list-grid {grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));}
+}
+/* Keep both permanent-delete and restore controls usable at every card width. */
+#spaTrashGrid .photo-card {min-width:0;display:flex;flex-direction:column;}
+#spaTrashGrid .photo-card figcaption {flex:1;min-width:0;overflow-wrap:anywhere;}
+#spaTrashGrid .trash-actions {display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;}
+#spaTrashGrid .trash-actions > * {flex:1 1 105px;min-width:0;white-space:normal;text-align:center;}
+
+/* R17P2O22O — Trash bulk/permanent album actions. */
+.trash-page-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.trash-page-actions .danger-btn:disabled{opacity:.45;cursor:not-allowed}

@@ -18,18 +18,27 @@ function mountLayout(active=""){
   }
 
   const user=getSession()?.user;
-  const isAdmin=String(user?.role||"").toUpperCase()==="ADMIN";
-  const navItems=[
-    ["index.html","ראשי","home"],
-    ["dashboard.html","לוח בקרה","dashboard"],
-    ["albums.html","אלבומים","albums"],
-    ["favorites.html","מועדפים","favorites"],
-    ["about.html","אודות","about"]
+  const userRole=String(user?.role||"").toUpperCase();
+  const isAdmin=userRole==="ADMIN";
+  const canUseTrash=isAdmin||userRole==="FAMILY";
+  const isSpaShell=!!document.querySelector("#spaOutlet") || /\/(?:index|spa-preview)\.html$/i.test(location.pathname) || /\/frontend\/?$/i.test(location.pathname);
+  const navItems=isSpaShell ? [
+    ["#/home","ראשי","home"],
+    ["#/dashboard","לוח בקרה","dashboard"],
+    ["#/albums","אלבומים","albums"],
+    ["#/favorites","מועדפים","favorites"],
+    ["#/about","אודות","about"]
+  ] : [
+    ["index.html#/home","ראשי","home"],
+    ["index.html#/dashboard","לוח בקרה","dashboard"],
+    ["index.html#/albums","אלבומים","albums"],
+    ["index.html#/favorites","מועדפים","favorites"],
+    ["index.html#/about","אודות","about"]
   ];
+  if(canUseTrash) navItems.push([isSpaShell?"#/trash":"index.html#/trash","סל מחזור","trash"]);
   if(isAdmin){
-    navItems.push(["trash.html","סל מחזור","trash"]);
-    navItems.push(["activity-log.html","יומן פעילויות","activityLog"]);
-    navItems.push(["admin.html","ניהול","admin"]);
+    navItems.push([isSpaShell?"#/activity":"index.html#/activity","יומן פעילויות","activityLog"]);
+    navItems.push([isSpaShell?"#/admin":"index.html#/admin","ניהול","admin"]);
   }
   nav.innerHTML=navItems.map(x=>`<a class="${active===x[2]?"active":""}" href="${x[0]}">${x[1]}</a>`).join("");
 
@@ -63,14 +72,20 @@ function mountLayout(active=""){
   });
 
   // Ensure the theme control is first, and logout is the final toolbar control.
-  let themeBtn=actions.querySelector('button[onclick*="toggleTheme"]');
-  if(!themeBtn){
-    themeBtn=document.createElement("button");
-    themeBtn.type="button";
-    themeBtn.textContent="◐";
-    themeBtn.setAttribute("aria-label","החלפת מצב תצוגה");
-    themeBtn.addEventListener("click",()=>{ if(typeof window.toggleTheme==="function") window.toggleTheme(); });
-    actions.prepend(themeBtn);
+  let themeBtn=actions.querySelector('button[onclick*="toggleTheme"]') || actions.querySelector('[data-theme-toggle]');
+  if(!themeBtn){ themeBtn=document.createElement("button"); themeBtn.type="button"; themeBtn.textContent="◐"; actions.prepend(themeBtn); }
+  themeBtn.removeAttribute("onclick");
+  themeBtn.dataset.themeToggle="1";
+  themeBtn.setAttribute("aria-label","החלפת מצב תצוגה");
+  if(!themeBtn.__familyThemeBound){
+    themeBtn.__familyThemeBound=true;
+    themeBtn.addEventListener("click",()=>{
+      if(typeof window.toggleTheme==="function") window.toggleTheme();
+      else{
+        document.documentElement.classList.toggle("dark");
+        try{localStorage.setItem("familyTheme",document.documentElement.classList.contains("dark")?"dark":"light");}catch(_){}
+      }
+    });
   }
 
   if(user){
@@ -152,6 +167,10 @@ function mountLayout(active=""){
     });
   }
 
+
+
+  // R16Z: background dashboard prefetch disabled; page loads must not compete for Apps Script executions.
+
   const userEl=document.querySelector("#userName");
   if(userEl)userEl.textContent=user?user.name:"אורח";
 }
@@ -159,11 +178,12 @@ function mountLayout(active=""){
 /* Navigation safety fix: Albums must always open the albums list, never Admin. */
 (function () {
   function fixAlbumsNavigation() {
+    if (document.querySelector("#spaOutlet") || /\/(?:index|spa-preview)\.html$/i.test(location.pathname) || /\/frontend\/?$/i.test(location.pathname)) return;
     document.querySelectorAll('a[href="admin.html"], a[data-href="admin.html"]').forEach(function (a) {
       var label = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
       if (label.indexOf('אלבומים') !== -1 && label.indexOf('ניהול') === -1) {
-        if (a.hasAttribute('href')) a.setAttribute('href', 'albums.html');
-        if (a.hasAttribute('data-href')) a.setAttribute('data-href', 'albums.html');
+        if (a.hasAttribute('href')) a.setAttribute('href', 'index.html#/albums');
+        if (a.hasAttribute('data-href')) a.setAttribute('data-href', 'index.html#/albums');
       }
     });
   }

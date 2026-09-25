@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום משפחתי</title><link rel="stylesheet" href="css/main.css?v=R16G"><script src="js/config.js"></script><script src="js/version.js"></script><script src="js/utils.js"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום משפחתי</title><link rel="stylesheet" href="css/main.css?v=R17P2O21"><link rel="stylesheet" href="css/spa-activity.css?v=R17L3"><script src="js/config.js"></script><script src="js/version.js?v=R17P2O21"></script><script src="js/utils.js?v=R17P2O19"></script><script src="js/theme.js"></script>
 <style id="password-toggle-eye-style">
 .password-field-wrap{position:relative;display:flex;align-items:center}
 .password-field-wrap input{width:100%;padding-right:48px!important}
@@ -19,49 +19,7 @@
 .login-input-wrap input{padding-left:48px!important}
 .login-input-wrap .password-field-wrap{width:100%}
 .login-input-wrap .password-field-wrap .field-icon{display:none}
-</style></head><body><header class="top"><a class="brand" href="index.html">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><a id="adminLink" class="pill" style="display:none" href="admin.html">ניהול</a></div></header><main class="home-main">
-<section class="hero home-hero">
-  <div class="home-hero-copy">
-    <span class="eyebrow">המשפחה שלנו · הסיפור שלנו</span>
-    <h1>הזיכרונות שלנו<br><em>נשארים קרובים</em></h1>
-    <p>מקום משפחתי אחד לכל התמונות, הרגעים והסיפורים שאנחנו רוצים לשמור — ולחזור אליהם שוב ושוב.</p>
-    <div class="home-hero-actions">
-      <a class="btn" href="albums.html">פתיחת האלבומים</a>
-      <a class="home-secondary-link" href="about.html">הסיפור שלנו ←</a>
-    </div>
-  </div>
-  <div class="hero-image home-hero-image" role="img" aria-label="תמונה משפחתית"></div>
-</section>
-
-<section class="home-welcome section" aria-labelledby="homeWelcomeTitle">
-  <div class="home-welcome-card">
-    <span class="home-welcome-icon" aria-hidden="true">♥</span>
-    <div>
-      <span class="eyebrow">זיכרונות משותפים</span>
-      <h2 id="homeWelcomeTitle">כל המשפחה. כל הזיכרונות. במקום אחד.</h2>
-      <p>טיולים, חגים, אירועים ורגעים קטנים מהחיים — מסודרים באלבומים פרטיים ונגישים לבני המשפחה.</p>
-    </div>
-  </div>
-</section>
-
-<section class="stats home-stats" aria-label="יתרונות האלבום">
-  <div><strong>∞</strong><small>זיכרונות לשמור</small></div>
-  <div><strong>24/7</strong><small>גישה מכל מקום</small></div>
-  <div><strong>♥</strong><small>רק למשפחה</small></div>
-  <div><strong>☁</strong><small>שמירה בענן</small></div>
-</section>
-
-<section class="section home-cta">
-  <div class="home-cta-card">
-    <div>
-      <span class="eyebrow">האלבום המשפחתי</span>
-      <h2>מוכנים להיזכר?</h2>
-      <p>היכנסו לאלבומים ובחרו את התקופה, האירוע או הרגע שאליו תרצו לחזור.</p>
-    </div>
-    <a class="btn" href="albums.html">לכל האלבומים ←</a>
-  </div>
-</section>
-</main>
+</style></head><body><header class="top"><a class="brand" href="#/home">Family <b>Album</b> ♥</a><nav id="nav"></nav><div class="actions"><button onclick="toggleTheme()">◐</button><a id="adminLink" class="pill" style="display:none" href="#/admin">ניהול</a></div></header><main id="spaOutlet" class="home-main" aria-live="polite"></main><div id="spaGlobalBootstrap" class="spa-global-bootstrap" hidden aria-hidden="true"><div class="spa-global-bootstrap-card" role="status" aria-live="polite"><span class="spa-create-spinner" aria-hidden="true"></span><h2>טוען את המערכת...</h2><div class="spa-global-progress"><div class="spa-global-progress-fill"></div></div><strong data-bootstrap-percent>0%</strong></div></div>
 
 <!-- Login Modal -->
 <div id="loginModal" class="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
@@ -90,7 +48,35 @@
     <div id="modalLoginMsg" class="login-message" role="alert"></div>
   </div>
 </div>
-<footer>© 2026 אלבום משפחתי</footer><script src="js/api.js"></script><script src="js/layout.js"></script><script>mountLayout("home");</script>
+<footer class="app-footer"><span>© 2026 אלבום משפחתי</span> <span id="appFooterVersion" class="footer-version"></span></footer><script>document.getElementById("appFooterVersion").textContent="גרסה: "+(window.APP_CONFIG?.APP_VERSION||"");</script><script src="js/api.js?v=R17P2M"></script>
+<script src="js/session-manager.js?v=R17P2J1"></script>
+<script id="spa-legacy-nav-hard-guard">
+(function(){
+  window.FPA_SPA_SHELL=true;
+  const map={"albums.html":"#/albums","dashboard.html":"#/dashboard","favorites.html":"#/favorites","about.html":"#/about","trash.html":"#/trash","activity-log.html":"#/activity","admin.html":"#/admin"};
+  function routeFor(u){const f=(u.pathname.split('/').pop()||'').toLowerCase();if(f==='album.html')return '#/album?id='+encodeURIComponent(u.searchParams.get('id')||'');return map[f]||'';}
+  function normalize(root){
+    (root||document).querySelectorAll?.('a[href], [data-href]')?.forEach(el=>{
+      for(const attr of ['href','data-href']){
+        const raw=(el.getAttribute?.(attr)||'').trim(); if(!raw) continue;
+        let u; try{u=new URL(raw,location.href);}catch(_){continue;}
+        const route=routeFor(u);
+        if(route) el.setAttribute(attr,route);
+      }
+    });
+  }
+  document.addEventListener('click',function(e){
+    const a=e.target?.closest?.('a[href], [data-href]'); if(!a) return;
+    const raw=(a.getAttribute('href')||a.getAttribute('data-href')||'').trim(); if(!raw) return;
+    let u; try{u=new URL(raw,location.href);}catch(_){return;}
+    const route=routeFor(u); if(!route) return;
+    e.preventDefault(); e.stopImmediatePropagation(); location.hash=route;
+  },true);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>normalize(document)); else normalize(document);
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)normalize(n)}))).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+<script src="js/layout.js?v=R17L4"></script>
 
 <script>
 function shouldAutoOpenLogin(){
@@ -104,6 +90,19 @@ function hasActiveSession(){
   }catch(e){}
   return false;
 }
+
+function resetLoginForm(){
+  const form=document.getElementById("modalLoginForm");
+  try{ form?.reset(); }catch(e){}
+  const email=document.getElementById("modalEmail");
+  const password=document.getElementById("modalPassword");
+  if(email) email.value="";
+  if(password){ password.value=""; password.type="password"; }
+  const msg=document.getElementById("modalLoginMsg");
+  if(msg){ msg.textContent=""; msg.className="login-message"; }
+}
+window.resetLoginForm=resetLoginForm;
+
 function openLoginModal(){
   const modal=document.getElementById("loginModal");
   if(!modal)return;
@@ -158,8 +157,8 @@ document.getElementById("modalLoginForm")?.addEventListener("submit",async e=>{
   const password=document.getElementById("modalPassword").value;
   const msg=document.getElementById("modalLoginMsg");
   const btn=document.getElementById("modalLoginButton");
-  msg.textContent="מתחבר...";
-  msg.className="login-message";
+  msg.innerHTML='<span class="login-inline-spinner" aria-hidden="true"></span><span>מתחבר...</span>';
+  msg.className="login-message is-loading";
   btn.disabled=true;
   try{
     const r=await API.call("login",{email,password});
@@ -168,12 +167,26 @@ document.getElementById("modalLoginForm")?.addEventListener("submit",async e=>{
     try{
       if(window.SessionManager?.start) SessionManager.start(r.data.user, r.data.token, false);
     }catch(e){ console.warn("Session manager:",e); }
-    msg.textContent="הכניסה הצליחה";
+    msg.textContent="התחברות הצליחה";
     msg.classList.add("success");
-    setTimeout(()=>{
-      const ret=new URLSearchParams(location.search).get("return");
-      location.href=(ret && /^[a-zA-Z0-9_\-]+\.html(?:\?.*)?$/.test(ret)) ? ret : "dashboard.html";
-    },250);
+    // R17P1A: after authentication, hand visual control to the single global bootstrap loader.
+    closeLoginModal();
+    // R17K6: complete the cold bootstrap while the Login Modal is still visible.
+    // Dashboard therefore opens already populated, without a second loading paint.
+    const session = window.SessionManager?.getSession?.() || {user:r.data.user, token:r.data.token};
+    try{
+      window.AppState?.setSession?.(session);
+      window.AppRouter?.resetPersistent?.();
+      const boot=await window.SessionDataStore.ensureApplicationBootstrap();
+      if(window.mountLayout) window.mountLayout("dashboard");
+    }catch(e){
+      console.warn("SPA cold bootstrap:",e);
+      // Keep login successful even if bootstrap fails; Dashboard retains its
+      // existing server-first fallback and can recover there.
+      if(window.mountLayout) window.mountLayout("dashboard");
+    }
+    closeLoginModal();
+    window.AppRouter?.go?.("dashboard");
   }catch(err){
     msg.textContent=err?.message||"אירעה שגיאה בעת ההתחברות";
     msg.classList.add("error");
@@ -218,4 +231,16 @@ document.addEventListener("keydown",e=>{
 })();
 </script>
 
-<script src="js/session-manager.js"></script></body></html>
+<script src="js/spa/app-state.js?v=R17K10"></script>
+<script src="js/spa/router.js?v=R17K10"></script>
+<script src="js/spa/session-data-store.js?v=R17P1D"></script>
+<script src="js/spa/views.js?v=R17L5G6"></script>
+<script src="js/spa/dashboard-view.js?v=R17L1"></script>
+<script src="js/spa/albums-view.js?v=R17P2O13"></script>
+<script src="js/spa/album-view.js?v=R17P2O21"></script>
+<script src="js/spa/favorites-view.js?v=R17P2O19"></script>
+<script src="js/spa/trash-view.js?v=R17P2O13"></script>
+<script src="js/spa/admin-shell-template.js?v=R17P2O13"></script><script src="js/spa/admin-view.js?v=R17P2O13"></script><script src="js/spa/activity-view.js?v=R17P2O6"></script>
+<script src="js/spa/diagnostics.js?v=R17P2D1"></script>
+<script src="js/spa/bootstrap.js?v=R17P1C"></script>
+</body></html>
