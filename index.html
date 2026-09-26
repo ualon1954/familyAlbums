@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום משפחתי</title><link rel="stylesheet" href="css/main.css?v=R17P2O22X4H"><link rel="stylesheet" href="css/spa-activity.css?v=R17L3"><script src="js/config.js"></script><script src="js/version.js?v=R17P2O22X4H"></script><script src="js/utils.js?v=R17P2O19"></script><script src="js/theme.js"></script>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico?v=3512"><link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=3512"><title>אלבום משפחתי</title><link rel="stylesheet" href="css/main.css?v=R17P2O22X4S"><link rel="stylesheet" href="css/spa-activity.css?v=R17L3"><script src="js/config.js"></script><script src="js/version.js?v=R17P2O22X4S"></script><script src="js/utils.js?v=R17P2O19"></script><script src="js/theme.js"></script>
 <style id="password-toggle-eye-style">
 .password-field-wrap{position:relative;display:flex;align-items:center}
 .password-field-wrap input{width:100%;padding-right:48px!important}
@@ -168,7 +168,7 @@ document.getElementById("modalLoginForm")?.addEventListener("submit",async e=>{
       if(window.SessionManager?.start) SessionManager.start(r.data.user, r.data.token, false);
     }catch(e){ console.warn("Session manager:",e); }
     msg.textContent="התחברות הצליחה";
-    msg.classList.add("success");
+    msg.className="login-message success";
     // R17P1A: after authentication, hand visual control to the single global bootstrap loader.
     closeLoginModal();
     // R17K6: complete the cold bootstrap while the Login Modal is still visible.
@@ -189,7 +189,7 @@ document.getElementById("modalLoginForm")?.addEventListener("submit",async e=>{
     window.AppRouter?.go?.("dashboard");
   }catch(err){
     msg.textContent=err?.message||"אירעה שגיאה בעת ההתחברות";
-    msg.classList.add("error");
+    msg.className="login-message error";
   }finally{
     btn.disabled=false;
   }
@@ -237,7 +237,7 @@ document.addEventListener("keydown",e=>{
 <script src="js/spa/views.js?v=R17L5G6"></script>
 <script src="js/spa/dashboard-view.js?v=R17L1"></script>
 <script src="js/spa/albums-view.js?v=R17P2O13"></script>
-<script src="js/spa/album-view.js?v=R17P2O21"></script>
+<script src="js/spa/album-view.js?v=R17P2O22X4S"></script>
 <script src="js/spa/favorites-view.js?v=R17P2O19"></script>
 <script src="js/spa/trash-view.js?v=R17P2O13"></script>
 <script src="js/spa/feedback-view.js?v=R17P2O22X4H"></script>

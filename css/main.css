@@ -2054,3 +2054,36 @@ html:not(.dark) .feedback-filters select,html:not(.dark) .feedback-filters input
 .feedback-loading{display:flex;align-items:center;justify-content:center;gap:9px;min-height:90px}
 .feedback-table tbody tr{cursor:default}
 @media(max-width:850px){.feedback-table tbody tr{cursor:pointer}.feedback-row-actions{cursor:default}.feedback-actions{width:100%}.feedback-actions .btn{flex:1 1 150px}}
+
+/* X4M unified in-modal action feedback */
+.ui-dialog-success{margin:12px 0 0!important;color:#188038!important;font-weight:800}.dark .ui-dialog-success{color:#7ee29a!important}.photo-upload-summary.success,.photo-edit-message.success{color:#188038!important}.dark .photo-upload-summary.success,.dark .photo-edit-message.success{color:#7ee29a!important}.photo-upload-summary.error,.photo-edit-message.error{color:#b42318!important}.dark .photo-upload-summary.error,.dark .photo-edit-message.error{color:#ff8d85!important}
+
+
+/* R17P2O22X4Q — fluid photo grid without card-width jumps.
+   Cards keep a controlled width (220–260px); the grid itself decides when
+   another column no longer fits. This removes the 5→4→3 / 3→2 enlargement. */
+.photo-tools-toggle{display:none;margin:12px 0 8px;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;font-weight:800;}
+.section #spaGallery.gallery{
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),260px));
+  justify-content:center;
+  gap:12px;
+}
+/* With 220px minimum cards, 720px is the first compact range where the
+   gallery is effectively moving toward two columns. Keep filters collapsed. */
+@media (max-width:720px){
+  #spaPhotoToolsToggle{display:flex!important;}
+  #spaPhotoTools.is-collapsed{display:none!important;}
+}
+@media (min-width:721px){
+  #spaPhotoToolsToggle{display:none!important;}
+  #spaPhotoTools{display:flex!important;}
+}
+
+
+/* R17P2O22X4R — filter mode follows the gallery's real 3→2 transition.
+   The page class is driven from the same 220px minimum track + 12px gap
+   used by the fluid grid, so there is no separate viewport breakpoint. */
+.spa-photo-page.photo-filter-compact #spaPhotoToolsToggle{display:flex!important;}
+.spa-photo-page.photo-filter-compact #spaPhotoTools.is-collapsed{display:none!important;}
+.spa-photo-page:not(.photo-filter-compact) #spaPhotoToolsToggle{display:none!important;}
+.spa-photo-page:not(.photo-filter-compact) #spaPhotoTools{display:flex!important;}

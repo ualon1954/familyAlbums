@@ -77,7 +77,7 @@
       const all=global.AppState?.getData?.('allPhotos')||global.API?.cacheGet?.('albumView','__ALL__',21600000)?.photos||[];
       if(Array.isArray(all)) albums.forEach(album=>{
         const aid=String(album?.id||'');if(!aid)return;
-        const photos=all.filter(photo=>String(photo?.albumId||'')===aid);
+        const photos=all.filter(photo=>String(photo?.albumId||'')===aid).map(photo=>global.AppDataSync?.decoratePhoto?.(photo,aid)||photo);
         global.API?.cacheSet?.('albumView',aid,{album,photos});
       });
     }catch(e){console.warn('Album warm-cache preload:',e);}

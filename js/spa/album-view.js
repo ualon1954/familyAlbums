@@ -2,6 +2,8 @@
   const PERSIST='FPA_ALBUM_VIEW_PERSIST_V1_';
   const STEP=60;
   let photos=[], filtered=[], index=0, limit=STEP, session=null, albumId='', albumMeta={}, cleanup=[], slideTimer=null, editIndex=-1, returnToAlbumsAfterUpload=false, selectedUploadFiles=[], uploadTargetAlbumId='';
+  const editAlbumChoicesCache=new Map();
+  const EDIT_ALBUM_CHOICES_TTL=300000;
   const $=id=>document.getElementById(id);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const photoTitle=p=>String(p?.photoTitle||p?.caption||p?.fileName||'ללא כותרת').trim();
@@ -12,7 +14,7 @@
   function readPersist(id){try{const x=JSON.parse(localStorage.getItem(PERSIST+uid(session)+'|'+id)||'null');return x?.value||null;}catch(_){return null;}}
   function writePersist(id,v){try{localStorage.setItem(PERSIST+uid(session)+'|'+id,JSON.stringify({ts:Date.now(),value:v}));}catch(_){}}
   function template(){return `<section class="section spa-photo-page"><div class="heading"><div><span class="eyebrow">אלבום · SPA</span><h1 id="spaAlbumTitle">טוען...</h1><p id="spaAlbumDesc"></p></div><div class="spa-photo-heading-actions"><button class="btn" id="spaUpload" type="button" hidden>📤 העלאת תמונות</button><button id="spaSlide" class="btn spa-slide-btn" type="button"><span class="spa-slide-launch-icon" aria-hidden="true">▶</span><span>מצגת</span></button></div></div>
-    <div id="spaPhotoTools" class="photo-tools"><input id="spaSearchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..."><input id="spaSearchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..."><input id="spaYearFrom" type="number" min="1800" max="2200" placeholder="משנה"><input id="spaYearTo" type="number" min="1800" max="2200" placeholder="עד שנה"><select id="spaSort"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="spaClear" class="pill" type="button">נקה</button><span id="spaGalleryPhotoCount" class="hint"></span><span id="spaYearRangeError" class="photo-filter-error" role="alert"></span></div>
+    <button id="spaPhotoToolsToggle" class="photo-tools-toggle pill" type="button" aria-controls="spaPhotoTools" aria-expanded="true">🔎 סינון וחיפוש <span aria-hidden="true">⌃</span></button><div id="spaPhotoTools" class="photo-tools"><input id="spaSearchTitle" type="search" placeholder="🔎 חיפוש לפי כותרת..."><input id="spaSearchAlbum" type="search" placeholder="📁 חיפוש לפי שם אלבום..."><input id="spaYearFrom" type="number" min="1800" max="2200" placeholder="משנה"><input id="spaYearTo" type="number" min="1800" max="2200" placeholder="עד שנה"><select id="spaSort"><option value="newest">חדשים ← ישנים</option><option value="oldest">ישנים ← חדשים</option></select><button id="spaClear" class="pill" type="button">נקה</button><span id="spaGalleryPhotoCount" class="hint"></span><span id="spaYearRangeError" class="photo-filter-error" role="alert"></span></div>
     <div id="spaPhotoStatus" class="gallery-sync-status" role="status" aria-live="polite"></div><div id="spaPhotoRecordStatus" class="api-status-line spa-photo-record-status" role="status" aria-live="polite">סה״כ רשומות: 0</div><div id="spaGallery" class="gallery"><p class="spa-view-loading">טוען תמונות...</p></div></section>
     <div id="spaViewer" class="viewer spa-viewer" aria-hidden="true"><button id="spaPrev" type="button" aria-label="הקודם"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><img id="spaBig" alt=""><button id="spaNext" type="button" aria-label="הבא"><svg class="viewer-arrow-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div id="spaCaption"></div><button id="spaSlideToggle" class="viewer-slide-toggle" type="button" aria-label="השהה מצגת" hidden>⏸</button><div id="spaDots" class="viewer-dots"></div></div><button id="spaClose" class="viewer-close-global spa-close" type="button" aria-label="סגור" hidden>×</button>
     <div id="spaUploadModal" class="photo-upload-modal" aria-hidden="true"><div class="photo-upload-card" role="dialog" aria-modal="true"><h2>העלאת תמונות</h2><p class="upload-hint">שדות המסומנים <span class="required-star">*</span> הם שדות חובה לכל תמונה.</p><label id="spaUploadAlbumWrap" class="photo-upload-album" hidden>אלבום יעד <span class="required-star">*</span><select id="spaUploadAlbum"></select></label><div id="spaUploadFileGate" class="photo-upload-file-gate"><input id="spaUploadFiles" class="photo-upload-file" type="file" accept="image/*" multiple></div><div id="spaUploadMeta" class="photo-upload-meta"></div><div id="spaUploadSummary" class="photo-upload-summary"></div><div class="photo-upload-actions"><button id="spaUploadCancel" class="photo-upload-cancel" type="button">ביטול</button><button id="spaUploadSubmit" class="photo-upload-submit" type="button">העלה</button></div></div></div>
@@ -40,7 +42,8 @@
   function captureUploadSelection(){
     const input=$('spaUploadFiles');
     const files=Array.from(input?.files||[]);
-    if(!files.length)return; // File-picker cancel must not destroy an existing selection.
+    if(!files.length)return;
+    const sum=$('spaUploadSummary');if(sum){sum.textContent='';sum.className='photo-upload-summary';} // File-picker cancel must not destroy an existing selection.
     selectedUploadFiles=files.map((file,i)=>({file,title:'',year:'',key:`${file.name}|${file.size}|${file.lastModified}|${i}`}));
     renderUploadRows();
   }
@@ -54,7 +57,7 @@
   async function submitUpload(){
     const files=selectedUploadFiles.map(x=>x.file),btn=$('spaUploadSubmit'),sum=$('spaUploadSummary'),targetAlbumId=selectedUploadAlbum();
     if(albumId==='__ALL__'&&!targetAlbumId){sum.textContent='יש לבחור אלבום';$('spaUploadAlbum')?.focus();return;}
-    if(!files.length){sum.textContent='יש לבחור תמונות';return;}
+    if(!files.length){sum.textContent='נא לבחור קובץ';sum.className='photo-upload-summary error';return;}
     const rows=selectedUploadFiles.map((x,i)=>({f:x.file,i,title:String(x.title||'').trim(),year:String(x.year||'').trim()}));
     const bad=rows.find(x=>!x.title||!/^(19|20|21)\d{2}$/.test(x.year));if(bad){const problem=!bad.title?'חובה להזין כותרת': 'יש להזין שנה תקינה בת 4 ספרות';sum.textContent=`תמונה ${bad.i+1} (${bad.f.name}): ${problem}`;document.querySelector(`.spa-up-${!bad.title?'title':'year'}[data-i=\"${bad.i}\"]`)?.focus();return;}
     btn.disabled=true;btn.textContent='מעלה...';let added=0;
@@ -74,21 +77,33 @@
         const base64=await readBase64(pr.blob);
         const r=await global.API.call('uploadPhoto',{token:session.token,albumId:targetAlbumId,fileName:pr.fileName,mimeType:pr.mimeType,base64,photoTitle:x.title,photoDate:x.year,caption:'',replaceExistingId:replace,duplicateBatchKey,clientUploadBytes:pr.blob.size,clientOriginalBytes:x.f.size});
         if(!r?.ok)throw new Error(r?.message||'העלאה נכשלה');
-        const targetMeta=uploadableAlbums().find(a=>String(a.id)===String(targetAlbumId))||albumMeta;const row={id:String(r.data?.id||''),albumId:targetAlbumId,fileName:pr.fileName,imageUrl:String(r.data?.imageUrl||''),thumbnailUrl:String(r.data?.imageUrl||''),photoTitle:x.title,photoDate:x.year,caption:'',active:true,isFavorite:false,canDelete:!!targetMeta?.canDelete,canUpload:!!targetMeta?.canUpload,albumTitle:targetMeta?.title||''};const pos=photos.findIndex(p=>String(p.id)===row.id);if(pos>=0)photos[pos]={...photos[pos],...row};else photos.push(row);global.AppDataSync?.upsertPhotoInAll?.(row);if(!r.data?.replaced)added++;upStatus(x.i,'✓ הועלה','done');
+        const targetMeta=uploadableAlbums().find(a=>String(a.id)===String(targetAlbumId))||albumMeta;let row={id:String(r.data?.id||''),albumId:targetAlbumId,fileName:pr.fileName,imageUrl:String(r.data?.imageUrl||''),thumbnailUrl:String(r.data?.imageUrl||''),photoTitle:x.title,photoDate:x.year,caption:'',active:true,isFavorite:false,canDelete:!!(targetMeta?.canDelete||targetMeta?.canManage||targetMeta?.isOwner),canUpload:!!(targetMeta?.canUpload||targetMeta?.canManage||targetMeta?.isOwner),albumTitle:targetMeta?.title||''};row=global.AppDataSync?.decoratePhoto?.(row,targetAlbumId)||row;const pos=photos.findIndex(p=>String(p.id)===row.id);if(pos>=0)photos[pos]={...photos[pos],...row};else photos.push(row);global.AppDataSync?.upsertPhotoEverywhere?.(row);if(!r.data?.replaced)added++;upStatus(x.i,'✓ הועלה','done');
       }
-      if(added){global.AppStateSync?.photoDelta?.(targetAlbumId,added);global.AppDataSync?.afterMutation?.({dashboard:false,albums:false});}syncView();apply();closeUpload();notify('התמונות הועלו בהצלחה','success');if(returnToAlbumsAfterUpload){global.AppRouter?.invalidate?.('albums');global.AppRouter?.go?.('albums');}void global.API.call('flushUploadPhotos',{token:session.token}).then(()=>global.AppDataSync?.afterMutation?.({dashboard:true,albums:false})).catch(()=>{});
-    }catch(e){sum.textContent='✕ '+(e?.message||'ההעלאה נכשלה');}finally{btn.disabled=false;btn.textContent='העלה';}
+      if(added){global.AppStateSync?.photoDelta?.(targetAlbumId,added);global.AppDataSync?.afterMutation?.({dashboard:false,albums:false});}syncView();apply();sum.textContent='✓ התמונות הועלו בהצלחה';sum.className='photo-upload-summary success';await new Promise(r=>setTimeout(r,1800));closeUpload();if(returnToAlbumsAfterUpload){global.AppRouter?.invalidate?.('albums');global.AppRouter?.go?.('albums');}void global.API.call('flushUploadPhotos',{token:session.token}).then(()=>global.AppDataSync?.afterMutation?.({dashboard:true,albums:false})).catch(()=>{});
+    }catch(e){sum.textContent='✕ '+(e?.message||'ההעלאה נכשלה');sum.className='photo-upload-summary error';}finally{btn.disabled=false;btn.textContent='העלה';}
   }
 
-  async function openEdit(n){const p=filtered[n];if(!p?.canDelete)return;editIndex=n;$('spaEditTitle').value=photoTitle(p);$('spaEditYear').value=year(p.photoDate);$('spaEditMessage').textContent='';$('spaEditModal').classList.add('open');$('spaEditModal').setAttribute('aria-hidden','false');const sel=$('spaEditAlbum');sel.disabled=true;sel.innerHTML='<option>טוען...</option>';try{const r=await global.API.call('photoEditAlbums',{token:session.token,sourceAlbumId:String(p.albumId||albumId)});if(!r?.ok)throw new Error(r?.message||'שגיאה');let items=Array.isArray(r.data)?r.data:[];const sourceId=String(p.albumId||albumId);items=items.filter(x=>String(x.id)!==sourceId);sel.innerHTML=`<option value="${esc(sourceId)}" selected hidden>${esc(p.albumTitle||albumMeta?.title||'אלבום נוכחי')}</option>`+items.map(x=>`<option value="${esc(x.id)}">${esc(x.title||'ללא שם')}</option>`).join('');sel.value=sourceId;}catch(e){sel.innerHTML=`<option value="${esc(p.albumId||albumId)}">${esc(p.albumTitle||albumMeta?.title||'אלבום נוכחי')}</option>`;}sel.disabled=false;}
+  async function openEdit(n){
+    const p=filtered[n];if(!p?.canDelete)return;
+    editIndex=n;$('spaEditTitle').value=photoTitle(p);$('spaEditYear').value=year(p.photoDate);$('spaEditMessage').textContent='';$('spaEditModal').classList.add('open');$('spaEditModal').setAttribute('aria-hidden','false');
+    const sel=$('spaEditAlbum'),sourceId=String(p.albumId||albumId);
+    const paint=items=>{items=(Array.isArray(items)?items:[]).filter(x=>String(x.id)!==sourceId);sel.innerHTML=`<option value="${esc(sourceId)}" selected hidden>${esc(p.albumTitle||albumMeta?.title||'אלבום נוכחי')}</option>`+items.map(x=>`<option value="${esc(x.id)}">${esc(x.title||'ללא שם')}</option>`).join('');sel.value=sourceId;sel.disabled=false;};
+    // X4J: use the session album metadata first. It already contains canUpload,
+    // so opening Edit never needs a server round-trip during a normal SPA session.
+    const local=global.AppState?.getData?.('albums')||global.AppState?.getBootstrap?.()?.albums||global.API?.cacheGet?.('albums','list',21600000);
+    if(Array.isArray(local)){paint(local.filter(a=>a&&a.canUpload));return;}
+    const cached=editAlbumChoicesCache.get(sourceId);if(cached&&Date.now()-cached.ts<EDIT_ALBUM_CHOICES_TTL){paint(cached.items);return;}
+    sel.disabled=true;sel.innerHTML='<option>טוען...</option>';
+    try{const r=await global.API.call('photoEditAlbums',{token:session.token,sourceAlbumId:sourceId});if(!r?.ok)throw new Error(r?.message||'שגיאה');const items=Array.isArray(r.data)?r.data:[];editAlbumChoicesCache.set(sourceId,{ts:Date.now(),items});paint(items);}catch(e){paint([]);}
+  }
   function closeEdit(){$('spaEditModal')?.classList.remove('open');$('spaEditModal')?.setAttribute('aria-hidden','true');editIndex=-1;}
-  async function saveEdit(){const p=filtered[editIndex];if(!p)return;const title=$('spaEditTitle').value.trim(),yr=$('spaEditYear').value.trim(),target=$('spaEditAlbum').value,btn=$('spaEditSave');if(!title){$('spaEditMessage').textContent='נא להזין כותרת';return;}if(!/^\d{4}$/.test(yr)||+yr<1800||+yr>2200){$('spaEditMessage').textContent='נא להזין שנה תקינה';return;}const source=String(p.albumId||albumId),moved=target!==source,targetTitle=$('spaEditAlbum').selectedOptions[0]?.text||'';btn.disabled=true;btn.textContent='שומר...';try{const r=await global.API.call('updatePhoto',{token:session.token,id:p.id,photoTitle:title,photoDate:yr,albumId:target});if(!r?.ok)throw new Error(r?.message||'שגיאה');if(moved&&albumId!=='__ALL__')photos=photos.filter(x=>String(x.id)!==String(p.id));else{const q=photos.find(x=>String(x.id)===String(p.id));if(q){q.photoTitle=title;q.photoDate=yr;q.albumId=target;q.albumTitle=targetTitle;}}if(moved)global.AppStateSync?.photoMove?.(source,target);const updated=Object.assign({},p,{photoTitle:title,photoDate:yr,albumId:target,albumTitle:targetTitle});if(moved)global.AppDataSync?.movePhotoEverywhere?.(updated,source,target);else global.AppDataSync?.patchPhotoEverywhere?.(updated);syncView();closeEdit();apply();notify(moved?'התמונה עודכנה והועברה':'פרטי התמונה עודכנו','success');if(moved){global.AppRouter?.invalidate?.('albums');global.AppRouter?.go?.('albums');}}catch(e){const m=/כבר קיי|already exists/i.test(String(e?.message))?'התמונה כבר קיימת באלבום שנבחר. לא בוצעה העברה.':String(e?.message||'לא ניתן לעדכן');$('spaEditMessage').textContent=m;}finally{btn.disabled=false;btn.textContent='שמור';}}
+  async function saveEdit(){const p=filtered[editIndex];if(!p)return;const title=$('spaEditTitle').value.trim(),yr=$('spaEditYear').value.trim(),target=$('spaEditAlbum').value,btn=$('spaEditSave');if(!title){$('spaEditMessage').textContent='נא להזין כותרת';return;}if(!/^\d{4}$/.test(yr)||+yr<1800||+yr>2200){$('spaEditMessage').textContent='נא להזין שנה תקינה';return;}const source=String(p.albumId||albumId),moved=target!==source,targetTitle=$('spaEditAlbum').selectedOptions[0]?.text||'';btn.disabled=true;btn.textContent='שומר...';try{const r=await global.API.call('updatePhoto',{token:session.token,id:p.id,photoTitle:title,photoDate:yr,albumId:target});if(!r?.ok)throw new Error(r?.message||'שגיאה');if(moved&&albumId!=='__ALL__')photos=photos.filter(x=>String(x.id)!==String(p.id));else{const q=photos.find(x=>String(x.id)===String(p.id));if(q){q.photoTitle=title;q.photoDate=yr;q.albumId=target;q.albumTitle=targetTitle;}}if(moved)global.AppStateSync?.photoMove?.(source,target);let updated=Object.assign({},p,{photoTitle:title,photoDate:yr,albumId:target,albumTitle:targetTitle});updated=global.AppDataSync?.decoratePhoto?.(updated,target)||updated;if(moved)global.AppDataSync?.movePhotoEverywhere?.(updated,source,target);else global.AppDataSync?.patchPhotoEverywhere?.(updated);syncView();apply();const msg=$('spaEditMessage');msg.textContent='✓ '+(moved?'התמונה עודכנה והועברה':'פרטי התמונה עודכנו');msg.className='photo-edit-message success';await new Promise(r=>setTimeout(r,1800));closeEdit();if(moved){global.AppRouter?.invalidate?.('albums');global.AppRouter?.go?.('albums');}}catch(e){const m=/כבר קיי|already exists/i.test(String(e?.message))?'התמונה כבר קיימת באלבום שנבחר. לא בוצעה העברה.':String(e?.message||'לא ניתן לעדכן');$('spaEditMessage').textContent='✕ '+m;$('spaEditMessage').className='photo-edit-message error';}finally{btn.disabled=false;btn.textContent='שמור';}}
   async function deletePhoto(n,btn){
     const p=filtered[n];if(!p?.canDelete)return;
     const aid=String(p.albumId||albumId);
     let deleteResult=null;
     const yes=await confirmUi('למחוק את התמונה? התמונה תוסר מהאלבום וגם מהמועדפים.',{
-      title:'מחיקת תמונה',confirmText:'מחק',cancelText:'ביטול',danger:true,icon:'🗑',busyText:'מוחק...',
+      title:'מחיקת תמונה',confirmText:'מחק',cancelText:'ביטול',danger:true,icon:'🗑',busyText:'מוחק...',successText:'✓ התמונה נמחקה בהצלחה',successDelay:1800,
       onConfirm:async()=>{const r=await global.API.call('deletePhoto',{token:session.token,id:p.id});if(!r?.ok)throw new Error(r?.message||'לא ניתן למחוק');deleteResult=r;}
     });
     if(!yes||!deleteResult)return;
@@ -102,12 +117,38 @@
     global.AppDataSync?.addTrashItem?.(Object.assign({},p,{albumId:aid}));
     global.AppDataSync?.afterMutation?.({trash:false,dashboard:true,albums:false});
     syncView();apply();
-    notify('התמונה נמחקה','success');
     global.AppRouter?.invalidate?.('albums');
   }
 
   async function loadAll(){let out=[],cursor=0,done=false;while(!done){const r=await global.API.call('photosAllPage',{token:session.token,cursor,pageSize:80});if(!r?.ok)throw new Error(r?.message||'לא ניתן לטעון תמונות');out.push(...(r.data?.items||[]));cursor=+r.data?.nextCursor||0;done=!!r.data?.done;}return {album:{id:'__ALL__',title:'כל התמונות',isVirtual:true,canUpload:false},photos:out};}
   async function mount(outlet,params){cleanup=[];document.body.classList.remove('viewer-open');session=global.SessionManager?.getSession?.()||global.getSession?.();albumId=String(params?.id||'').trim();if(!session?.token){location.href='index.html?autoLogin=1&loginRequired=1&return='+encodeURIComponent('index.html#/album?id='+albumId);return;}if(!albumId){global.AppRouter.go('albums');return;}outlet.innerHTML=template();photos=[];filtered=[];
+    // X4S: derive filter mode from the grid that the browser ACTUALLY rendered.
+    // This avoids a second width formula drifting away from CSS: when computed
+    // grid-template-columns changes from 3 tracks to 2, filters compact at once.
+    const filterTools=$('spaPhotoTools'),filterToggle=$('spaPhotoToolsToggle');
+    const photoPage=outlet.querySelector('.spa-photo-page'),gallery=$('spaGallery');
+    let compactFilters=null;
+    const setFilterCollapsed=collapsed=>{if(!filterTools||!filterToggle)return;filterTools.classList.toggle('is-collapsed',!!collapsed);filterToggle.setAttribute('aria-expanded',collapsed?'false':'true');const icon=filterToggle.querySelector('span');if(icon)icon.textContent=collapsed?'⌄':'⌃';};
+    const renderedGridColumns=()=>{
+      if(!gallery)return 0;
+      const tracks=(global.getComputedStyle?.(gallery)?.gridTemplateColumns||'').trim();
+      if(!tracks||tracks==='none')return 0;
+      return tracks.split(/\s+/).filter(Boolean).length;
+    };
+    const syncFilterToGrid=()=>{
+      if(!gallery||!photoPage)return;
+      const columns=renderedGridColumns();
+      if(!columns)return;
+      const compact=columns<=2;
+      photoPage.classList.toggle('photo-filter-compact',compact);
+      if(compact!==compactFilters){compactFilters=compact;setFilterCollapsed(compact);}
+    };
+    const gridObserver=global.ResizeObserver?new ResizeObserver(syncFilterToGrid):null;
+    gridObserver?.observe(gallery);
+    global.addEventListener('resize',syncFilterToGrid,{passive:true});
+    requestAnimationFrame(syncFilterToGrid);
+    filterToggle.onclick=()=>setFilterCollapsed(!filterTools.classList.contains('is-collapsed'));
+    cleanup.push(()=>{gridObserver?.disconnect();global.removeEventListener('resize',syncFilterToGrid);});
     // R17P2C: bind upload selection before any awaited album/API work. The upload modal can
     // open from cached album data immediately, so late binding created an intermittent race:
     // the browser showed the native file name while metadata rows had no listener yet.

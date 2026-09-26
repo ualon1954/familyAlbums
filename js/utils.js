@@ -95,6 +95,14 @@ function toast(message, type){
       if(primary) primary.textContent=opts.busyText||'מבצע...';
       try{
         await opts.onConfirm();
+        if(opts.successText){
+          overlay.classList.remove('ui-dialog-busy');
+          let success=overlay.querySelector('.ui-dialog-success');
+          if(!success){success=document.createElement('p');success.className='ui-dialog-success';overlay.querySelector('.ui-dialog-card')?.insertBefore(success,overlay.querySelector('.ui-dialog-actions'));}
+          success.textContent=String(opts.successText);
+          const actions=overlay.querySelector('.ui-dialog-actions');if(actions)actions.hidden=true;
+          await new Promise(r=>setTimeout(r,Math.max(800,Number(opts.successDelay)||1800)));
+        }
         finish(true);
       }catch(err){
         overlay.classList.remove('ui-dialog-busy');
@@ -310,7 +318,7 @@ function toast(message, type){
   // rather than forcing a visible reload on the user's next Trash navigation.
   async function refreshTrash(){
     const s=global.SessionManager?.getSession?.()||global.getSession?.();
-    if(!s?.token||String(s?.user?.role||'').toUpperCase()!=='ADMIN')return null;
+    if(!s?.token||!['ADMIN','FAMILY'].includes(String(s?.user?.role||'').toUpperCase()))return null;
     try{
       const r=await global.API.call('trash',{token:s.token},'GET');
       if(!r?.ok)return null;
@@ -342,6 +350,33 @@ function toast(message, type){
     return setTrash(current.filter(x=>String(x?.id)!==String(id)));
   }
 
+  // R17P2O22X4J — album permissions are session metadata, not photo state.
+  // Every optimistic photo mutation is decorated from the target album before it
+  // enters any warm cache. This keeps action indicators stable without F5.
+  function albumMeta_(albumId){
+    albumId=String(albumId||'').trim();
+    const state=global.AppState?.getData?.('albums');
+    const boot=global.AppState?.getBootstrap?.()?.albums;
+    const cached=global.API?.cacheGet?.('albums','list',21600000);
+    const list=Array.isArray(state)?state:(Array.isArray(boot)?boot:(Array.isArray(cached)?cached:[]));
+    return list.find(a=>String(a?.id||'')===albumId)||null;
+  }
+  function decoratePhoto_(photo,albumId){
+    if(!photo)return photo;
+    const aid=String(albumId||photo.albumId||'').trim(), meta=albumMeta_(aid);
+    const next=Object.assign({},photo,{albumId:aid||photo.albumId});
+    if(meta){
+      const s=global.SessionManager?.getSession?.()||global.getSession?.()||null;
+      const isAdmin=String(s?.user?.role||'').toUpperCase()==='ADMIN';
+      const fullOwner=meta.isOwner===true||meta.canManage===true;
+      next.albumTitle=String(meta.title||next.albumTitle||'');
+      // X4L: ownership/manage rights imply full photo actions even when a newly-created
+      // album snapshot has not yet been enriched with every explicit permission flag.
+      next.canUpload=!!(isAdmin||fullOwner||meta.canUpload===true);
+      next.canDelete=!!(isAdmin||fullOwner||meta.canDelete===true);
+    }
+    return next;
+  }
   function patchAllPhotos(mutator){
     const view=global.API?.cacheGet?.('albumView','__ALL__',21600000);
     if(!view||!Array.isArray(view.photos))return null;
@@ -380,7 +415,7 @@ function toast(message, type){
     return next;
   }
   function patchPhotoEverywhere(photo){
-    if(!photo?.id)return null; const id=String(photo.id);
+    if(!photo?.id)return null; photo=decoratePhoto_(photo,photo.albumId); const id=String(photo.id);
     patchAlbumView('__ALL__',id,photo,false);
     patchAlbumView(photo.albumId,id,photo,false);
     const fav=favoriteList();
@@ -392,6 +427,7 @@ function toast(message, type){
   function movePhotoEverywhere(photo,sourceAlbumId,targetAlbumId){
     if(!photo?.id)return null;
     const id=String(photo.id),source=String(sourceAlbumId||''),target=String(targetAlbumId||photo.albumId||'');
+    photo=decoratePhoto_(photo,target);
     const patchStored=(albumId,mode)=>{
       if(!albumId)return;
       const patch=(view)=>{
@@ -420,7 +456,19 @@ function toast(message, type){
     const fav=favoriteList(); if(Array.isArray(fav))setFavorites(fav.filter(x=>String(x?.id)!==id));
   }
   function removePhotoFromAll(id){return patchAllPhotos(list=>list.filter(x=>String(x?.id)!==String(id)));}
-  function upsertPhotoInAll(item){if(!item)return null;return patchAllPhotos(list=>{const i=list.findIndex(x=>String(x?.id)===String(item.id));if(i>=0)list[i]=Object.assign({},list[i],item);else list.push(item);return list;});}
+  function upsertPhotoInAll(item){if(!item)return null;item=decoratePhoto_(item,item.albumId);return patchAllPhotos(list=>{const i=list.findIndex(x=>String(x?.id)===String(item.id));if(i>=0)list[i]=Object.assign({},list[i],item);else list.push(item);return list;});}
+  function upsertPhotoEverywhere(item){
+    if(!item?.id)return null; item=decoratePhoto_(item,item.albumId); const id=String(item.id),aid=String(item.albumId||'');
+    upsertPhotoInAll(item);
+    const view=global.API?.cacheGet?.('albumView',aid,21600000);
+    if(view&&Array.isArray(view.photos)){
+      const list=view.photos.slice(),i=list.findIndex(x=>String(x?.id)===id);
+      if(i>=0)list[i]=Object.assign({},list[i],item);else list.push(item);
+      global.API?.cacheSet?.('albumView',aid,Object.assign({},view,{photos:list}));
+      try{writePersist_(photoViewPersistKey_(aid),Object.assign({},view,{photos:list}));}catch(_){}
+    }
+    return item;
+  }
 
   function retireAlbums(ids){
     global.API?.cacheRemove?.('albums','counts');
@@ -463,5 +511,5 @@ function toast(message, type){
     const dashPromise=opts.dashboard===false?Promise.resolve(null):reconcileDashboard();
     return Promise.all([trashPromise,dashPromise]).then(x=>x[1]);
   }
-  global.AppDataSync={afterMutation,reconcileDashboard,retireTrash,refreshTrash,setTrash,addTrashItem,removeTrashItem,removePhotoFromAll,upsertPhotoInAll,setFavorites,syncFavorite,patchPhotoEverywhere,movePhotoEverywhere,removePhotoEverywhere,retireAlbums,paintDashboard,commitDashboardDelta};
+  global.AppDataSync={afterMutation,reconcileDashboard,retireTrash,refreshTrash,setTrash,addTrashItem,removeTrashItem,removePhotoFromAll,upsertPhotoInAll,upsertPhotoEverywhere,decoratePhoto:decoratePhoto_,setFavorites,syncFavorite,patchPhotoEverywhere,movePhotoEverywhere,removePhotoEverywhere,retireAlbums,paintDashboard,commitDashboardDelta};
 })(window);

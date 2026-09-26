@@ -45,7 +45,7 @@
     // progress state and the new row independent of Apps Script latency, cache and
     // bootstrap refreshes. A failed create rolls the temporary card back.
     const tempId='__creating__'+Date.now();
-    const temp={id:tempId,title,description,coverUrl:'',photoCount:0,canUpload:false,canManage:false,isOwner:true,_creating:true};
+    const temp={id:tempId,title,description,coverUrl:'',photoCount:0,canUpload:false,canDelete:false,canManage:false,isOwner:true,_creating:true};
     const previous=items.slice();
     items=[...items,temp];
     lastPaintFingerprint='';
@@ -60,7 +60,7 @@
     try{
       const r=await global.API.call('createAlbum',{token:currentSession.token,title,description});
       if(!r?.ok)throw new Error(r?.message||'לא ניתן ליצור את האלבום');
-      const a=Object.assign({coverUrl:'',photoCount:0,canUpload:true,canManage:true,isOwner:true},r.data||{});
+      const a=Object.assign({coverUrl:'',photoCount:0,canUpload:true,canDelete:true,canManage:true,isOwner:true},r.data||{});
       if(!a.id)throw new Error('האלבום נוצר אך לא התקבל מזהה אלבום');
 
       items=items.map(x=>String(x.id)===tempId?a:x);

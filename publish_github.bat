@@ -45,7 +45,7 @@ if not errorlevel 1 (
   goto :done
 )
 
-git commit -m "Family Photo Album R17P2O22X4H"
+git commit -m "Family Photo Album R17P2O22X4S"
 if errorlevel 1 goto :error
 
 echo.
@@ -54,7 +54,7 @@ git push
 if errorlevel 1 goto :error
 
 echo.
-echo SUCCESS: GitHub repository synchronized with R17P2O22X4H.
+echo SUCCESS: GitHub repository synchronized with R17P2O22X4S.
 goto :done
 
 :error

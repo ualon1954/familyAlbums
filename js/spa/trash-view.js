@@ -47,8 +47,10 @@
     return (Array.isArray(list)?list:[]).filter(a=>a&&String(a.id)!=='__ALL__'&&String(a.active).toLowerCase()!=='false');
   }
   async function chooseRestoreAlbum_(item){
-    const albums=await activeAlbums_();
-    if(!albums.length){global.toast?.('אין אלבום פעיל שאליו ניתן לשחזר את התמונה','error');return '';}
+    const allAlbums=await activeAlbums_();
+    const isAdmin=String(session?.user?.role||'').toUpperCase()==='ADMIN';
+    const albums=allAlbums.filter(a=>isAdmin||a.canDelete===true);
+    if(!albums.length){global.toast?.('אין אלבום פעיל עם הרשאת מחיקה/שחזור שאליו ניתן לשחזר את התמונה','error');return '';}
     const modal=outletRef?.querySelector('#spaRestoreTargetModal'),sel=outletRef?.querySelector('#spaRestoreTargetAlbum');
     if(!modal||!sel)return '';
     sel.innerHTML='<option value="">נא לבחור אלבום יעד</option>'+albums.map(a=>`<option value="${esc_(a.id)}">${esc_(a.title||a.name||'אלבום')}</option>`).join('');
@@ -64,7 +66,7 @@
   async function restoreAlbum_(id,btn){
     const item=trashItems.find(x=>String(x.id)===String(id)&&String(x.trashType)==='album'); if(!item)return;
     let result=null;
-    const ok=global.uiConfirm?await global.uiConfirm(`לשחזר את האלבום “${String(item.title||'')}” ואת ${Math.max(0,Number(item.photoCount)||0)} התמונות שנמחקו איתו?`,{title:'שחזור אלבום',confirmText:'שחזר אלבום',cancelText:'ביטול',icon:'↩',busyText:'משחזר...',onConfirm:async()=>{const r=await API.call('restoreAlbum',{token:session.token,id});if(!r?.ok)throw new Error(r?.message||'לא ניתן לשחזר את האלבום');result=r;}}):confirm('לשחזר את האלבום והתמונות?');
+    const ok=global.uiConfirm?await global.uiConfirm(`לשחזר את האלבום “${String(item.title||'')}” ואת ${Math.max(0,Number(item.photoCount)||0)} התמונות שנמחקו איתו?`,{title:'שחזור אלבום',confirmText:'שחזר אלבום',cancelText:'ביטול',icon:'↩',busyText:'משחזר...',successText:'✓ האלבום שוחזר בהצלחה',successDelay:1800,onConfirm:async()=>{const r=await API.call('restoreAlbum',{token:session.token,id});if(!r?.ok)throw new Error(r?.message||'לא ניתן לשחזר את האלבום');result=r;}}):confirm('לשחזר את האלבום והתמונות?');
     if(!ok)return;
     if(!global.uiConfirm){const r=await API.call('restoreAlbum',{token:session.token,id});if(!r?.ok){global.toast?.(r?.message||'לא ניתן לשחזר את האלבום','error');return;}result=r;}
     if(!result)return;
@@ -88,7 +90,10 @@
     global.SPAAlbums?.upsertRestoredAlbum?.(restoredAlbum,restoredPhotos);
     global.AppStateSync?.invalidatePhotoViews?.(id); global.AppRouter?.invalidate?.('album');
     global.AppDataSync?.afterMutation?.({dashboard:true,albums:false,trash:false}); render_();
-    global.toast?.(`האלבום שוחזר בהצלחה עם ${Math.max(0,Number(result?.data?.restoredPhotos)||0)} תמונות`,'success');
+    // X4L: Restore has one consistent completion destination. State/counts are
+    // committed first, then the user returns to the warm Albums list.
+    global.AppRouter?.invalidate?.('albums');
+    global.AppRouter?.go?.('albums');
   }
   async function restore_(id,btn){
     let restoreResult=null;
@@ -96,14 +101,15 @@
     if(!item)return;
     const albumId=String(item?.albumId||'');
     const albums=await activeAlbums_();
-    const sourceExists=albums.some(a=>String(a.id)===albumId);
+    const isAdmin=String(session?.user?.role||'').toUpperCase()==='ADMIN';
+    const sourceExists=albums.some(a=>String(a.id)===albumId&&(isAdmin||a.canDelete===true));
     let targetAlbumId='';
     if(!sourceExists){
       targetAlbumId=await chooseRestoreAlbum_(item);
       if(!targetAlbumId)return;
     }
     const ok=global.uiConfirm ? await global.uiConfirm(sourceExists?'לשחזר את התמונה לאלבום?':'לשחזר את התמונה לאלבום שנבחר?',{
-      title:'שחזור תמונה',confirmText:'שחזר',cancelText:'ביטול',icon:'↩',busyText:'משחזר...',
+      title:'שחזור תמונה',confirmText:'שחזר',cancelText:'ביטול',icon:'↩',busyText:'משחזר...',successText:'✓ התמונה שוחזרה בהצלחה',successDelay:1800,
       onConfirm:async()=>{
         const r=await API.call('restorePhoto',{token:session.token,id,targetAlbumId});
         if(!r?.ok)throw new Error(r?.message||'לא ניתן לשחזר את התמונה');
@@ -130,16 +136,15 @@
     global.API?.cacheSet?.('trash','list',trashItems);
     const restoredAlbumId=String(restoreResult?.data?.albumId||targetAlbumId||albumId);
     global.AppStateSync?.photoDelta?.(restoredAlbumId,1);
-    global.AppDataSync?.upsertPhotoInAll?.(Object.assign({},item,{albumId:restoredAlbumId,active:true,deletedAt:''}));
+    global.AppDataSync?.upsertPhotoEverywhere?.(Object.assign({},item,{albumId:restoredAlbumId,active:true,deletedAt:''}));
     global.AppDataSync?.removeTrashItem?.(id);
     // R17P2O22D: the restored photo must not be hidden by an old albumView
     // (including the persisted view used after navigation). Invalidate both
     // the target album and All Photos only AFTER the server confirms success.
-    global.AppStateSync?.invalidatePhotoViews?.(restoredAlbumId);
-    global.AppRouter?.invalidate?.('album');
     global.AppDataSync?.afterMutation?.({dashboard:true,albums:false});
     render_();
-    global.toast?.('התמונה שוחזרה בהצלחה','success');
+    global.AppRouter?.invalidate?.('albums');
+    global.AppRouter?.go?.('albums');
   }
 
   async function permanentAlbum_(id,btn){
