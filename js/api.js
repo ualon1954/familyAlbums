@@ -1,7 +1,7 @@
 const API = {
   CACHE_PREFIX:"FPA_R7_CACHE_",
   _inflight:new Map(),
-  _readActions:new Set(["albums","album","photos","albumView","dashboard","favorites","trash","apiVersion","adminPageBootstrap","adminPermissionsBootstrap","listUsers","getPermissions","activityLogInitial","activityLogUsersLite","activityLogBootstrap","activityLogQuery","photosAllPage","albumPhotoCounts","homeAlbums","spaBootstrap"]),
+  _readActions:new Set(["albums","album","photos","albumView","dashboard","favorites","trash","apiVersion","adminPageBootstrap","adminPermissionsBootstrap","listUsers","getPermissions","activityLogInitial","activityLogUsersLite","activityLogBootstrap","activityLogQuery","photosAllPage","albumPhotoCounts","homeAlbums","spaBootstrap","feedback"]),
   cacheKey(action,key=""){
     const s=getSession?.();
     const uid=String(s?.user?.id||s?.user?.email||"anon");

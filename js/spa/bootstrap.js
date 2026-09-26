@@ -8,7 +8,7 @@
   document.addEventListener('DOMContentLoaded', async ()=>{
     syncSession();
     if(window.mountLayout) window.mountLayout('home');
-    const spaNav={home:'#/home',dashboard:'#/dashboard',albums:'#/albums',favorites:'#/favorites',about:'#/about',trash:'#/trash',activity:'#/activity',admin:'#/admin'};
+    const spaNav={home:'#/home',dashboard:'#/dashboard',albums:'#/albums',favorites:'#/favorites',about:'#/about',trash:'#/trash',activity:'#/activity',admin:'#/admin',feedback:'#/feedback'};
     document.querySelectorAll('#nav a').forEach(a=>{const href=(a.getAttribute('href')||'').toLowerCase();const key=href==='index.html'?'home':href==='dashboard.html'?'dashboard':href==='albums.html'?'albums':href==='favorites.html'?'favorites':href==='about.html'?'about':href==='trash.html'?'trash':href==='activity-log.html'?'activity':href==='admin.html'?'admin':'';if(key)a.setAttribute('href',spaNav[key]);});
     window.AppState?.subscribe?.(st=>{document.querySelectorAll('#nav a').forEach(a=>a.classList.remove('active'));const active=document.querySelector(`#nav a[href="#/`+st.route+`"]`);active?.classList.add('active');});
 
@@ -18,6 +18,7 @@
     AppRouter.register('album', async ({outlet,params})=>{ return await SPAAlbum.mount(outlet,params); });
     AppRouter.register('favorites', async ({outlet})=>{ return await SPAFavorites.mount(outlet); }, {keepAlive:true});
     AppRouter.register('trash', async ({outlet})=>{ return await SPATrash.mount(outlet); }, {keepAlive:true});
+    AppRouter.register('feedback', async ({outlet})=>{ return await SPAFeedback.mount(outlet); });
     AppRouter.register('activity', async ({outlet})=>{ return await SPAActivity.mount(outlet); }, {keepAlive:true});
     AppRouter.register('admin', async ({outlet})=>{ return await SPAAdmin.mount(outlet); }, {keepAlive:true});
     AppRouter.register('about', ({outlet})=>{ outlet.innerHTML = SPAViews.about(); const s=window.SessionManager?.getSession?.()||window.getSession?.(); const el=outlet.querySelector('#aboutRolesSection'); if(el) el.hidden=String(s?.user?.role||'').toUpperCase()!=='ADMIN'; });

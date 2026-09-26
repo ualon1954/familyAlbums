@@ -17,6 +17,7 @@ js/spa/bootstrap.js
 js/spa/dashboard-view.js
 js/spa/diagnostics.js
 js/spa/favorites-view.js
+js/spa/feedback-view.js
 js/spa/router.js
 js/spa/session-data-store.js
 js/spa/trash-view.js
@@ -24,5 +25,5 @@ js/spa/views.js
 js/theme.js
 js/utils.js
 js/version.js
-publish-github.bat
+publish_github.bat
 github-files.txt

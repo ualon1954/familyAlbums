@@ -35,6 +35,7 @@ function mountLayout(active=""){
     ["index.html#/favorites","מועדפים","favorites"],
     ["index.html#/about","אודות","about"]
   ];
+  if(isAdmin||userRole==="FAMILY") navItems.push([isSpaShell?"#/feedback":"index.html#/feedback","מעקב","feedback"]);
   if(canUseTrash) navItems.push([isSpaShell?"#/trash":"index.html#/trash","סל מחזור","trash"]);
   if(isAdmin){
     navItems.push([isSpaShell?"#/activity":"index.html#/activity","יומן פעילויות","activityLog"]);
