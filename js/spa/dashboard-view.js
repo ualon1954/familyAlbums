@@ -43,7 +43,7 @@
   }
   function template(s){
     const u=s?.user||{}, admin=String(u.role||'').toUpperCase()==='ADMIN';
-    return `<section class="section"><div class="heading"><div><span class="eyebrow">לוח בקרה · SPA</span><h1>שלום, <span id="spaHello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div>
+    return `<section class="section"><div class="heading"><div><span class="eyebrow">לוח בקרה</span><h1>שלום, <span id="spaHello"></span> 👋</h1><p>כאן מתחילים את המסע בזיכרונות שלכם.</p></div></div>
       <div id="spaDashboardStatus" class="dashboard-load-status" role="status" aria-live="polite"></div>
       <div id="spaDashboardGrid" class="dashboard-grid">
         <a class="metric metric-link" href="#/albums"><span>📚</span><strong id="spaAlbumCount">—</strong><small>אלבומים</small><b class="metric-action">פתח אלבומים ←</b></a>

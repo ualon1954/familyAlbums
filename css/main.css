@@ -2017,20 +2017,20 @@ html:not(.dark) .feedback-filters select,html:not(.dark) .feedback-filters input
 
 /* R17P2O22X4 — feedback ownership, date/time and Activity Log style sorting */
 .feedback-sort{border:0;background:transparent;color:inherit;font:inherit;font-weight:900;cursor:pointer;padding:5px 8px;border-radius:9px;display:inline-flex;align-items:center;gap:5px}.feedback-sort:hover{background:rgba(127,127,127,.1)}.feedback-sort .sort-arrow{opacity:.35;min-width:1em}.feedback-sort.active{background:rgba(138,93,59,.16);color:#8a5d3b}.feedback-sort.active .sort-arrow{opacity:1;font-weight:1000}.feedback-table th.sorted{background:rgba(138,93,59,.16)!important;box-shadow:inset 0 -3px #a16e48}.feedback-table tbody td.sorted-col{background:rgba(138,93,59,.105)!important;box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)}.dark .feedback-sort.active{background:rgba(196,154,114,.18);color:#e3b88f}.dark .feedback-table th.sorted{background:#332c27!important;box-shadow:inset 0 -3px #c49a72}.dark .feedback-table tbody td.sorted-col{background:#38302a!important;box-shadow:inset 0 0 0 1px rgba(196,154,114,.08)}.feedback-mobile-sort{display:none!important}
-@media(max-width:850px){.feedback-mobile-sort{display:flex!important}.feedback-table tbody td.sorted-col{position:relative;background:rgba(138,93,59,.105)!important;border:1px solid rgba(138,93,59,.16)!important;box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)!important;border-radius:10px;padding:8px 10px!important}.feedback-table tbody td.sorted-col::before{color:#8a5d3b!important;font-weight:900!important;opacity:1!important}.feedback-table tbody td.sorted-col[data-sort-dir="asc"]::before{content:attr(data-label) " ↑"}.feedback-table tbody td.sorted-col[data-sort-dir="desc"]::before{content:attr(data-label) " ↓"}.dark .feedback-table tbody td.sorted-col{background:#38302a!important;border-color:rgba(196,154,114,.16)!important}.dark .feedback-table tbody td.sorted-col::before{color:#e3b88f!important}}
-@media(max-width:850px){
+@media(max-width:1160px){.feedback-mobile-sort{display:flex!important}.feedback-table tbody td.sorted-col{position:relative;background:rgba(138,93,59,.105)!important;border:1px solid rgba(138,93,59,.16)!important;box-shadow:inset 0 0 0 1px rgba(138,93,59,.08)!important;border-radius:10px;padding:8px 10px!important}.feedback-table tbody td.sorted-col::before{color:#8a5d3b!important;font-weight:900!important;opacity:1!important}.feedback-table tbody td.sorted-col[data-sort-dir="asc"]::before{content:attr(data-label) " ↑"}.feedback-table tbody td.sorted-col[data-sort-dir="desc"]::before{content:attr(data-label) " ↓"}.dark .feedback-table tbody td.sorted-col{background:#38302a!important;border-color:rgba(196,154,114,.16)!important}.dark .feedback-table tbody td.sorted-col::before{color:#e3b88f!important}}
+@media(max-width:1160px){
 .feedback-table-wrap{overflow:visible;border:0;background:transparent!important}.feedback-table{min-width:0;display:block}.feedback-table thead{display:none}.feedback-table tbody{display:grid;gap:12px}.feedback-table tr{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;padding:14px;border:1px solid var(--border,#ddd);border-radius:15px;background:var(--card,#fff)}.feedback-table td,.dark .feedback-table td{border:0!important;padding:0;background:transparent!important;min-width:0}.feedback-table td::before{content:attr(data-label);display:block;font-size:.72rem;font-weight:850;opacity:.62;margin-bottom:2px}.feedback-table .fb-desc{min-width:0}.feedback-table td:last-child{white-space:normal;grid-column:1/-1}.dark .feedback-table tr{background:#24211f}.feedback-table tbody td.sorted-col::before{opacity:1!important}
 }
 @media(max-width:560px){.feedback-table tr{grid-template-columns:1fr}}
 
 /* R17P2O22X4B — feedback alternating rows/cards, aligned with Activity Log */
-@media(min-width:851px){
+@media(min-width:1161px){
   .feedback-table tbody tr:nth-child(odd) td:not(.sorted-col){background:rgba(138,93,59,.035)!important}
   .feedback-table tbody tr:nth-child(even) td:not(.sorted-col){background:rgba(127,127,127,.055)!important}
   .dark .feedback-table tbody tr:nth-child(odd) td:not(.sorted-col){background:#24211f!important}
   .dark .feedback-table tbody tr:nth-child(even) td:not(.sorted-col){background:#2c2825!important}
 }
-@media(max-width:850px){
+@media(max-width:1160px){
   .feedback-table tbody tr:nth-child(odd){background:var(--card,#fff)}
   .feedback-table tbody tr:nth-child(even){background:rgba(127,127,127,.055)}
   .dark .feedback-table tbody tr:nth-child(odd){background:#24211f}
@@ -2053,7 +2053,7 @@ html:not(.dark) .feedback-filters select,html:not(.dark) .feedback-filters input
 .feedback-icon-btn.delete:hover{background:rgba(196,59,59,.17)}
 .feedback-loading{display:flex;align-items:center;justify-content:center;gap:9px;min-height:90px}
 .feedback-table tbody tr{cursor:default}
-@media(max-width:850px){.feedback-table tbody tr{cursor:pointer}.feedback-row-actions{cursor:default}.feedback-actions{width:100%}.feedback-actions .btn{flex:1 1 150px}}
+@media(max-width:1160px){.feedback-table tbody tr{cursor:pointer}.feedback-row-actions{cursor:default}.feedback-actions{width:100%}.feedback-actions .btn{flex:1 1 150px}}
 
 /* X4M unified in-modal action feedback */
 .ui-dialog-success{margin:12px 0 0!important;color:#188038!important;font-weight:800}.dark .ui-dialog-success{color:#7ee29a!important}.photo-upload-summary.success,.photo-edit-message.success{color:#188038!important}.dark .photo-upload-summary.success,.dark .photo-edit-message.success{color:#7ee29a!important}.photo-upload-summary.error,.photo-edit-message.error{color:#b42318!important}.dark .photo-upload-summary.error,.dark .photo-edit-message.error{color:#ff8d85!important}
@@ -2087,3 +2087,23 @@ html:not(.dark) .feedback-filters select,html:not(.dark) .feedback-filters input
 .spa-photo-page.photo-filter-compact #spaPhotoTools.is-collapsed{display:none!important;}
 .spa-photo-page:not(.photo-filter-compact) #spaPhotoToolsToggle{display:none!important;}
 .spa-photo-page:not(.photo-filter-compact) #spaPhotoTools{display:flex!important;}
+
+
+/* R17P2O22X4T — user-facing SPA labels + Activity-style collapsible Feedback filters */
+.feedback-filter-toolbar{display:none;align-items:center;justify-content:space-between;gap:12px;margin:14px 0;padding:12px 16px;border:1px solid var(--border,rgba(255,255,255,.14));border-radius:16px;background:var(--card,#222);box-shadow:0 7px 24px rgba(0,0,0,.05)}
+.feedback-filter-toolbar strong{display:flex;align-items:center;gap:8px}.feedback-filter-summary{margin-inline-start:auto;opacity:.72;font-size:.9rem}.feedback-filter-toggle{min-width:138px;display:inline-flex!important;align-items:center;justify-content:center;gap:7px}.feedback-filter-toggle .toggle-arrow{display:inline-block;transition:transform .2s}.feedback-filter-toggle[aria-expanded="true"] .toggle-arrow{transform:rotate(180deg)}
+.feedback-filter-panel{position:relative;overflow:hidden;display:block;margin-bottom:14px;padding:22px;border:1px solid var(--border,rgba(255,255,255,.14));border-radius:20px;background:var(--card,#222)}.feedback-filter-panel.open{display:block;animation:filterOpen .18s ease-out}.feedback-filter-panel:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#8a5d3b,#c49a72,#8a5d3b)}
+.feedback-filter-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.feedback-filter-title h2{margin:0;font-size:1.12rem}.feedback-filter-close{border:0;background:transparent;color:inherit;font-size:1.55rem;line-height:1;cursor:pointer;padding:4px 8px;border-radius:9px}.feedback-filter-close:hover{background:rgba(127,127,127,.12)}
+.feedback-filter-panel .feedback-filters{margin:0;border:0;padding:0;background:transparent!important}
+html:not(.dark) .feedback-filter-toolbar,html:not(.dark) .feedback-filter-panel{background:#fff;color:#2a2724;border-color:rgba(42,39,36,.16)}
+@media(max-width:700px){.feedback-filter-toolbar{flex-wrap:wrap}.feedback-filter-summary{order:3;width:100%;margin-inline-start:0}.feedback-filter-toggle{margin-inline-start:auto}.feedback-filter-panel{padding:18px 14px}}
+
+/* R17P2O22X4W: account for feedback page margins + section padding; switch before the 1050px table can overflow. */
+@media(max-width:1160px){
+  .feedback-filter-toolbar{display:flex}
+  .feedback-filter-panel{display:none}
+  .feedback-filter-panel.open{display:block}
+}
+@media(min-width:1161px){
+  .feedback-filter-title{display:none}
+}

@@ -4,6 +4,7 @@ cd /d "%~dp0"
 
 echo ================================================
 echo Family Photo Album - GitHub full synchronization
+echo Release: R17P2O22X4W
 echo ================================================
 echo.
 
@@ -45,7 +46,7 @@ if not errorlevel 1 (
   goto :done
 )
 
-git commit -m "Family Photo Album R17P2O22X4S"
+git commit -m "Family Photo Album R17P2O22X4W"
 if errorlevel 1 goto :error
 
 echo.
@@ -54,7 +55,7 @@ git push
 if errorlevel 1 goto :error
 
 echo.
-echo SUCCESS: GitHub repository synchronized with R17P2O22X4S.
+echo SUCCESS: GitHub repository synchronized with R17P2O22X4U.
 goto :done
 
 :error
@@ -65,6 +66,6 @@ exit /b 1
 
 :done
 echo.
-echo You can now test the GitHub Pages version on the phone.
+echo Publish process finished.
 pause
 exit /b 0

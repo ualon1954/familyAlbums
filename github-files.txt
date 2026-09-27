@@ -2,6 +2,7 @@ css/main.css
 css/session-manager.css
 css/spa-activity.css
 favicon.ico
+github-files.txt
 index.html
 js/api.js
 js/config.js
@@ -26,4 +27,3 @@ js/theme.js
 js/utils.js
 js/version.js
 publish_github.bat
-github-files.txt
