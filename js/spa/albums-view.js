@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   const LIST_PREFIX='FPA_ALBUMS_LIST_PERSIST_V1_', COUNTS_PREFIX='FPA_ALBUMS_COUNTS_PERSIST_V1_', COVER_PREFIX='FPA_ALBUM_COVER_PENDING_V1_', MAX_AGE=21600000;
   let items=[], currentSession=null, editId='', deleteId='', coverId='', lastPaintFingerprint='';

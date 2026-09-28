@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 function ensureFavicon(){
   if(document.querySelector('link[rel~="icon"]'))return;
   const icon=document.createElement("link");

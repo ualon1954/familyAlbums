@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 function getSession(){
   try{
     if(window.SessionManager && typeof window.SessionManager.getSession==="function"){

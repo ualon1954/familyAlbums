@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   let trashItems=[];
   let session=null;

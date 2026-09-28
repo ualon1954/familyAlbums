@@ -1,1 +1,2 @@
+/* R17P2O22X4Z4 */
 (()=>{const saved=localStorage.getItem("familyTheme");if(saved!=="light")document.documentElement.classList.add("dark");else document.documentElement.classList.remove("dark");window.toggleTheme=()=>{document.documentElement.classList.toggle("dark");localStorage.setItem("familyTheme",document.documentElement.classList.contains("dark")?"dark":"light")}})();

@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   let session=null, photos=[], index=0, cleanup=[];
   const $=id=>document.getElementById(id);

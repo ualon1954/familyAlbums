@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   const PERSIST='FPA_ALBUM_VIEW_PERSIST_V1_';
   const STEP=60;

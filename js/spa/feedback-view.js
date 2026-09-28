@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   let outlet=null,session=null,data={items:[],options:{}},loaded=false,filters={status:'הכל',type:'הכל',area:'הכל',q:''},sortBy='createdAt',sortDir='desc',filterOpen=false;
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

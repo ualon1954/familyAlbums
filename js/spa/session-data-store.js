@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 (function(global){
   let identity='', bootstrapPromise=null;
   function session(){try{return global.SessionManager?.getSession?.()||global.getSession?.()||null;}catch(_){return null;}}

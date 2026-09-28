@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 /* R17L3 — Activity Log Native SPA. No iframe / no activity-log.html runtime dependency. */
 (function(global){
   let initialized=false;

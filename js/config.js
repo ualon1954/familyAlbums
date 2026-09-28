@@ -1,3 +1,4 @@
+/* R17P2O22X4Z4 */
 // Local environment configuration.
 // IMPORTANT: keep your deployed Apps Script Web App URL here.
 // Future frontend update ZIPs do not overwrite this file.
