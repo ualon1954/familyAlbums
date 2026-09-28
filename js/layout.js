@@ -20,6 +20,9 @@ function mountLayout(active=""){
   const user=getSession()?.user;
   const userRole=String(user?.role||"").toUpperCase();
   const isAdmin=userRole==="ADMIN";
+  // R17P2O22X4Z1: Admin has a longer navigation row. Switch that header to
+  // compact navigation earlier, before labels can collide or wrap.
+  top.classList.toggle("admin-nav-dense",isAdmin);
   const canUseTrash=isAdmin||userRole==="FAMILY";
   const isSpaShell=!!document.querySelector("#spaOutlet") || /\/(?:index|spa-preview)\.html$/i.test(location.pathname) || /\/frontend\/?$/i.test(location.pathname);
   const navItems=isSpaShell ? [

@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableExtensions
-set "PROJECT_VERSION=R17P2O22X4Z"
+set "PROJECT_VERSION=R17P2O22X4Z1"
 cd /d "%~dp0"
 
 echo ================================================
