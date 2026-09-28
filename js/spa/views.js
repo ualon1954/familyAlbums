@@ -154,6 +154,53 @@
 `;
   }
 
+
+  function guide(){
+    return `
+<section class="section user-guide" aria-labelledby="userGuideTitle">
+  <header class="guide-welcome">
+    <div class="guide-welcome-copy">
+      <span class="guide-kicker">מדריך בסיסי למשתמש</span>
+      <h1 id="userGuideTitle">מדריך למשתמש <span aria-hidden="true">📖</span></h1>
+      <p>כאן תמצאו הסברים קצרים וברורים שיעזרו לכם להכיר את המערכת ולהתחיל לעבוד בה.</p>
+      <p>תוכלו להיכנס לאלבומים, לצפות בתמונות, לחפש, להוסיף למועדפים ולבצע פעולות נוספות בהתאם להרשאות שקיבלתם.</p>
+    </div>
+    <div class="guide-welcome-icon" aria-hidden="true">📸</div>
+  </header>
+
+  <section class="guide-getting-started" aria-labelledby="guideStartTitle">
+    <div class="guide-section-heading"><span class="guide-section-icon" aria-hidden="true">🚀</span><div><h2 id="guideStartTitle">מתחילים כאן</h2><p>חמישה צעדים פשוטים להיכרות ראשונה עם המערכת</p></div></div>
+    <div class="guide-steps">
+      <article><span class="guide-step-no">1</span><span class="guide-step-icon">↪</span><h3>כניסה למערכת</h3><p>הזינו דוא״ל וסיסמה במסך הכניסה.</p></article>
+      <article><span class="guide-step-no">2</span><span class="guide-step-icon">▦</span><h3>הכירו את לוח הבקרה</h3><p>סקירה מהירה וקישורים למסכים המרכזיים.</p></article>
+      <article><span class="guide-step-no">3</span><span class="guide-step-icon">📁</span><h3>בחרו אלבום</h3><p>פתחו אלבום מתוך האלבומים הזמינים לכם.</p></article>
+      <article><span class="guide-step-no">4</span><span class="guide-step-icon">🖼</span><h3>צפו והעלו תמונות</h3><p>פתחו תמונה, ואם יש הרשאה — העלו תמונות חדשות.</p></article>
+      <article><span class="guide-step-no">5</span><span class="guide-step-icon">★</span><h3>שמרו מועדפים</h3><p>סמנו תמונות אהובות לצפייה מהירה בהמשך.</p></article>
+    </div>
+  </section>
+
+  <section class="guide-topics" aria-labelledby="guideTopicsTitle">
+    <div class="guide-topics-heading"><h2 id="guideTopicsTitle">נושאי המדריך</h2><p>בחרו נושא כדי להגיע להסבר המתאים</p></div>
+    <div class="guide-topic-grid">
+      <article class="guide-topic topic-dashboard" id="guide-dashboard"><span class="guide-topic-icon">▦</span><div><h3>לוח בקרה</h3><p>היכרות עם תמונת המצב, המונים והקישורים המרכזיים.</p></div><a href="#/dashboard">מעבר ללוח הבקרה ‹</a></article>
+      <article class="guide-topic topic-albums" id="guide-albums"><span class="guide-topic-icon">📁</span><div><h3>אלבומים</h3><p>צפייה באלבומים, פתיחת אלבום ופעולות בהתאם להרשאה.</p></div><a href="#/albums">מעבר לאלבומים ‹</a></article>
+      <article class="guide-topic topic-photos" id="guide-photos"><span class="guide-topic-icon">🖼</span><div><h3>תמונות</h3><p>צפייה, העלאה, חיפוש, מיון ופעולות נוספות לפי ההרשאות שלכם.</p></div><a href="#guide-photos-help">לקריאת ההסבר ‹</a></article>
+      <article class="guide-topic topic-favorites" id="guide-favorites"><span class="guide-topic-icon">★</span><div><h3>מועדפים</h3><p>סימון תמונות אהובות וצפייה מרוכזת בכל המועדפים.</p></div><a href="#/favorites">מעבר למועדפים ‹</a></article>
+      <article class="guide-topic topic-mobile" id="guide-mobile"><span class="guide-topic-icon">▤</span><div><h3>ניווט ומובייל</h3><p>שימוש בתפריט הראשי ובתפריט ☰ במסכים צרים ובטלפון.</p></div><a href="#guide-details">לקריאת ההסבר ‹</a></article>
+      <article class="guide-topic topic-slideshow" id="guide-slideshow"><span class="guide-topic-icon">▶</span><div><h3>מצגת ומסך מלא</h3><p>פתיחת תמונות במסך מלא ומעבר בין התמונות במצגת.</p></div><a href="#guide-details">לקריאת ההסבר ‹</a></article>
+      <article class="guide-topic topic-display" id="guide-display"><span class="guide-topic-icon">◐</span><div><h3>הגדרות תצוגה</h3><p>מעבר בין מצב כהה לבהיר והתאמת התצוגה למסך.</p></div><a href="#guide-details">לקריאת ההסבר ‹</a></article>
+      <article class="guide-topic topic-help" id="guide-help"><span class="guide-topic-icon">?</span><div><h3>הרשאות ועזרה</h3><p>פעולות במערכת מוצגות בהתאם להרשאות שקיבלתם מהמנהל.</p></div><a href="#guide-details">לקריאת ההסבר ‹</a></article>
+    </div>
+  </section>
+
+  <section class="guide-details" id="guide-details" aria-label="הסברים נוספים">
+    <article id="guide-photos-help"><h2>עבודה עם תמונות</h2><p>לחצו על תמונה כדי לפתוח אותה בתצוגה מוגדלת. במסכי התמונות תוכלו להשתמש בחיפוש ובמיון. אם קיבלתם הרשאה מתאימה, יוצגו גם פעולות כמו העלאה, עריכה, העברה או מחיקה.</p></article>
+    <article><h2>ניווט במערכת</h2><p>במחשב השתמשו בתפריט הראשי. כאשר המסך צר או בטלפון, לחצו על ☰ ובחרו את המסך הרצוי. הכותרת ב־Header משתנה בהתאם למסך הפעיל.</p></article>
+    <article><h2>לא מוצאים פעולה?</h2><p>המערכת מציגה רק פעולות שהמשתמש מורשה לבצע. אם אלבום או פעולה שאמורים להיות זמינים אינם מופיעים, פנו למנהל המערכת לבדיקת ההרשאות.</p></article>
+  </section>
+</section>`;
+  }
+
   function migration(){
     return `
       <section class="section">
@@ -171,5 +218,5 @@
 
   function dashboard(){ return '<section class="section"><div class="card">טוען לוח בקרה...</div></section>'; }
 
-  global.SPAViews = { home, dashboard, about, migration, notFound };
+  global.SPAViews = { home, dashboard, about, guide, migration, notFound };
 })(window);

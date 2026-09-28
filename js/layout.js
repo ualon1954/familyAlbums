@@ -27,12 +27,14 @@ function mountLayout(active=""){
     ["#/dashboard","לוח בקרה","dashboard"],
     ["#/albums","אלבומים","albums"],
     ["#/favorites","מועדפים","favorites"],
+    ["#/guide","מדריך למשתמש","guide"],
     ["#/about","אודות","about"]
   ] : [
     ["index.html#/home","ראשי","home"],
     ["index.html#/dashboard","לוח בקרה","dashboard"],
     ["index.html#/albums","אלבומים","albums"],
     ["index.html#/favorites","מועדפים","favorites"],
+    ["index.html#/guide","מדריך למשתמש","guide"],
     ["index.html#/about","אודות","about"]
   ];
   if(isAdmin||userRole==="FAMILY") navItems.push([isSpaShell?"#/feedback":"index.html#/feedback","מעקב","feedback"]);
@@ -124,9 +126,13 @@ function mountLayout(active=""){
     home:"ראשי",
     dashboard:"לוח בקרה",
     albums:"אלבומים",
+    album:"אלבום",
     favorites:"מועדפים",
+    guide:"מדריך למשתמש",
     about:"אודות",
+    feedback:"מעקב",
     trash:"סל מחזור",
+    activity:"יומן פעילויות",
     activityLog:"יומן פעילויות",
     admin:"ניהול"
   };
@@ -140,6 +146,17 @@ function mountLayout(active=""){
   const path=(location.pathname.split("/").pop()||"index.html").toLowerCase();
   const currentLabel=path==="admin.html"?"ניהול":(path==="album.html"?"אלבום":(pageNames[active]||""));
   mobilePageName.textContent=currentLabel;
+
+  // R17P2O22X4X: keep the responsive header title synchronized with the
+  // active SPA route. The mobile header is a presentation mode of the same
+  // application shell, so its title must come from route state rather than
+  // from the route that happened to be active when mountLayout() ran.
+  window.syncResponsiveHeaderRoute=function(route){
+    const el=document.querySelector(".top .mobile-page-name");
+    if(!el)return;
+    const key=String(route||"").trim();
+    el.textContent=pageNames[key]||"";
+  };
 
   let menuBtn=top.querySelector(".menu-toggle");
   if(!menuBtn){

@@ -1,10 +1,11 @@
 @echo off
 setlocal EnableExtensions
+set "PROJECT_VERSION=R17P2O22X4Z"
 cd /d "%~dp0"
 
 echo ================================================
 echo Family Photo Album - GitHub full synchronization
-echo Release: R17P2O22X4W
+echo Release: %PROJECT_VERSION%
 echo ================================================
 echo.
 
@@ -46,7 +47,7 @@ if not errorlevel 1 (
   goto :done
 )
 
-git commit -m "Family Photo Album R17P2O22X4W"
+git commit -m "Family Photo Album %PROJECT_VERSION%"
 if errorlevel 1 goto :error
 
 echo.
@@ -55,7 +56,7 @@ git push
 if errorlevel 1 goto :error
 
 echo.
-echo SUCCESS: GitHub repository synchronized with R17P2O22X4U.
+echo SUCCESS: GitHub repository synchronized with %PROJECT_VERSION%.
 goto :done
 
 :error
